@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Restaurante Los 4 Hermanos</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    h1 { color: #a52a2a; }
+    form { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);}
+    input, textarea, button { margin: 5px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #a52a2a; color: #fff; cursor: pointer; }
+    button:hover { background: #7b3f1d; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+    th { background: #a0522d; color: #fff; }
+    .acciones button { margin: 2px; }
+    .preview { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+    .preview img { width: 80px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>Administrador - Restaurante Los 4 Hermanos</h1>
+
+  <form id="productoForm">
+    <input type="hidden" id="productoId">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="text" id="descripcion" placeholder="Descripción" required>
+    <input type="text" id="categoria" placeholder="Categoría" required>
+    <input type="number" id="precio" placeholder="Precio" required>
+    <input type="text" id="imagen" placeholder="Nombre de imagen (ej: plato1.jpg)">
+    <button type="submit">Guardar Producto</button>
+    <button type="button" onclick="resetForm()">Cancelar</button>
+
+    <div class="preview" id="preview">
+      <img src="" alt="Vista previa" style="display:none;">
+      <div>
+        <strong id="previewNombre"></strong><br>
+        <span id="previewDescripcion"></span><br>
+        <span id="previewCategoria"></span><br>
+        <span id="previewPrecio"></span>
+      </div>
+    </div>
+  </form>
+
+  <input type="text" id="buscador" placeholder="Buscar producto..." onkeyup="buscarProducto()">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaProductos"></tbody>
+  </table>
+
+  <script>
+    let productos = [];
+
+    async function cargarProductos() {
+      const res = await fetch("productos.json");
+      productos = await res.json();
+      renderTabla(productos);
+    }
+
+    function renderTabla(lista) {
+      const tabla = document.getElementById("tablaProductos");
+      tabla.innerHTML = "";
+      lista.forEach(p => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td><img src="${p.imagen}" width="60"></td>
+          <td>${p.nombre}</td>
+          <td>${p.descripcion}</td>
+          <td>${p.categoria}</td>
+          <td>$${p.precio}</td>
+          <td class="acciones">
+            <button onclick="editarProducto('${p.id}')">Editar</button>
+            <button onclick="eliminarProducto('${p.id}')">Eliminar</button>
+          </td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    document.getElementById("productoForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const id = document.getElementById("productoId").value || Date.now().toString();
+      const nuevo = {
+        id,
+        nombre: document.getElementById("nombre").value,
+        descripcion: document.getElementById("descripcion").value,
+        categoria: document.getElementById("categoria").value,
+        precio: parseFloat(document.getElementById("precio").value),
+        imagen: "img/" + (document.getElementById("imagen").value || "sinimagen.png")
+      };
+
+      const existe = productos.findIndex(p => p.id === id);
+      if(existe >= 0){
+        productos[existe] = nuevo;
+      } else {
+        productos.push(nuevo);
+      }
+      guardarProductos();
+      resetForm();
+      renderTabla(productos);
+    });
+
+    function editarProducto(id){
+      const p = productos.find(x => x.id === id);
+      if(!p) return;
+      document.getElementById("productoId").value = p.id;
+      document.getElementById("nombre").value = p.nombre;
+      document.getElementById("descripcion").value = p.descripcion;
+      document.getElementById("categoria").value = p.categoria;
+      document.getElementById("precio").value = p.precio;
+      document.getElementById("imagen").value = p.imagen.replace("img/","");
+      actualizarPreview();
+    }
+
+    function eliminarProducto(id){
+      if(confirm("¿Seguro que deseas eliminar este producto?")){
+        productos = productos.filter(p => p.id !== id);
+        guardarProductos();
+        renderTabla(productos);
+      }
+    }
+
+    function resetForm(){
+      document.getElementById("productoForm").reset();
+      document.getElementById("productoId").value = "";
+      document.getElementById("preview").style.display = "none";
+    }
+
+    function actualizarPreview(){
+      const nombre = document.getElementById("nombre").value;
+      const descripcion = document.getElementById("descripcion").value;
+      const categoria = document.getElementById("categoria").value;
+      const precio = document.getElementById("precio").value;
+      const imagen = document.getElementById("imagen").value;
+
+      const preview = document.getElementById("preview");
+      preview.style.display = "flex";
+      document.querySelector("#preview img").style.display = imagen ? "block" : "none";
+      document.querySelector("#preview img").src = imagen ? "img/" + imagen : "";
+      document.getElementById("previewNombre").textContent = nombre;
+      document.getElementById("previewDescripcion").textContent = descripcion;
+      document.getElementById("previewCategoria").textContent = categoria;
+      document.getElementById("previewPrecio").textContent = precio ? "$" + precio : "";
+    }
+
+    document.querySelectorAll("#nombre,#descripcion,#categoria,#precio,#imagen")
+      .forEach(el => el.addEventListener("input", actualizarPreview));
+
+    function buscarProducto(){
+      const q = document.getElementById("buscador").value.toLowerCase();
+      renderTabla(productos.filter(p =>
+        p.nombre.toLowerCase().includes(q) ||
+        p.descripcion.toLowerCase().includes(q) ||
+        p.categoria.toLowerCase().includes(q)
+      ));
+    }
+
+    function guardarProductos(){
+      const blob = new Blob([JSON.stringify(productos, null, 2)], {type: "application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "productos.json";
+      a.click();
+    }
+
+    cargarProductos();
+  </script>
+
+</body>
+</html>
