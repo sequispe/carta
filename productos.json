@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "nombre": "Salteña",
+    "descripcion": "Empanada boliviana rellena de carne, papa, arvejas y especias.",
+    "categoria": "Comidas típicas",
+    "precio": 1200,
+    "imagen": "img/saltena.jpg"
+  },
+  {
+    "id": "2",
+    "nombre": "Silpancho",
+    "descripcion": "Plato típico con arroz, carne empanizada, huevo frito y papas.",
+    "categoria": "Comidas típicas",
+    "precio": 2500,
+    "imagen": "img/silpancho.jpg"
+  }
+]
