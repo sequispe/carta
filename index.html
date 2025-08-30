@@ -1,145 +1,137 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carta - Restaurante Los 4 Hermanos</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carta Restaurante</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #fdfdfd;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
-      text-align: center;
+      background: #f6f6f6;
+      color: #45270a;
     }
     header {
+      background: #ffffff; /* fondo blanco detrás del logo */
+    }
+    .banner-img {
+      width: 100%;
+      height: 300px; /* más grande */
+      object-fit: contain; /* se ve completo el logo */
+      display: block;
       background: #fff;
-      padding: 10px;
-      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
     }
-    header img {
-      max-width: 200px;
-      height: auto;
-    }
-    h1 {
-      margin: 10px 0;
-      color: #333;
-    }
-    .categorias {
-      margin: 20px 0;
-    }
-    .categorias button {
-      background: #d35400;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .categorias button:hover {
-      background: #e67e22;
-    }
-    .productos {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 20px;
-      max-width: 1000px;
-      margin: auto;
-    }
-    .producto {
-      border: 1px solid #ccc;
-      border-radius: 12px;
+    .banner {
+      text-align: center;
       padding: 15px;
-      background: #fff;
-      box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      font-size: 1.8rem;
+      color: #45270a;
+      font-weight: bold;
     }
-    .producto:hover {
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+    }
+    .categories button {
+      padding: 10px 20px;
+      background-color: #8c6954;
+      color: #fffefe;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .categories button:hover {
+      background-color: #6b4e3d;
+    }
+    .item-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px;
+    }
+    .item {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 280px;
+      transition: transform 0.2s ease;
+    }
+    .item:hover {
       transform: scale(1.02);
     }
-    .producto img {
+    .item img {
       width: 100%;
-      max-height: 150px;
+      height: 180px;
       object-fit: cover;
-      border-radius: 8px;
     }
-    .producto h3 {
-      margin: 10px 0 5px;
-      font-size: 18px;
+    .item h3 {
+      margin: 10px;
     }
-    .producto p {
-      font-size: 14px;
-      color: #666;
+    .item p {
+      margin: 0 10px 10px;
     }
-    .producto .precio {
+    .item .price {
       font-weight: bold;
-      color: #27ae60;
-      margin-top: 8px;
-      font-size: 16px;
+      color: #000;
     }
   </style>
 </head>
 <body>
+  <!-- FOTO GRANDE ARRIBA (LOGO) -->
   <header>
-    <img src="img/logi.png" alt="Restaurante Los 4 Hermanos">
-    <h1>Restaurante Los 4 Hermanos</h1>
+    <img src="img/logo.png" alt="Logo Restaurante" class="banner-img" />
   </header>
 
-  <div class="categorias" id="categorias"></div>
-  <div class="productos" id="productos"></div>
+  <div class="banner">¡Bienvenidos a nuestro Restaurante!</div>
+
+  <div class="categories" id="category-buttons"></div>
+  <div class="item-list" id="product-list"></div>
 
   <script>
-    let productosData = [];
-    let categoriaActual = "Todos";
+    let productos = [];
 
-    async function cargarProductos() {
-      try {
-        const res = await fetch("productos.json");
-        productosData = await res.json();
-        mostrarCategorias();
-        mostrarProductos();
-      } catch (e) {
-        console.error("Error cargando productos.json", e);
-      }
-    }
+    fetch('productos.json')
+      .then(response => response.json())
+      .then(data => {
+        productos = data;
+        renderCategories();
+        renderProducts('Todos');
+      });
 
-    function mostrarCategorias() {
-      const categoriasUnicas = ["Todos", ...new Set(productosData.map(p => p.categoria))];
-      const contenedor = document.getElementById("categorias");
-      contenedor.innerHTML = "";
-      categoriasUnicas.forEach(cat => {
-        const btn = document.createElement("button");
+    function renderCategories() {
+      const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
+      const container = document.getElementById('category-buttons');
+      container.innerHTML = '';
+      categorias.forEach(cat => {
+        const btn = document.createElement('button');
         btn.textContent = cat;
-        btn.onclick = () => {
-          categoriaActual = cat;
-          mostrarProductos();
-        };
-        contenedor.appendChild(btn);
+        btn.onclick = () => renderProducts(cat);
+        container.appendChild(btn);
       });
     }
 
-    function mostrarProductos() {
-      const contenedor = document.getElementById("productos");
-      contenedor.innerHTML = "";
-      productosData
-        .filter(p => categoriaActual === "Todos" || p.categoria === categoriaActual)
-        .forEach(p => {
-          const div = document.createElement("div");
-          div.className = "producto";
-          div.innerHTML = `
-            <img src="img/${p.imagen}" alt="${p.nombre}">
-            <h3>${p.nombre}</h3>
-            <p>${p.descripcion}</p>
-            <p class="precio">$${p.precio}</p>
-          `;
-          contenedor.appendChild(div);
-        });
+    function renderProducts(categoria) {
+      const container = document.getElementById('product-list');
+      container.innerHTML = '';
+      const filtrados = categoria === 'Todos' ? productos : productos.filter(p => p.categoria === categoria);
+      filtrados.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.innerHTML = `
+          <img src="${p.imagen}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p>${p.descripcion}</p>
+          <p class="price">${p.precio}</p>
+        `;
+        container.appendChild(item);
+      });
     }
-
-    cargarProductos();
   </script>
 </body>
 </html>
