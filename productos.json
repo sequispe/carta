@@ -1,18 +1,26 @@
 [
   {
-    "id": "1",
-    "nombre": "Salteña",
-    "descripcion": "Empanada boliviana rellena de carne, papa, arvejas y especias.",
-    "categoria": "Comidas típicas",
+    "id": 1,
+    "nombre": "Salteña Boliviana",
+    "descripcion": "Empanada típica rellena de carne, papa y especias.",
+    "categoria": "Comidas Típicas",
     "precio": 1200,
-    "imagen": "img/saltena.jpg"
+    "imagen": "saltena.jpg"
   },
   {
-    "id": "2",
+    "id": 2,
     "nombre": "Silpancho",
-    "descripcion": "Plato típico con arroz, carne empanizada, huevo frito y papas.",
-    "categoria": "Comidas típicas",
-    "precio": 2500,
-    "imagen": "img/silpancho.jpg"
+    "descripcion": "Plato típico con carne apanada, arroz, papas y huevo frito.",
+    "categoria": "Comidas Típicas",
+    "precio": 3500,
+    "imagen": "silpancho.jpg"
+  },
+  {
+    "id": 3,
+    "nombre": "Refresco de Mocochinchi",
+    "descripcion": "Bebida refrescante a base de durazno seco hervido.",
+    "categoria": "Bebidas",
+    "precio": 800,
+    "imagen": "mocochinchi.jpg"
   }
 ]
