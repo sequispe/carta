@@ -3,157 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Restaurante Los 4 Hermanos</title>
+  <title>Carta - Restaurante Los 4 Hermanos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #fdfdfd;
       margin: 0;
       padding: 0;
-      background: #f8f8f8;
-      color: #333;
       text-align: center;
     }
-
     header {
       background: #fff;
-      padding: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 10px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
     }
-
     header img {
-      max-width: 160px;
-      margin-bottom: 10px;
+      max-width: 200px;
+      height: auto;
     }
-
     h1 {
       margin: 10px 0;
-      font-size: 1.5em;
-      color: #a52a2a;
+      color: #333;
     }
-
     .categorias {
       margin: 20px 0;
     }
-
     .categorias button {
-      background: #a0522d;
-      color: #fff;
+      background: #d35400;
+      color: white;
       border: none;
-      padding: 10px 15px;
+      padding: 10px 20px;
       margin: 5px;
       border-radius: 20px;
       cursor: pointer;
       transition: 0.3s;
     }
-
     .categorias button:hover {
-      background: #7b3f1d;
+      background: #e67e22;
     }
-
     .productos {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 20px;
       padding: 20px;
       max-width: 1000px;
       margin: auto;
     }
-
     .producto {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 1px solid #ccc;
+      border-radius: 12px;
       padding: 15px;
+      background: #fff;
+      box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
       transition: transform 0.2s;
     }
-
     .producto:hover {
-      transform: scale(1.03);
+      transform: scale(1.02);
     }
-
     .producto img {
-      max-width: 100%;
-      border-radius: 10px;
+      width: 100%;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
     }
-
     .producto h3 {
       margin: 10px 0 5px;
-      color: #a52a2a;
+      font-size: 18px;
     }
-
     .producto p {
-      font-size: 0.9em;
-      color: #555;
+      font-size: 14px;
+      color: #666;
     }
-
-    .precio {
+    .producto .precio {
       font-weight: bold;
+      color: #27ae60;
       margin-top: 8px;
-      color: #222;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-
   <header>
-    <img src="img/logo.png" alt="Logo Restaurante Los 4 Hermanos">
-    <h1>¡Bienvenidos a Restaurante Los 4 Hermanos!</h1>
-    <p>Comidas típicas de Bolivia y más...</p>
+    <img src="img/logo.png" alt="Restaurante Los 4 Hermanos">
+    <h1>Restaurante Los 4 Hermanos</h1>
   </header>
 
   <div class="categorias" id="categorias"></div>
-
-  <section class="productos" id="lista-productos"></section>
+  <div class="productos" id="productos"></div>
 
   <script>
+    let productosData = [];
+    let categoriaActual = "Todos";
+
     async function cargarProductos() {
       try {
-        const response = await fetch("productos.json");
-        const productos = await response.json();
-
-        mostrarCategorias(productos);
-        mostrarProductos(productos);
-      } catch (error) {
-        console.error("Error al cargar productos:", error);
+        const res = await fetch("productos.json");
+        productosData = await res.json();
+        mostrarCategorias();
+        mostrarProductos();
+      } catch (e) {
+        console.error("Error cargando productos.json", e);
       }
     }
 
-    function mostrarCategorias(productos) {
-      const categoriasUnicas = ["Todos", ...new Set(productos.map(p => p.categoria))];
+    function mostrarCategorias() {
+      const categoriasUnicas = ["Todos", ...new Set(productosData.map(p => p.categoria))];
       const contenedor = document.getElementById("categorias");
       contenedor.innerHTML = "";
       categoriasUnicas.forEach(cat => {
         const btn = document.createElement("button");
         btn.textContent = cat;
         btn.onclick = () => {
-          if (cat === "Todos") {
-            mostrarProductos(productos);
-          } else {
-            mostrarProductos(productos.filter(p => p.categoria === cat));
-          }
+          categoriaActual = cat;
+          mostrarProductos();
         };
         contenedor.appendChild(btn);
       });
     }
 
-    function mostrarProductos(productos) {
-      const lista = document.getElementById("lista-productos");
-      lista.innerHTML = "";
-      productos.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "producto";
-        div.innerHTML = `
-          <img src="${p.imagen}" alt="${p.nombre}">
-          <h3>${p.nombre}</h3>
-          <p>${p.descripcion}</p>
-          <div class="precio">$${p.precio}</div>
-        `;
-        lista.appendChild(div);
-      });
+    function mostrarProductos() {
+      const contenedor = document.getElementById("productos");
+      contenedor.innerHTML = "";
+      productosData
+        .filter(p => categoriaActual === "Todos" || p.categoria === categoriaActual)
+        .forEach(p => {
+          const div = document.createElement("div");
+          div.className = "producto";
+          div.innerHTML = `
+            <img src="img/${p.imagen}" alt="${p.nombre}">
+            <h3>${p.nombre}</h3>
+            <p>${p.descripcion}</p>
+            <p class="precio">$${p.precio}</p>
+          `;
+          contenedor.appendChild(div);
+        });
     }
 
     cargarProductos();
   </script>
-
 </body>
 </html>
