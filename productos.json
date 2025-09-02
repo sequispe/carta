@@ -117,7 +117,8 @@
     "precio": 1200,
     "imagen": "saltena.jpg"
     "categoria": "SEGUNDOS",
-  },{
+  },
+  {
     "nombre": "TALLARINES CON CARNE",
     "descripcion": "TALLARINES CON CARNE",
     "precio": 1200,
@@ -145,21 +146,21 @@
     "imagen": "saltena.jpg"
     "categoria": "FRITOS",
   },
-{
+  { 
     "nombre": "POLLO BROSTER",
     "descripcion": "POLLO BROSTER ",
     "precio": 1200,
     "imagen": "saltena.jpg"
     "categoria": "FRITOS",
   },
-{
+  {
     "nombre": "SILPACHO",
     "descripcion": "SILPACHO",
     "precio": 1200,
     "imagen": "saltena.jpg"
     "categoria": "FRITOS",
   },
-{
+  {
     "nombre": "BIFE A LA PLANCHA",
     "descripcion": "BIFE A LA PLANCHA",
     "precio": 1200,
