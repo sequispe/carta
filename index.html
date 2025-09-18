@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carta Restaurante</title>
+  <title>Carta Cartatilo</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: #f6f6f6;
+      background: #8888;
       color: #45270a;
     }
     header {
-      background: #ffffff; /* fondo blanco detrás del logo */
+      background: #806250;
     }
     .banner-img {
       width: 100%;
-      height: 500px; /* más grande */
-      object-fit: contain; /* se ve completo el logo */
+      height: 250px;
+      object-fit: cover;
       display: block;
-      background: #fff;
     }
     .banner {
       text-align: center;
-      padding: 15px;
-      font-size: 1.8rem;
+      padding: 10px;
+      font-size: 1.5rem;
       color: #45270a;
-      font-weight: bold;
     }
     .categories {
       display: flex;
@@ -37,7 +35,7 @@
     }
     .categories button {
       padding: 10px 20px;
-      background-color: #8c6954;
+      background-color: #836350;
       color: #fffefe;
       border: none;
       border-radius: 10px;
@@ -45,7 +43,7 @@
       transition: background 0.3s;
     }
     .categories button:hover {
-      background-color: #6b4e3d;
+      background-color: #5f4333;
     }
     .item-list {
       display: flex;
@@ -83,19 +81,23 @@
   </style>
 </head>
 <body>
-  <!-- FOTO GRANDE ARRIBA (LOGO) -->
+  <!-- FOTO GRANDE ARRIBA -->
   <header>
-    <img src="img/logi.png" alt="Logo Restaurante" class="banner-img" />
+    <img src="img/logi.png" alt="Cartatilo" class="banner-img" />
   </header>
 
-  <div class="banner">¡Bienvenidos a nuestro Restaurante!</div>
+  <div class="banner">¡Bienvenidos a Cartatilo!</div>
 
+  <!-- Botones de categorías -->
   <div class="categories" id="category-buttons"></div>
+
+  <!-- Lista de productos -->
   <div class="item-list" id="product-list"></div>
 
   <script>
     let productos = [];
 
+    // Cargar productos desde productos.json
     fetch('productos.json')
       .then(response => response.json())
       .then(data => {
@@ -104,6 +106,7 @@
         renderProducts('Todos');
       });
 
+    // Renderizar categorías dinámicamente
     function renderCategories() {
       const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
       const container = document.getElementById('category-buttons');
@@ -116,6 +119,7 @@
       });
     }
 
+    // Renderizar productos
     function renderProducts(categoria) {
       const container = document.getElementById('product-list');
       container.innerHTML = '';
@@ -123,11 +127,14 @@
       filtrados.forEach(p => {
         const item = document.createElement('div');
         item.className = 'item';
+        const priceDisplay = (String(p.precio||'').trim().startsWith('$'))
+          ? String(p.precio).trim()
+          : ('$' + (p.precio ?? ''));
         item.innerHTML = `
           <img src="${p.imagen}" alt="${p.nombre}">
           <h3>${p.nombre}</h3>
           <p>${p.descripcion}</p>
-          <p class="price">${p.precio}</p>
+          <p class="price">${priceDisplay}</p>
         `;
         container.appendChild(item);
       });
