@@ -2,182 +2,236 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>Admin Carta Cartatilo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Restaurante Los 4 Hermanos</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    h1 { color: #a52a2a; }
-    form { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);}
-    input, textarea, button { margin: 5px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #a52a2a; color: #fff; cursor: pointer; }
-    button:hover { background: #7b3f1d; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
-    th { background: #a0522d; color: #fff; }
-    .acciones button { margin: 2px; }
-    .preview { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
-    .preview img { width: 80px; border-radius: 5px; }
+    :root{
+      --brand:#8c6954; --brand-dark:#6b4e3d; --ink:#5a3825; --paper:#f7f3f0;
+    }
+    body { font-family: Arial, sans-serif; margin: 20px; color: var(--ink); background: var(--paper);}
+    h1 { color: var(--ink); margin-bottom: 10px; }
+    .row { display: grid; grid-template-columns: 1fr 380px; gap: 18px; align-items: start; }
+    @media (max-width: 900px){ .row{ grid-template-columns: 1fr; } }
+
+    form { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+    label { font-weight: 600; font-size: 0.9rem; }
+    input, textarea { width: 100%; padding: 8px; margin: 6px 0 12px; border: 1px solid #ccc; border-radius: 6px; }
+    textarea{ min-height: 72px; resize: vertical; }
+
+    button { padding: 8px 12px; margin: 5px 6px 5px 0; background: var(--brand); color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background: var(--brand-dark); }
+
+    .toolbar { margin: 10px 0 6px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .search-wrap { display:inline-flex; align-items:center; gap:8px; }
+    #searchBox { padding: 8px; width: 220px; border: 1px solid #ccc; border-radius: 6px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; background: #fff; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }
+    th { background: #f0e8e3; }
+    td img { max-width: 80px; border-radius: 6px; display:block; }
+
+    .actions button { margin-right: 5px; }
+
+    /* Vista previa */
+    .preview { background: #fff; border: 1px solid #e8e2de; border-radius: 12px; padding: 12px; }
+    .preview h3{ margin: 0 0 8px; font-size: 1.05rem; }
+    .card { border: 1px solid #e6ded9; border-radius: 10px; overflow: hidden; }
+    .card img { width: 100%; height: 260px; object-fit: cover; background:#faf7f5; }
+    .card-body { padding: 10px; }
+    .prev-name { font-weight: 700; margin-bottom: 4px; font-size: 1.1rem; }
+    .prev-desc { font-size: 0.92rem; margin-bottom: 6px; color:#3d2a1e; }
+    .prev-meta { display:flex; justify-content: space-between; font-size: 0.95rem; }
+    .prev-price { font-weight: 700; color:#000; }
   </style>
 </head>
 <body>
 
-  <h1>Administrador - Restaurante Los 4 Hermanos</h1>
+<h1>Admin Carta Cartatilo</h1>
 
-  <form id="productoForm">
-    <input type="hidden" id="productoId">
-    <input type="text" id="nombre" placeholder="Nombre" required>
-    <input type="text" id="descripcion" placeholder="Descripción" required>
-    <input type="text" id="categoria" placeholder="Categoría" required>
-    <input type="number" id="precio" placeholder="Precio" required>
-    <input type="text" id="imagen" placeholder="Nombre de imagen (ej: plato1.jpg)">
+<div class="toolbar">
+  <button onclick="downloadJSON()">⬇️ Descargar productos.json</button>
+  
+  <span class="search-wrap">
+    <input type="text" id="searchBox" placeholder="🔎 Buscar producto" oninput="renderTable()">
+    <button type="button" onclick="resetSearch()">Reset</button>
+  </span>
+</div>
+
+<div class="row">
+  <!-- Formulario -->
+  <form id="productForm">
+    <input type="hidden" id="editIndex" value="">
+    <label>Nombre:</label>
+    <input type="text" id="nombre" required>
+
+    <label>Descripción:</label>
+    <textarea id="descripcion" required></textarea>
+
+    <label>Precio (solo número o con $):</label>
+    <input type="text" id="precio" required>
+
+    <label>Imagen (ej: cafe.jpg):</label>
+    <input type="text" id="imagen" required placeholder="ej: cafe.jpg">
+
+    <label>Categoría:</label>
+    <input type="text" id="categoria" required>
+
     <button type="submit">Guardar Producto</button>
-    <button type="button" onclick="resetForm()">Cancelar</button>
-
-    <div class="preview" id="preview">
-      <img src="" alt="Vista previa" style="display:none;">
-      <div>
-        <strong id="previewNombre"></strong><br>
-        <span id="previewDescripcion"></span><br>
-        <span id="previewCategoria"></span><br>
-        <span id="previewPrecio"></span>
-      </div>
-    </div>
   </form>
 
-  <input type="text" id="buscador" placeholder="Buscar producto..." onkeyup="buscarProducto()">
+  <!-- Vista previa -->
+  <div class="preview">
+    <h3>Vista previa</h3>
+    <div class="card">
+      <img id="prevImg" alt="Vista previa">
+      <div class="card-body">
+        <div class="prev-name" id="prevNombre">—</div>
+        <div class="prev-desc" id="prevDescripcion">—</div>
+        <div class="prev-meta">
+          <div class="prev-cat" id="prevCategoria">—</div>
+          <div class="prev-price" id="prevPrecio">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Imagen</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Categoría</th>
-        <th>Precio</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tablaProductos"></tbody>
-  </table>
+<h2>Productos actuales</h2>
+<table id="productsTable">
+  <thead>
+    <tr>
+      <th>Imagen</th>
+      <th>Nombre</th>
+      <th>Descripción</th>
+      <th>Categoría</th>
+      <th>Precio</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-  <script>
-    let productos = [];
+<script>
+const FILE_PATH = "productos.json";
+let productos = [];
 
-    async function cargarProductos() {
-      const res = await fetch("productos.json");
-      productos = await res.json();
-      renderTabla(productos);
-    }
+// --------- Cargar productos ----------
+async function loadProducts() {
+  try {
+    const res = await fetch(FILE_PATH);
+    productos = await res.json();
+    renderTable();
+  } catch (e) {
+    alert("Error cargando productos.json");
+  }
+}
+loadProducts();
 
-    function renderTabla(lista) {
-      const tabla = document.getElementById("tablaProductos");
-      tabla.innerHTML = "";
-      lista.forEach(p => {
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-          <td><img src="${p.imagen}" width="60"></td>
-          <td>${p.nombre}</td>
-          <td>${p.descripcion}</td>
-          <td>${p.categoria}</td>
-          <td>$${p.precio}</td>
-          <td class="acciones">
-            <button onclick="editarProducto('${p.id}')">Editar</button>
-            <button onclick="eliminarProducto('${p.id}')">Eliminar</button>
-          </td>
-        `;
-        tabla.appendChild(fila);
-      });
-    }
+// --------- Vista previa ----------
+function updatePreview() {
+  const nombre = document.getElementById('nombre').value.trim();
+  const descripcion = document.getElementById('descripcion').value.trim();
+  const categoria = document.getElementById('categoria').value.trim();
+  const precio = document.getElementById('precio').value.trim();
+  const imagen = document.getElementById('imagen').value.trim();
 
-    document.getElementById("productoForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      const id = document.getElementById("productoId").value || Date.now().toString();
-      const nuevo = {
-        id,
-        nombre: document.getElementById("nombre").value,
-        descripcion: document.getElementById("descripcion").value,
-        categoria: document.getElementById("categoria").value,
-        precio: parseFloat(document.getElementById("precio").value),
-        imagen: "img/" + (document.getElementById("imagen").value || "sinimagen.png")
-      };
+  document.getElementById('prevNombre').textContent = nombre || '—';
+  document.getElementById('prevDescripcion').textContent = descripcion || '—';
+  document.getElementById('prevCategoria').textContent = categoria || '—';
+  document.getElementById('prevPrecio').textContent = precio ? (precio.startsWith('$') ? precio : '$'+precio) : '—';
+  document.getElementById('prevImg').src = imagen ? ('img/' + imagen) : '';
+}
+['nombre','descripcion','precio','imagen','categoria'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updatePreview);
+});
 
-      const existe = productos.findIndex(p => p.id === id);
-      if(existe >= 0){
-        productos[existe] = nuevo;
-      } else {
-        productos.push(nuevo);
-      }
-      guardarProductos();
-      resetForm();
-      renderTabla(productos);
-    });
+// --------- Render tabla ----------
+function renderTable() {
+  const search = document.getElementById("searchBox").value.toLowerCase();
+  const tbody = document.querySelector("#productsTable tbody");
+  tbody.innerHTML = "";
 
-    function editarProducto(id){
-      const p = productos.find(x => x.id === id);
-      if(!p) return;
-      document.getElementById("productoId").value = p.id;
-      document.getElementById("nombre").value = p.nombre;
-      document.getElementById("descripcion").value = p.descripcion;
-      document.getElementById("categoria").value = p.categoria;
-      document.getElementById("precio").value = p.precio;
-      document.getElementById("imagen").value = p.imagen.replace("img/","");
-      actualizarPreview();
-    }
+  const items = productos
+    .map((p, i) => ({ p, i }))
+    .filter(({p}) =>
+      (p.nombre||'').toLowerCase().includes(search) ||
+      (p.categoria||'').toLowerCase().includes(search)
+    );
 
-    function eliminarProducto(id){
-      if(confirm("¿Seguro que deseas eliminar este producto?")){
-        productos = productos.filter(p => p.id !== id);
-        guardarProductos();
-        renderTabla(productos);
-      }
-    }
+  items.forEach(({p, i}) => {
+    const priceDisplay = (String(p.precio||'').trim().startsWith('$'))
+      ? String(p.precio).trim()
+      : ('$' + (p.precio ?? ''));
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><img src="${p.imagen}" alt="${p.nombre}"></td>
+      <td>${p.nombre||''}</td>
+      <td>${p.descripcion||''}</td>
+      <td>${p.categoria||''}</td>
+      <td>${priceDisplay}</td>
+      <td class="actions">
+        <button onclick="editProduct(${i})">Editar</button>
+        <button onclick="deleteProduct(${i})">Eliminar</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+function resetSearch(){ document.getElementById('searchBox').value=''; renderTable(); }
 
-    function resetForm(){
-      document.getElementById("productoForm").reset();
-      document.getElementById("productoId").value = "";
-      document.getElementById("preview").style.display = "none";
-    }
+// --------- Guardar ----------
+document.getElementById("productForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const index = document.getElementById("editIndex").value;
+  const nuevo = {
+    nombre: document.getElementById("nombre").value.trim(),
+    descripcion: document.getElementById("descripcion").value.trim(),
+    imagen: "img/" + document.getElementById("imagen").value.trim(),
+    categoria: document.getElementById("categoria").value.trim(),
+    precio: document.getElementById("precio").value.trim()
+  };
 
-    function actualizarPreview(){
-      const nombre = document.getElementById("nombre").value;
-      const descripcion = document.getElementById("descripcion").value;
-      const categoria = document.getElementById("categoria").value;
-      const precio = document.getElementById("precio").value;
-      const imagen = document.getElementById("imagen").value;
+  if (index === "") {
+    productos.push(nuevo);
+  } else {
+    productos[index] = nuevo;
+    document.getElementById("editIndex").value = "";
+  }
+  renderTable();
+  this.reset();
+  updatePreview();
+});
 
-      const preview = document.getElementById("preview");
-      preview.style.display = "flex";
-      document.querySelector("#preview img").style.display = imagen ? "block" : "none";
-      document.querySelector("#preview img").src = imagen ? "img/" + imagen : "";
-      document.getElementById("previewNombre").textContent = nombre;
-      document.getElementById("previewDescripcion").textContent = descripcion;
-      document.getElementById("previewCategoria").textContent = categoria;
-      document.getElementById("previewPrecio").textContent = precio ? "$" + precio : "";
-    }
+// --------- Editar ----------
+function editProduct(realIndex) {
+  const p = productos[realIndex];
+  document.getElementById("nombre").value = p.nombre || '';
+  document.getElementById("descripcion").value = p.descripcion || '';
+  document.getElementById("precio").value = p.precio || '';
+  document.getElementById("imagen").value = (p.imagen||'').replace(/^img\//,'');
+  document.getElementById("categoria").value = p.categoria || '';
+  document.getElementById("editIndex").value = realIndex;
+  updatePreview();
+}
 
-    document.querySelectorAll("#nombre,#descripcion,#categoria,#precio,#imagen")
-      .forEach(el => el.addEventListener("input", actualizarPreview));
+// --------- Eliminar ----------
+function deleteProduct(realIndex) {
+  if (confirm("¿Eliminar este producto?")) {
+    productos.splice(realIndex, 1);
+    renderTable();
+  }
+}
 
-    function buscarProducto(){
-      const q = document.getElementById("buscador").value.toLowerCase();
-      renderTabla(productos.filter(p =>
-        p.nombre.toLowerCase().includes(q) ||
-        p.descripcion.toLowerCase().includes(q) ||
-        p.categoria.toLowerCase().includes(q)
-      ));
-    }
-
-    function guardarProductos(){
-      const blob = new Blob([JSON.stringify(productos, null, 2)], {type: "application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "productos.json";
-      a.click();
-    }
-
-    cargarProductos();
-  </script>
-
+// --------- Descargar productos.json ----------
+function downloadJSON() {
+  const blob = new Blob([JSON.stringify(productos, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "productos.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
 </body>
 </html>
