@@ -1,144 +1,148 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Carta (Solo Buscador)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carta Digital</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background:#f6f6f6; }
-    h1 { margin-bottom: 15px; }
-
-    .toolbar { margin-bottom: 15px; display:flex; gap:10px; align-items:center; }
-    input, textarea { width: 100%; padding: 8px; margin: 6px 0 12px; border: 1px solid #ccc; border-radius: 6px; }
-    button { padding: 6px 10px; background:#8c6954; color:white; border:none; border-radius:6px; cursor:pointer; }
-    button:hover { background:#6b4e3d; }
-    table { width:100%; border-collapse: collapse; margin-top: 15px; background:white; }
-    th, td { border:1px solid #ccc; padding:8px; text-align:left; }
-    th { background:#eee; }
-    td img { max-width:60px; border-radius:6px; }
-
-    .row { display:grid; grid-template-columns: 1fr 350px; gap:20px; }
-    .preview { background:#fff; border:1px solid #ddd; border-radius:10px; padding:12px; }
-    .preview h3 { margin-top:0; }
-    .card { border:1px solid #ccc; border-radius:8px; overflow:hidden; }
-    .card img { width:100%; height:160px; object-fit:cover; }
-    .card-body { padding:10px; }
-    .prev-name { font-weight:700; margin-bottom:4px; }
-    .prev-desc { font-size:0.9rem; margin-bottom:6px; }
-    .prev-meta { display:flex; justify-content:space-between; font-size:0.9rem; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f6f6f6;
+      color: #45270a;
+    }
+    header {
+      background: #806250;
+    }
+    .banner-img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+    .banner {
+      text-align: center;
+      padding: 10px;
+      font-size: 1.5rem;
+      color: #45270a;
+    }
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+    }
+    .categories button {
+      padding: 10px 20px;
+      background-color: #8c6954;
+      color: #fffefe;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .categories button:hover {
+      background-color: #6b4e3d;
+    }
+    .item-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px;
+    }
+    .item {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 280px;
+      transition: transform 0.2s ease;
+    }
+    .item:hover {
+      transform: scale(1.02);
+    }
+    .item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .item h3 {
+      margin: 10px;
+    }
+    .item p {
+      margin: 0 10px 10px;
+    }
+    .item .price {
+      font-weight: bold;
+      color: #000;
+      margin: 0 10px 15px;
+    }
   </style>
 </head>
 <body>
+  <!-- FOTO GRANDE ARRIBA -->
+  <header>
+    <img src="img/logo1.png" alt="Logo del restaurante" class="banner-img" />
+  </header>
 
-<h1>Admin Carta</h1>
+  <div class="banner">¡Bienvenidos!</div>
 
-<div class="toolbar">
-  <input type="text" id="searchBox" placeholder="🔎 Buscar por nombre o categoría" oninput="renderTable()">
-  <button onclick="resetSearch()">Reset</button>
-</div>
+  <!-- Botones de categorías -->
+  <div class="categories" id="category-buttons"></div>
 
-<div class="row">
-  <!-- Formulario -->
-  <form id="productForm">
-    <input type="hidden" id="editIndex" value="">
-    <label>Nombre:</label>
-    <input type="text" id="nombre" required>
+  <!-- Lista de productos -->
+  <div class="item-list" id="product-list"></div>
 
-    <label>Descripción:</label>
-    <textarea id="descripcion" required></textarea>
+  <script>
+    let productos = [];
 
-    <label>Precio:</label>
-    <input type="text" id="precio" required>
+    // Cargar productos desde productos.json
+    fetch('productos.json')
+      .then(response => response.json())
+      .then(data => {
+        productos = data;
+        renderCategories();
+        renderProducts('Todos');
+      });
 
-    <label>Imagen (ej: plato.jpg):</label>
-    <input type="text" id="imagen" required>
+    // Renderizar categorías dinámicamente
+    function renderCategories() {
+      const categorias = ['Todos', ...new Set(productos.map(p => p.categoria.trim()))];
+      const container = document.getElementById('category-buttons');
+      container.innerHTML = '';
+      categorias.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.onclick = () => renderProducts(cat);
+        container.appendChild(btn);
+      });
+    }
 
-    <label>Categoría:</label>
-    <input type="text" id="categoria" required>
-  </form>
-
-  <!-- Vista previa -->
-  <div class="preview">
-    <h3>Vista previa</h3>
-    <div class="card">
-      <img id="prevImg" alt="Vista previa">
-      <div class="card-body">
-        <div class="prev-name" id="prevNombre">—</div>
-        <div class="prev-desc" id="prevDescripcion">—</div>
-        <div class="prev-meta">
-          <div id="prevCategoria">—</div>
-          <div id="prevPrecio">—</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<h2>Productos actuales</h2>
-<table id="productsTable">
-  <thead>
-    <tr>
-      <th>Imagen</th>
-      <th>Nombre</th>
-      <th>Descripción</th>
-      <th>Categoría</th>
-      <th>Precio</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-<script>
-const USERNAME = "cholose10";  
-const REPO = "NuevaCarta";     // 👈 cambia por el nombre de tu repo real
-const FILE_PATH = "productos.json";
-const BRANCH = "main";
-let productos = [];
-
-// --------- Cargar productos ----------
-async function loadProducts() {
-  const res = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${FILE_PATH}`);
-  productos = await res.json();
-  renderTable();
-}
-loadProducts();
-
-// --------- Vista previa ----------
-function updatePreview() {
-  document.getElementById('prevNombre').textContent = document.getElementById('nombre').value || '—';
-  document.getElementById('prevDescripcion').textContent = document.getElementById('descripcion').value || '—';
-  document.getElementById('prevCategoria').textContent = document.getElementById('categoria').value || '—';
-  const precio = document.getElementById('precio').value;
-  document.getElementById('prevPrecio').textContent = precio ? ('$'+precio) : '—';
-  document.getElementById('prevImg').src = document.getElementById('imagen').value ? "img/"+document.getElementById('imagen').value : "";
-}
-['nombre','descripcion','precio','imagen','categoria'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', updatePreview);
-});
-
-// --------- Render tabla ----------
-function renderTable() {
-  const search = document.getElementById("searchBox").value.toLowerCase();
-  const tbody = document.querySelector("#productsTable tbody");
-  tbody.innerHTML = "";
-  const items = productos.filter(p =>
-    (p.nombre||'').toLowerCase().includes(search) ||
-    (p.categoria||'').toLowerCase().includes(search)
-  );
-  items.forEach(p=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><img src="${p.imagen}" alt="${p.nombre}"></td>
-      <td>${p.nombre}</td>
-      <td>${p.descripcion}</td>
-      <td>${p.categoria}</td>
-      <td>$${p.precio}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-function resetSearch(){ document.getElementById("searchBox").value=""; renderTable(); }
-</script>
-
+    // Renderizar productos
+    function renderProducts(categoria) {
+      const container = document.getElementById('product-list');
+      container.innerHTML = '';
+      const filtrados = categoria === 'Todos'
+        ? productos
+        : productos.filter(p => p.categoria.trim() === categoria);
+      
+      filtrados.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'item';
+        const priceDisplay = (String(p.precio||'').toString().startsWith('$'))
+          ? p.precio
+          : '$' + p.precio;
+        item.innerHTML = `
+          <img src="${p.imagen}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p>${p.descripcion}</p>
+          <p class="price">${priceDisplay}</p>
+        `;
+        container.appendChild(item);
+      });
+    }
+  </script>
 </body>
 </html>
