@@ -20,25 +20,26 @@
 
     /* ===== HEADER CON LOGO ===== */
     header {
-      background: #fff;
-      padding: 18px 12px;
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-    .logo-img {
-      max-width: 360px;    /* tamaño máximo desktop */
-      width: 80%;          /* ajusta en celulares */
-      height: auto;
-      object-fit: contain;
-      border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      background: #fff;
+      padding: 20px 0;
     }
 
-    @media(min-width: 900px) {
-      .logo-img { 
-        max-width: 600px; 
-        width: 60%; 
+    .logo-img {
+      max-width: 250px; /* Tamaño máximo para que no quede gigante */
+      width: 60%;       /* Escala en celulares */
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 50%; /* Opcional: hace el logo redondeado */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* sombra suave */
+    }
+
+    @media (min-width: 768px) {
+      .logo-img {
+        max-width: 300px; /* Más grande en pantallas grandes */
       }
     }
 
@@ -123,9 +124,9 @@
 </head>
 <body>
 
-  <!-- LOGO HEADER -->
+  <!-- HEADER CON LOGO CENTRADO -->
   <header>
-    <img src="img/logo.png" alt="Logo Tilo Café" class="logo-img">
+    <img src="img/logo.png" alt="Logo del Restaurante" class="logo-img">
   </header>
 
   <!-- BIENVENIDA -->
