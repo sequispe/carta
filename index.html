@@ -1,152 +1,206 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carta Tilo Café</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carta Digital - Tilo Café</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
+    /* ===== RESET ===== */
+    * {
       margin: 0;
-      background: url("img/50.jpg") repeat;
-      background-size: cover;
-      color: #45270a;
+      padding: 0;
+      box-sizing: border-box;
     }
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #3a2c23;
+      padding-bottom: 40px;
+    }
+
+    /* ===== HEADER CON LOGO ===== */
     header {
-      background: rgba(255,255,255,0.9);
+      background: #fff;
+      padding: 18px 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .banner-img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      display: block;
+    .logo-img {
+      max-width: 360px;    /* tamaño máximo desktop */
+      width: 80%;          /* ajusta en celulares */
+      height: auto;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
     }
-    .banner {
+
+    @media(min-width: 900px) {
+      .logo-img { 
+        max-width: 600px; 
+        width: 60%; 
+      }
+    }
+
+    /* ===== BIENVENIDA ===== */
+    .welcome {
       text-align: center;
-      padding: 10px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      background: rgba(255,255,255,0.8);
-      border-radius: 8px;
-      margin: 15px auto;
-      width: fit-content;
+      margin: 20px 10px;
+      font-size: 1.6rem;
+      color: #5c3b26;
     }
+
+    /* ===== BOTONES DE CATEGORÍA ===== */
     .categories {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      padding: 10px;
+      margin: 20px;
     }
     .categories button {
-      padding: 10px 20px;
-      background-color: #8c6954;
+      background: #7b5638;
       color: #fff;
+      padding: 10px 15px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
       font-size: 1rem;
+      transition: background 0.3s ease;
     }
     .categories button:hover {
-      background-color: #6b4e3d;
+      background: #5a3c26;
     }
-    .item-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+
+    /* ===== PRODUCTOS ===== */
+    .products {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 15px;
-      padding: 20px;
+      padding: 0 15px;
     }
-    .item {
-      background: rgba(255, 255, 255, 0.95);
+    @media(min-width: 700px) {
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .product-card {
+      background: #fff;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       overflow: hidden;
-      width: 280px;
+      display: flex;
+      flex-direction: column;
       transition: transform 0.2s ease;
     }
-    .item:hover {
+    .product-card:hover {
       transform: scale(1.02);
     }
-    .item img {
+    .product-card img {
       width: 100%;
-      height: 180px;
+      height: 150px;
       object-fit: cover;
     }
-    .item h3 {
-      margin: 10px;
+    .product-info {
+      padding: 12px;
     }
-    .item p {
-      margin: 0 10px 10px;
+    .product-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+      color: #5c3b26;
     }
-    .item .price {
+    .product-info p {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .product-info .price {
       font-weight: bold;
+      font-size: 1.1rem;
       color: #000;
-      margin: 0 10px 10px;
-      display: block;
     }
   </style>
 </head>
 <body>
-  <!-- FOTO GRANDE ARRIBA -->
+
+  <!-- LOGO HEADER -->
   <header>
-    <img src="img/logi.png" alt="Tilo Café" class="banner-img" />
+    <img src="img/logo.png" alt="Logo Tilo Café" class="logo-img">
   </header>
 
-  <div class="banner">¡Bienvenidos a Tilo Café Agüero 2298!</div>
+  <!-- BIENVENIDA -->
+  <div class="welcome">
+    ¡Bienvenidos a Tilo Café Agüero 2298!
+  </div>
 
-  <!-- Botones de categorías -->
-  <div class="categories" id="category-buttons"></div>
+  <!-- BOTONES DE CATEGORÍA -->
+  <div class="categories">
+    <button data-cat="TODOS">Todos</button>
+    <button data-cat="ENTRADAS">ENTRADAS</button>
+    <button data-cat="SEGUNDOS">SEGUNDOS</button>
+    <button data-cat="FRITOS">FRITOS</button>
+    <button data-cat="DOMINGOS">DOMINGOS</button>
+    <button data-cat="POSTRES">POSTRES</button>
+    <button data-cat="BEBIDAS">BEBIDAS</button>
+    <button data-cat="CERVEZA">CERVEZA</button>
+    <button data-cat="VINO">VINO</button>
+  </div>
 
-  <!-- Lista de productos -->
-  <div class="item-list" id="product-list"></div>
+  <!-- LISTA DE PRODUCTOS -->
+  <div class="products" id="productList"></div>
 
   <script>
-    let productos = [];
+    const JSON_URL = "https://raw.githubusercontent.com/sequispe/carta/main/productos.json";
+    let allProducts = [];
 
-    // Cargar productos desde productos.json
-    fetch('productos.json')
-      .then(response => response.json())
-      .then(data => {
-        productos = data;
-        renderCategories();
-        renderProducts('Todos');
-      });
-
-    // Renderizar categorías dinámicamente
-    function renderCategories() {
-      const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
-      const container = document.getElementById('category-buttons');
-      container.innerHTML = '';
-      categorias.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.textContent = cat;
-        btn.onclick = () => renderProducts(cat);
-        container.appendChild(btn);
-      });
+    // Cargar productos desde GitHub
+    async function loadProducts() {
+      try {
+        const res = await fetch(JSON_URL);
+        if (!res.ok) throw new Error("Error al cargar productos");
+        allProducts = await res.json();
+        renderProducts(allProducts);
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("productList").innerHTML = 
+          "<p style='text-align:center;color:red;'>No se pudieron cargar los productos.</p>";
+      }
     }
 
     // Renderizar productos
-    function renderProducts(categoria) {
-      const container = document.getElementById('product-list');
-      container.innerHTML = '';
-      const filtrados = categoria === 'Todos' ? productos : productos.filter(p => p.categoria === categoria);
-      filtrados.forEach(p => {
-        const item = document.createElement('div');
-        item.className = 'item';
-        const priceDisplay = (String(p.precio||'').trim().startsWith('$'))
-          ? String(p.precio).trim()
-          : ('$' + (p.precio ?? ''));
-        item.innerHTML = `
-          <img src="${p.imagen}" alt="${p.nombre}">
-          <h3>${p.nombre}</h3>
-          <p>${p.descripcion}</p>
-          <span class="price">${priceDisplay}</span>
+    function renderProducts(products) {
+      const container = document.getElementById("productList");
+      container.innerHTML = "";
+      products.forEach(p => {
+        const card = `
+          <div class="product-card">
+            <img src="${p.imagen}" alt="${p.nombre}">
+            <div class="product-info">
+              <h3>${p.nombre}</h3>
+              <p>${p.descripcion}</p>
+              <div class="price">$${p.precio}</div>
+            </div>
+          </div>
         `;
-        container.appendChild(item);
+        container.innerHTML += card;
       });
     }
+
+    // Filtrar por categoría
+    document.querySelectorAll(".categories button").forEach(button => {
+      button.addEventListener("click", () => {
+        const category = button.getAttribute("data-cat");
+        if (category === "TODOS") {
+          renderProducts(allProducts);
+        } else {
+          const filtered = allProducts.filter(p => p.categoria === category);
+          renderProducts(filtered);
+        }
+      });
+    });
+
+    loadProducts();
   </script>
+
 </body>
 </html>
