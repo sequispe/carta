@@ -155,30 +155,25 @@
   <div class="item-list" id="product-list"></div>
 
   <script>
-    const RAW_URL = 'https://github.com/sequispe/carta/blob/main/productos.json';
-    let productos = [];
+  const RAW_URL = 'https://raw.githubusercontent.com/sequispe/carta/main/productos.json';
+  let productos = [];
 
-    fetch(RAW_URL)
-      .then(res => res.json())
-      .then(data => {
-        productos = data;
-        renderCategories();
-        renderProducts('Todos');
-      });
-
-    function renderCategories() {
-      const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
-      const cont = document.getElementById('category-buttons');
-      cont.innerHTML = '';
-
-      categorias.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.textContent = cat;
-        btn.onclick = () => {
-          renderProducts(cat);
-          document.getElementById('product-list')
-            .scrollIntoView({ behavior: 'smooth' });
-        };
+  fetch(RAW_URL)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('No se pudo cargar el JSON');
+      }
+      return res.json();
+    })
+    .then(data => {
+      productos = data;
+      renderCategories();
+      renderProducts('Todos');
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error al cargar los productos');
+    });
         cont.appendChild(btn);
       });
     }
