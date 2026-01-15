@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carta - Don Pilo</title>
+  <title>Carta - los 4 hermanos</title>
 
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: url("img/fondomenu.png") repeat-y center top fixed;
+      background: url("img/fondo8.png") repeat-y center top fixed;
       background-size: cover;
       color: #fda40c;
       min-height: 100vh;
@@ -27,7 +27,6 @@
       background: #fff;
     }
 
-    /* HERO / LOGO */
     .banner-img {
       width: 100%;
       height: auto;
@@ -125,7 +124,6 @@
       font-weight: bold;
     }
 
-    /* CELULAR */
     @media (max-width: 600px) {
       #search {
         width: 75%;
@@ -141,10 +139,10 @@
 <body>
 
   <header>
-    <img src="img/Captura de pantalla 2025-10-30 213537.png" alt="Don Pilo" class="banner-img"/>
+    <img src="img/logo2.png" alt="los 4 hermanos" class="banner-img"/>
   </header>
 
-  <div class="banner">¡Bienvenidos a Don Pilo!</div>
+  <div class="banner">¡Bienvenidos a los 4 hermanos!</div>
 
   <div class="search-container">
     <input type="text" id="search" placeholder="Buscar producto..." />
@@ -155,27 +153,41 @@
   <div class="item-list" id="product-list"></div>
 
   <script>
-  const RAW_URL = 'https://raw.githubusercontent.com/sequispe/carta/main/productos.json';
-  let productos = [];
+    // ✅ URL RAW CORRECTA
+    const RAW_URL = 'https://raw.githubusercontent.com/sequispe/carta/main/productos.json';
+    let productos = [];
 
-  fetch(RAW_URL)
-    .then(res => {
-      if (!res.ok) {
-        throw new Error('No se pudo cargar el JSON');
-      }
-      return res.json();
-    })
-    .then(data => {
-      productos = data;
-      renderCategories();
-      renderProducts('Todos');
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Error al cargar los productos');
-    });
-   </script>
+    fetch(RAW_URL)
+      .then(res => {
+        if (!res.ok) throw new Error('Error cargando JSON');
+        return res.json();
+      })
+      .then(data => {
+        productos = data;
+        renderCategories();
+        renderProducts('Todos');
+      })
+      .catch(err => {
+        console.error(err);
+        alert('No se pudieron cargar los productos');
+      });
 
+    function renderCategories() {
+      const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
+      const cont = document.getElementById('category-buttons');
+      cont.innerHTML = '';
+
+      categorias.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.onclick = () => {
+          renderProducts(cat);
+          document.getElementById('product-list')
+            .scrollIntoView({ behavior: 'smooth' });
+        };
+        cont.appendChild(btn);
+      });
+    }
 
     function renderProducts(cat) {
       const cont = document.getElementById('product-list');
