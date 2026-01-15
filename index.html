@@ -1,340 +1,248 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tilo Café French</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carta - los 4 hermanos</title>
+
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: url("img/fondo8.png") repeat;
-      background-size: cover;
       margin: 0;
-      padding: 0;
-      color: #45270a;
-      text-align: center;
-      scroll-behavior: smooth;
+      background: url("img/fondomenu.png") repeat-y center top fixed;
+      background-size: cover;
+      color: #fda40c;
+      min-height: 100vh;
     }
 
-    header img {
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.4);
+      z-index: -1;
+    }
+
+    header {
+      background: #fff;
+    }
+
+    /* HERO / LOGO */
+    .banner-img {
       width: 100%;
-      height: 250px;
-      object-fit: cover;
+      height: auto;
+      display: block;
     }
 
     .banner {
+      text-align: center;
+      padding: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
       background: rgba(255,255,255,0.85);
-      padding: 10px;
-      font-size: 1.3em;
       border-radius: 8px;
-      display: inline-block;
-      margin: 10px auto;
+      margin: 15px auto;
+      width: fit-content;
+      color: #000;
     }
 
-    #languageSwitcher {
+    .search-container {
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin: 10px 0;
-    }
-
-    .lang-btn {
-      background: #806250;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .lang-btn.active {
-      background: #a07b68;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    .search-box {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 15px;
-    }
-
-    .search-box input {
       padding: 10px;
+      flex-wrap: wrap;
+    }
+
+    #search {
       width: 60%;
-      border-radius: 8px;
+      padding: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 1rem;
     }
 
-    .search-box button {
-      background: #806250;
+    #btnBuscar {
+      background: #8c6954;
       color: white;
       border: none;
+      padding: 8px 16px;
       border-radius: 8px;
-      padding: 10px 16px;
       cursor: pointer;
     }
 
-    #category-buttons {
+    .categories {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      margin: 15px;
+      padding: 10px;
     }
 
-    #category-buttons button {
-      background: #8c6954;
-      color: white;
+    .categories button {
+      padding: 10px 20px;
+      background-color: #fda40c;
+      color: #000;
       border: none;
       border-radius: 10px;
-      padding: 8px 14px;
       cursor: pointer;
-      transition: 0.2s;
+      font-size: 1rem;
     }
 
-    #category-buttons button:hover {
-      background: #6b4e3d;
-      transform: scale(1.05);
-    }
-
-    /* 🟢 NUEVO DISEÑO RESPONSIVE AUTOMÁTICO */
-    #product-list {
+    .item-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 15px;
-      padding: 15px;
+      padding: 20px;
     }
 
     .item {
-      background: rgba(255,255,255,0.95);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 12px;
-      width: 100%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
       overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .item:hover {
+      transform: scale(1.02);
     }
 
     .item img {
       width: 100%;
-      height: auto;
-      aspect-ratio: 1 / 1; /* Imagen cuadrada auto */
+      aspect-ratio: 1 / 1;
       object-fit: cover;
     }
 
-    .item h3 { margin: 8px; }
-    .item p { margin: 0 8px 10px; }
-    .price { font-weight: bold; margin: 0 8px 10px; display: block; }
-    .msg { padding: 20px; color: #a00; }
-
-    /* Flecha subir */
-    #btnUp {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: #8c6954;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      font-size: 22px;
-      cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-      display: none;
-      transition: 0.3s;
+    .item h3,
+    .item p,
+    .item .price {
+      margin: 10px;
+      color: #000;
     }
 
-    #btnUp:hover {
-      background: #6b4e3d;
-      transform: scale(1.1);
+    .price {
+      font-weight: bold;
+    }
+
+    /* CELULAR */
+    @media (max-width: 600px) {
+      #search {
+        width: 75%;
+      }
+
+      .item-list {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <header>
-    <img src="img/logo2.png" alt="Tilo Café">
+    <img src="img/logo2.png" alt="los 4 hermanos" class="banner-img"/>
   </header>
 
-  <div class="banner" id="banner-text">¡Bienvenidos a los 4 hermanos!</div>
+  <div class="banner">¡Bienvenidos a los 4 hermanos!</div>
 
-  <!-- 🌍 Selector de idioma -->
-  <div id="languageSwitcher">
-    <button id="btn-es" class="lang-btn">🇪🇸 Español</button>
-    <button id="btn-en" class="lang-btn">🇬🇧 English</button>
-    <button id="btn-pt" class="lang-btn">🇧🇷 Português</button>
+  <div class="search-container">
+    <input type="text" id="search" placeholder="Buscar producto..." />
+    <button id="btnBuscar">Buscar</button>
   </div>
 
-  <!-- 🔍 Buscador -->
-  <div class="search-box">
-    <input id="search" type="text" placeholder="Buscar por nombre, descripción o categoría...">
-    <button id="btnSearch">Buscar</button>
-  </div>
+  <div class="categories" id="category-buttons"></div>
+  <div class="item-list" id="product-list"></div>
 
-  <!-- 🔘 Categorías -->
-  <div id="category-buttons"></div>
-
-  <!-- 🛒 Productos -->
-  <div id="product-list"></div>
-
-  <!-- ⬆️ Flecha para subir -->
-  <button id="btnUp">⬆️</button>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const USER = 'sequispe';
-    const REPO = 'carta';
-    let idiomaActual = localStorage.getItem('idioma') || 'es';
-
-    const btnEs = document.getElementById('btn-es');
-    const btnEn = document.getElementById('btn-en');
-    const btnPt = document.getElementById('btn-pt');
-    const banner = document.getElementById('banner-text');
-    const categoryContainer = document.getElementById('category-buttons');
-    const productList = document.getElementById('product-list');
-    const searchInput = document.getElementById('search');
-    const btnSearch = document.getElementById('btnSearch');
-    const btnUp = document.getElementById('btnUp');
-
+  <script>
+    const RAW_URL = 'https://github.com/sequispe/carta/blob/main/productos.json';
     let productos = [];
 
-    function actualizarBotones() {
-      btnEs.classList.toggle('active', idiomaActual === 'es');
-      btnEn.classList.toggle('active', idiomaActual === 'en');
-      btnPt.classList.toggle('active', idiomaActual === 'pt');
-
-      if (idiomaActual === 'es') banner.textContent = "¡Bienvenidos a Tilo Café French!";
-      if (idiomaActual === 'en') banner.textContent = "Welcome to Tilo Café French!";
-      if (idiomaActual === 'pt') banner.textContent = "Bem-vindo ao Tilo Café French!";
-    }
-
-    async function load() {
-    actualizarBotones();
-
-    let filename = "productos.json";
-    if (idiomaActual === "en") filename = "productos-en.json";
-    if (idiomaActual === "pt") filename = "productos-port.json";
-
-    /* 🚀 URL SIN BLOQUEO (jsDelivr) */
-    const RAW_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
-
-    try {
-      const res = await fetch(RAW_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("Error cargando productos");
-
-      const data = await res.json();
-
-      productos = data.map(p => ({
-        nombre:
-          idiomaActual === "es" ? (p.nombre || p.nome) :
-          idiomaActual === "en" ? (p.name || p.nome) :
-          p.nome,
-
-        descripcion:
-          idiomaActual === "es" ? (p.descripcion || p.descricao) :
-          idiomaActual === "en" ? (p.description || p.descricao) :
-          p.descricao,
-
-        precio: p.precio || p.preco || p.price,
-        imagen: p.imagen || p.imagem || p.image,
-
-        categoria:
-          idiomaActual === "es" ? p.categoria :
-          idiomaActual === "en" ? (p.category || p.categoria) :
-          p.categoria
-      }));
-
-      renderCategories();
-      renderProducts("Todos");
-
-    } catch (e) {
-      console.error(e);
-      productList.innerHTML = `<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
-    }
-  }
-
-  function renderCategories() {
-    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria).filter(Boolean))];
-    categoryContainer.innerHTML = "";
-    categorias.forEach(cat => {
-      const btn = document.createElement("button");
-      btn.textContent = cat;
-      btn.addEventListener("click", () => {
-        renderProducts(cat);
-        scrollToProducts();
+    fetch(RAW_URL)
+      .then(res => res.json())
+      .then(data => {
+        productos = data;
+        renderCategories();
+        renderProducts('Todos');
       });
-      categoryContainer.appendChild(btn);
-    });
-  }
 
-  function renderProducts(categoria) {
-    productList.innerHTML = "";
-    const lista = categoria === "Todos" ? productos : productos.filter(p => p.categoria === categoria);
+    function renderCategories() {
+      const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
+      const cont = document.getElementById('category-buttons');
+      cont.innerHTML = '';
 
-    if (lista.length === 0) {
-      productList.innerHTML = `<div class="msg">No hay productos disponibles.</div>`;
-      return;
+      categorias.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.onclick = () => {
+          renderProducts(cat);
+          document.getElementById('product-list')
+            .scrollIntoView({ behavior: 'smooth' });
+        };
+        cont.appendChild(btn);
+      });
     }
 
-    lista.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}">
-        <h3>${p.nombre}</h3>
-        <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
-      productList.appendChild(div);
-    });
-  }
+    function renderProducts(cat) {
+      const cont = document.getElementById('product-list');
+      cont.innerHTML = '';
 
-  function buscar() {
-    const q = searchInput.value.toLowerCase().trim();
-    const res = productos.filter(p =>
-      p.nombre.toLowerCase().includes(q) ||
-      (p.descripcion || "").toLowerCase().includes(q) ||
-      p.categoria.toLowerCase().includes(q)
-    );
+      const list = cat === 'Todos'
+        ? productos
+        : productos.filter(p => p.categoria === cat);
 
-    if (res.length === 0) {
-      productList.innerHTML = `<div class="msg">🔍 No se encontraron resultados.</div>`;
-      return;
+      list.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.innerHTML = `
+          <img src="${p.imagen}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p>${p.descripcion}</p>
+          <span class="price">$${p.precio}</span>
+        `;
+        cont.appendChild(item);
+      });
     }
 
-    productList.innerHTML = "";
-    res.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}">
-        <h3>${p.nombre}</h3>
-        <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
-      productList.appendChild(div);
+    const searchInput = document.getElementById('search');
+    const btnBuscar = document.getElementById('btnBuscar');
+
+    btnBuscar.addEventListener('click', filterProducts);
+    searchInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        filterProducts();
+      }
     });
 
-    scrollToProducts();
-  }
+    function filterProducts() {
+      const q = searchInput.value.toLowerCase().trim();
+      const cont = document.getElementById('product-list');
+      cont.innerHTML = '';
 
-  btnEs.addEventListener("click", () => { idiomaActual = "es"; localStorage.setItem("idioma", "es"); load(); });
-  btnEn.addEventListener("click", () => { idiomaActual = "en"; localStorage.setItem("idioma", "en"); load(); });
-  btnPt.addEventListener("click", () => { idiomaActual = "pt"; localStorage.setItem("idioma", "pt"); load(); });
+      const filtrados = productos.filter(p =>
+        p.nombre.toLowerCase().includes(q) ||
+        p.descripcion.toLowerCase().includes(q) ||
+        p.categoria.toLowerCase().includes(q)
+      );
 
-  btnSearch.addEventListener("click", buscar);
-  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+      filtrados.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.innerHTML = `
+          <img src="${p.imagen}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p>${p.descripcion}</p>
+          <span class="price">$${p.precio}</span>
+        `;
+        cont.appendChild(item);
+      });
 
-  window.addEventListener("scroll", () => {
-    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
-  });
-
-  btnUp.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  load();
-});
-</script>
+      if (filtrados.length > 0) {
+        cont.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
 
 </body>
 </html>
