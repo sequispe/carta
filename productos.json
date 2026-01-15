@@ -3,70 +3,70 @@
     "nombre": "Sopa de mani",
     "descripcion": "sopa de mani",
     "precio": 1200,
-    "imagen":"https://i.ibb.co/jPnDHtWL/pololopicante.jpg",
+    "imagen":"img/logo2.png",
     "categoria": "ENTRADAS"
   },
   {
     "nombre": "Sopa de trigo partido",
     "descripcion": "sopa de trigo partido",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "ENTRADAS"
   },
   {
     "nombre": "Sopa de quinoa",
     "descripcion": "sopa de quinoa",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "ENTRADAS"
   },
   {
     "nombre": "Sopa de chairo",
     "descripcion": "sopa de chairo",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "ENTRADAS"
   },
   {
     "nombre": "Sopa de fideos",
     "descripcion": "sopa de fideos",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "ENTRADAS"
   },
   {
     "nombre": "Sopa de kawi",
     "descripcion": "sopa de kawi",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "ENTRADAS"
   },
   {
     "nombre": "Sopa de rabito",
     "descripcion": "sopa de rabito",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "ENTRADAS"
   },
   {
     "nombre": "ASADO A LA OLLA",
     "descripcion": "asado a la olla",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "MONDONGO",
     "descripcion": "mondongo",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "AJI DE LENGUA",
     "descripcion": "aji de lengua",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
@@ -80,63 +80,63 @@
     "nombre": "FALSO CONEJO",
     "descripcion": "falso conejo",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "AJI DE ZAPALLO",
     "descripcion": "aji de zapallo",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "SAISE",
     "descripcion": "saise",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "SAISE TRIJEÑO",
     "descripcion": "saise trijeño",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "AJI DE LENTEJA",
     "descripcion": "aji de lenteja",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "TALLARINES CON POLLO",
     "descripcion": "tallarines con pollo",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "TALLARINES CON CARNE",
     "descripcion": "tallarines con carne",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "TALLARINES CON ALBONDIGA",
     "descripcion": "tallarines con albondiga",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
     "nombre": "AJI DE TRIGO",
     "descripcion": "aji de trigo",
     "precio": 1200,
-    "imagen": "saltena.jpg",
+    "imagen": "img/logo2.png",
     "categoria": "SEGUNDOS"
   },
   {
