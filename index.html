@@ -172,15 +172,34 @@
     @media (max-width: 380px) {
       .item { width: 95%; }
       header img { height: 1800px; }
-    }
+    .logo-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 🔒 esto evita que escale con texto */
+  font-size: 16px;
+}
+
+.logo-wrap img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  object-fit: contain;
+
+  /* 🔒 iOS fix */
+  transform: translateZ(0);
+}
+
   </style>
 </head>
 
 <body>
 
-  <header>
-    <img src="img/logi.png" alt="Tilo Café">
-  </header>
+ <div class="logo-wrap">
+  <img src="img/logi.png" alt="Tilo Café">
+</div>
 
   <div class="banner" id="banner-text">¡Bienvenidos a Tilo Café Agüero 2298!</div>
 
