@@ -172,6 +172,7 @@
     @media (max-width: 380px) {
       .item { width: 95%; }
       header img { height: 1800px; }
+    }
     .logo-wrap {
   width: 100%;
   display: flex;
@@ -197,9 +198,10 @@
 
 <body>
 
- <div class="logo-wrap">
+<div class="logo-wrap">
   <img src="img/logi.png" alt="Tilo Café">
 </div>
+
 
   <div class="banner" id="banner-text">¡Bienvenidos a Tilo Café Agüero 2298!</div>
 
@@ -222,8 +224,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  const USER = "sequispe";
-  const REPO = "carta";
+  const USER = "tilo-restocafe";
+  const REPO = "cartaaguero";
   let idiomaActual = localStorage.getItem("idioma") || "es";
 
   const btnEs = document.getElementById("btn-es");
