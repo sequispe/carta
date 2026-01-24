@@ -1,199 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tilo Café Agüero</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url("img/Fondo2.jpg") repeat;
-      background-size: cover;
-      margin: 0;
-      padding: 0;
-      color: #45270a;
-      text-align: center;
-      scroll-behavior: smooth;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tilo Café Agüero</title>
 
-    header img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-    }
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: url("img/Fondo2.jpg") repeat;
+  background-size: cover;
+  margin: 0;
+  color: #45270a;
+  text-align: center;
+}
 
-    .banner {
-      text-align: center;
-      padding: 10px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      background: rgba(255,255,255,0.85);
-      border-radius: 8px;
-      margin: 15px auto;
-      width: fit-content;
-      color: #000;
-    }
-
-    #languageSwitcher {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 10px 0;
-    }
-
-    .lang-btn {
-      background: #806250;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .lang-btn.active {
-      background: #a07b68;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    .search-box {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 15px;
-    }
-
-    .search-box input {
-      padding: 10px;
-      width: 60%;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    .search-box button {
-      background: #806250;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-    }
-
-    #category-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 15px;
-    }
-
-    #category-buttons button {
-      background: #8c6954;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 8px 14px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    #category-buttons button:hover {
-      background: #6b4e3d;
-      transform: scale(1.05);
-    }
-
-    #product-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      padding: 10px;
-    }
-
-    .item {
-      background: rgba(255,255,255,0.95);
-      border-radius: 12px;
-      width: 280px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      overflow: hidden;
-      transition: 0.2s;
-    }
-
-    .item img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-
-    .item h3 { margin: 8px; }
-    .item p { margin: 0 8px 10px; }
-    .price { font-weight: bold; margin: 0 8px 10px; display: block; }
-    .msg { padding: 20px; color: #a00; }
-
-    #btnUp {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: #8c6954;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      font-size: 22px;
-      cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-      display: none;
-      transition: 0.3s;
-    }
-
-    #btnUp:hover {
-      background: #6b4e3d;
-      transform: scale(1.1);
-    }
-
-    /* 📱 RESPONSIVE: Ajuste automático según pantalla */
-    @media (max-width: 900px) {
-      .item {
-        width: 45%;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .item {
-        width: 90%;
-      }
-
-      .search-box input {
-        width: 90%;
-      }
-    }
-
-    @media (max-width: 380px) {
-      .item { width: 95%; }
-      header img { height: 1800px; }
-    }
-    .logo-wrap {
+/* LOGO */
+.logo-wrap {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-
-  /* 🔒 esto evita que escale con texto */
+  margin-top: 10px;
   font-size: 16px;
 }
-
 .logo-wrap img {
   width: 100%;
   max-width: 520px;
   height: auto;
   object-fit: contain;
-
-  /* 🔒 iOS fix */
   transform: translateZ(0);
 }
 
-  </style>
+/* BANNER */
+.banner {
+  padding: 10px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  background: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  margin: 15px auto;
+  width: fit-content;
+  color: #000;
+}
+
+/* IDIOMAS */
+#languageSwitcher {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.lang-btn {
+  background: #806250;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+.lang-btn.active {
+  background: #a07b68;
+}
+
+/* BUSCADOR */
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px;
+}
+.search-box input {
+  padding: 10px;
+  width: 65%;
+  border-radius: 8px;
+}
+
+/* CATEGORIAS */
+#category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px;
+}
+#category-buttons button {
+  background: #8c6954;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+}
+
+/* PRODUCTOS */
+#product-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+.item {
+  background: rgba(255,255,255,0.95);
+  border-radius: 12px;
+  width: 280px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+.item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+.item h3 { margin: 8px; }
+.item p { margin: 0 8px 10px; }
+.price { font-weight: bold; margin-bottom: 10px; display: block; }
+
+/* BOTON SUBIR */
+#btnUp {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #8c6954;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 22px;
+  display: none;
+}
+</style>
 </head>
 
 <body>
@@ -202,257 +135,107 @@
   <img src="img/logi.png" alt="Tilo Café">
 </div>
 
+<div class="banner" id="banner-text">¡Bienvenidos a Tilo Café!</div>
 
-  <div class="banner" id="banner-text">¡Bienvenidos a Tilo Café Agüero 2298!</div>
+<div id="languageSwitcher">
+  <button id="btn-es" class="lang-btn active">🇪🇸</button>
+  <button id="btn-en" class="lang-btn">🇬🇧</button>
+  <button id="btn-pt" class="lang-btn">🇧🇷</button>
+</div>
 
-  <div id="languageSwitcher">
-    <button id="btn-es" class="lang-btn">🇪🇸 Español</button>
-    <button id="btn-en" class="lang-btn">🇬🇧 English</button>
-    <button id="btn-pt" class="lang-btn">🇧🇷 Português</button>
-  </div>
+<div class="search-box">
+  <input id="search" type="text" placeholder="Buscar...">
+  <button id="btnSearch">Buscar</button>
+</div>
 
-  <div class="search-box">
-    <input id="search" type="text" placeholder="Buscar por nombre, descripción o categoría...">
-    <button id="btnSearch">Buscar</button>
-  </div>
+<div id="category-buttons"></div>
+<div id="product-list"></div>
 
-  <div id="category-buttons"></div>
-  <div id="product-list"></div>
+<button id="btnUp">⬆️</button>
 
-  <button id="btnUp">⬆️</button>
+<!-- 🔊 SONIDOS -->
+<audio id="sound-category" src="sounds/category.mp3"></audio>
+<audio id="sound-search" src="sounds/search.mp3"></audio>
+<audio id="sound-scroll" src="sounds/scroll.mp3"></audio>
+<audio id="sound-button" src="sounds/button.mp3"></audio>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-// 🔊 util sonido
-function playSound(id, volume = 0.4) {
-  const s = document.getElementById(id);
-  if (!s) return;
-  s.volume = volume;
-  s.currentTime = 0;
-  s.play().catch(() => {});
+document.addEventListener("DOMContentLoaded", () => {
+
+function playSound(id, volume=0.4){
+  const s=document.getElementById(id);
+  if(!s) return;
+  s.volume=volume;
+  s.currentTime=0;
+  s.play().catch(()=>{});
 }
 
-  const USER = "tilo-restocafe";
-  const REPO = "cartaaguero";
-  let idiomaActual = localStorage.getItem("idioma") || "es";
+const USER="tilo-restocafe";
+const REPO="cartaaguero";
+let idioma=localStorage.getItem("idioma")||"es";
+let productos=[];
 
-  const btnEs = document.getElementById("btn-es");
-  const btnEn = document.getElementById("btn-en");
-  const btnPt = document.getElementById("btn-pt");
-  const banner = document.getElementById("banner-text");
-  const categoryContainer = document.getElementById("category-buttons");
-  const productList = document.getElementById("product-list");
-  const searchInput = document.getElementById("search");
-  const btnSearch = document.getElementById("btnSearch");
-  const btnUp = document.getElementById("btnUp");
+const banner=document.getElementById("banner-text");
+const list=document.getElementById("product-list");
+const cats=document.getElementById("category-buttons");
 
-  let productos = [];
+async function load(){
+  let file="productos.json";
+  if(idioma==="en") file="productos-en.json";
+  if(idioma==="pt") file="productos-port.json";
 
-  function scrollToProducts() {
-    productList.scrollIntoView({ behavior: "smooth" });
-  }
+  const url=`https://raw.githubusercontent.com/${USER}/${REPO}/main/${file}`;
+  const res=await fetch(url);
+  productos=await res.json();
+  renderCategories();
+  renderProducts("Todos");
+}
 
-  function actualizarBotones() {
-    btnEs.classList.toggle("active", idiomaActual === "es");
-    btnEn.classList.toggle("active", idiomaActual === "en");
-    btnPt.classList.toggle("active", idiomaActual === "pt");
-
-    if (idiomaActual === "es") banner.textContent = "¡Bienvenidos a Tilo Café Agüero 2298!";
-    if (idiomaActual === "en") banner.textContent = "Welcome to Tilo Café Agüero 2298!";
-    if (idiomaActual === "pt") banner.textContent = "Bem-vindo ao Tilo Café Agüero 2298!";
-  }
-
-  async function load() {
-    actualizarBotones();
-
-    let filename = "productos.json";
-    if (idiomaActual === "en") filename = "productos-en.json";
-    if (idiomaActual === "pt") filename = "productos-port.json";
-
-    /* 🚀 URL SIN BLOQUEO (jsDelivr) */
-    const RAW_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
-
-    try {
-      const res = await fetch(RAW_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("Error cargando productos");
-
-      const data = await res.json();
-
-      productos = data.map(p => ({
-        nombre:
-          idiomaActual === "es" ? (p.nombre || p.nome) :
-          idiomaActual === "en" ? (p.name || p.nome) :
-          p.nome,
-
-        descripcion:
-          idiomaActual === "es" ? (p.descripcion || p.descricao) :
-          idiomaActual === "en" ? (p.description || p.descricao) :
-          p.descricao,
-
-        precio: p.precio || p.preco || p.price,
-        imagen: p.imagen || p.imagem || p.image,
-
-        categoria:
-          idiomaActual === "es" ? p.categoria :
-          idiomaActual === "en" ? (p.category || p.categoria) :
-          p.categoria
-      }));
-
-      renderCategories();
-      renderProducts("Todos");
-
-    } catch (e) {
-      console.error(e);
-      productList.innerHTML = `<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
-    }
-  }
-
-  function renderCategories() {
-    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria).filter(Boolean))];
-    categoryContainer.innerHTML = "";
-    categorias.forEach(cat => {
-      const btn = document.createElement("button");
-      btn.textContent = cat;
-      btn.addEventListener("click", () => {
-  playSound("sound-category", 0.6);
-  renderProducts(cat);
-  scrollToProducts();
-});
-
-      categoryContainer.appendChild(btn);
-    });
-  }
-
-  function renderProducts(categoria) {
-    productList.innerHTML = "";
-    const lista = categoria === "Todos" ? productos : productos.filter(p => p.categoria === categoria);
-
-    if (lista.length === 0) {
-      productList.innerHTML = `<div class="msg">No hay productos disponibles.</div>`;
-      return;
-    }
-
-    lista.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}">
-        <h3>${p.nombre}</h3>
-        <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
-      productList.appendChild(div);
-    });
-  }
-
-  function buscar() {
-    const q = searchInput.value.toLowerCase().trim();
-    const res = productos.filter(p =>
-      p.nombre.toLowerCase().includes(q) ||
-      (p.descripcion || "").toLowerCase().includes(q) ||
-      p.categoria.toLowerCase().includes(q)
-    );
-
-    if (res.length === 0) {
-      productList.innerHTML = `<div class="msg">🔍 No se encontraron resultados.</div>`;
-      return;
-    }
-
-    productList.innerHTML = "";
-    res.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}">
-        <h3>${p.nombre}</h3>
-        <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
-      productList.appendChild(div);
-    });
-
-    scrollToProducts();
-  }
-
-  btnEs.addEventListener("click", () => { idiomaActual = "es"; localStorage.setItem("idioma", "es"); load(); });
-  btnEn.addEventListener("click", () => { idiomaActual = "en"; localStorage.setItem("idioma", "en"); load(); });
-  btnPt.addEventListener("click", () => { idiomaActual = "pt"; localStorage.setItem("idioma", "pt"); load(); });
-
- btnSearch.addEventListener("click", () => {
-  playSound("sound-search", 0.35);
-  buscar();
-});
-searchInput.addEventListener("keydown", e => { 
-  if (e.key === "Enter") {
-    playSound("sound-search", 0.35);
-    buscar();
-  }
-});
-
-
-  window.addEventListener("scroll", () => {
-    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
+function renderCategories(){
+  cats.innerHTML="";
+  const c=["Todos",...new Set(productos.map(p=>p.categoria))];
+  c.forEach(cat=>{
+    const b=document.createElement("button");
+    b.textContent=cat;
+    b.onclick=()=>{
+      playSound("sound-category",0.6);
+      renderProducts(cat);
+    };
+    cats.appendChild(b);
   });
+}
 
- btnUp.addEventListener("click", () => {
-  playSound("sound-button", 0.4);
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
+function renderProducts(cat){
+  list.innerHTML="";
+  productos.filter(p=>cat==="Todos"||p.categoria===cat)
+  .forEach(p=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.innerHTML=`
+      <img src="${p.imagen}">
+      <h3>${p.nombre}</h3>
+      <p>${p.descripcion||""}</p>
+      <span class="price">$${p.precio}</span>`;
+    list.appendChild(d);
+  });
+}
 
-let lastScrollSound = 0;
-window.addEventListener("scroll", () => {
-  const now = Date.now();
-  if (now - lastScrollSound > 700) {
-    playSound("sound-scroll", 0.15);
-    lastScrollSound = now;
-  }
-});
-
-  load();
-<script>
-const playSound = (id, volume = 0.5) => {
-    const sound = document.getElementById(id);
-    if (!sound) return;
-    sound.volume = volume;
-    sound.currentTime = 0;
-    sound.play().catch(() => {});
+document.getElementById("btnSearch").onclick=()=>{
+  playSound("sound-search",0.4);
 };
 
-// Categorías
-document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        playSound('sound-category', 0.6);
-    });
+window.addEventListener("scroll",()=>{
+  document.getElementById("btnUp").style.display=window.scrollY>300?"block":"none";
 });
 
-// Botones generales
-document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-        playSound('sound-button', 0.4);
-    });
-});
+document.getElementById("btnUp").onclick=()=>{
+  playSound("sound-button",0.4);
+  window.scrollTo({top:0,behavior:"smooth"});
+};
 
-// Buscador
-const searchInput = document.getElementById('search');
-if (searchInput) {
-    searchInput.addEventListener('input', () => {
-        playSound('sound-search', 0.3);
-    });
-}
-
-// Scroll (muy suave)
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-    const now = Date.now();
-    if (now - lastScroll > 600) {
-        playSound('sound-scroll', 0.15);
-        lastScroll = now;
-    }
+load();
 });
 </script>
-<!-- 🔊 Sonidos UI -->
-<audio id="sound-category" src="sounds/category.mp3" preload="auto"></audio>
-<audio id="sound-search" src="sounds/search.mp3" preload="auto"></audio>
-<audio id="sound-scroll" src="sounds/scroll.mp3" preload="auto"></audio>
-<audio id="sound-button" src="sounds/button.mp3" preload="auto"></audio>
 
 </body>
 </html>
