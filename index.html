@@ -223,6 +223,14 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+// 🔊 util sonido
+function playSound(id, volume = 0.4) {
+  const s = document.getElementById(id);
+  if (!s) return;
+  s.volume = volume;
+  s.currentTime = 0;
+  s.play().catch(() => {});
+}
 
   const USER = "tilo-restocafe";
   const REPO = "cartaaguero";
@@ -306,9 +314,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = document.createElement("button");
       btn.textContent = cat;
       btn.addEventListener("click", () => {
-        renderProducts(cat);
-        scrollToProducts();
-      });
+  playSound("sound-category", 0.6);
+  renderProducts(cat);
+  scrollToProducts();
+});
+
       categoryContainer.appendChild(btn);
     });
   }
@@ -366,20 +376,83 @@ document.addEventListener('DOMContentLoaded', () => {
   btnEn.addEventListener("click", () => { idiomaActual = "en"; localStorage.setItem("idioma", "en"); load(); });
   btnPt.addEventListener("click", () => { idiomaActual = "pt"; localStorage.setItem("idioma", "pt"); load(); });
 
-  btnSearch.addEventListener("click", buscar);
-  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+ btnSearch.addEventListener("click", () => {
+  playSound("sound-search", 0.35);
+  buscar();
+});
+searchInput.addEventListener("keydown", e => { 
+  if (e.key === "Enter") {
+    playSound("sound-search", 0.35);
+    buscar();
+  }
+});
+
 
   window.addEventListener("scroll", () => {
     btnUp.style.display = window.scrollY > 300 ? "block" : "none";
   });
 
-  btnUp.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+ btnUp.addEventListener("click", () => {
+  playSound("sound-button", 0.4);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+let lastScrollSound = 0;
+window.addEventListener("scroll", () => {
+  const now = Date.now();
+  if (now - lastScrollSound > 700) {
+    playSound("sound-scroll", 0.15);
+    lastScrollSound = now;
+  }
+});
 
   load();
+<script>
+const playSound = (id, volume = 0.5) => {
+    const sound = document.getElementById(id);
+    if (!sound) return;
+    sound.volume = volume;
+    sound.currentTime = 0;
+    sound.play().catch(() => {});
+};
+
+// Categorías
+document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        playSound('sound-category', 0.6);
+    });
+});
+
+// Botones generales
+document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        playSound('sound-button', 0.4);
+    });
+});
+
+// Buscador
+const searchInput = document.getElementById('search');
+if (searchInput) {
+    searchInput.addEventListener('input', () => {
+        playSound('sound-search', 0.3);
+    });
+}
+
+// Scroll (muy suave)
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    const now = Date.now();
+    if (now - lastScroll > 600) {
+        playSound('sound-scroll', 0.15);
+        lastScroll = now;
+    }
 });
 </script>
+<!-- 🔊 Sonidos UI -->
+<audio id="sound-category" src="sounds/category.mp3" preload="auto"></audio>
+<audio id="sound-search" src="sounds/search.mp3" preload="auto"></audio>
+<audio id="sound-scroll" src="sounds/scroll.mp3" preload="auto"></audio>
+<audio id="sound-button" src="sounds/button.mp3" preload="auto"></audio>
 
 </body>
 </html>
