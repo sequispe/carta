@@ -1,0 +1,698 @@
+[
+  {
+    "id": "prod0001",
+    "name": "Sopa de mani",
+    "description": "sopa de mani",
+    "price": "4000",
+    "image": "img/Imagen de WhatsApp 2025-08-30 a las 22.06.52_b13e6aae.jpg",
+    "category": "ENTRADAS"
+  },
+  {
+    "id": "prod0002",
+    "name": "Sopa de trigo partido",
+    "description": "sopa de trigo partido",
+    "price": "1200",
+    "image": "img/Imagen de WhatsApp 2025-08-30 a las 22.06.52_65147069.jpg",
+    "category": "ENTRADAS"
+  },
+  {
+    "id": "prod0003",
+    "name": "Sopa de quinoa",
+    "description": "sopa de quinoa",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "ENTRADAS"
+  },
+  {
+    "id": "prod0004",
+    "name": "Sopa de chairo",
+    "description": "sopa de chairo",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "ENTRADAS"
+  },
+  {
+    "id": "prod0005",
+    "name": "Sopa de fideos",
+    "description": "sopa de fideos",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "ENTRADAS"
+  },
+  {
+    "id": "prod0006",
+    "name": "Sopa de kawi",
+    "description": "sopa de kawi",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "ENTRADAS"
+  },
+  {
+    "id": "prod0007",
+    "name": "Sopa de rabito",
+    "description": "sopa de rabito",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "ENTRADAS"
+  },
+  {
+    "id": "prod0008",
+    "name": "ASADO A LA OLLA",
+    "description": "asado a la olla",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0009",
+    "name": "MONDONGO",
+    "description": "mondongo",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0010",
+    "name": "AJI DE LENGUA",
+    "description": "aji de lengua",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0011",
+    "name": "PICANTE DE POLLO",
+    "description": "picante de pollo",
+    "price": "1400",
+    "image": "img/Imagen de WhatsApp 2025-08-30 a las 22.06.52_4c304ff6.jpg",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0012",
+    "name": "FALSO CONEJO",
+    "description": "falso conejo",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0013",
+    "name": "AJI DE ZAPALLO",
+    "description": "aji de zapallo",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0014",
+    "name": "SAISE",
+    "description": "saise",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0015",
+    "name": "SAISE TRIJEÑO",
+    "description": "saise trijeño",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0016",
+    "name": "AJI DE LENTEJA",
+    "description": "aji de lenteja",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0017",
+    "name": "TALLARINES CON POLLO",
+    "description": "tallarines con pollo",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0018",
+    "name": "TALLARINES CON CARNE",
+    "description": "tallarines con carne",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0019",
+    "name": "TALLARINES CON ALBONDIGA",
+    "description": "tallarines con albondiga",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0020",
+    "name": "AJI DE TRIGO",
+    "description": "aji de trigo",
+    "price": "1200",
+    "image": "img/logo2.png",
+    "category": "SEGUNDOS"
+  },
+  {
+    "id": "prod0021",
+    "name": "MONDONGO REBOZADO",
+    "description": "mondongo rebozado",
+    "price": "1200",
+    "image": "img/Imagen de WhatsApp 2025-08-30 a las 22.06.53_3bd606b6.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0022",
+    "name": "POLLO BROSTER",
+    "description": "pollo broster",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0023",
+    "name": "SILPACHO",
+    "description": "silpacho",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0024",
+    "name": "BIFE A LA PLANCHA",
+    "description": "bife a la plancha",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0025",
+    "name": "CHULETA DE CERDO",
+    "description": "chuleta de cerdo",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0026",
+    "name": "MILA NAPOLITANA",
+    "description": "milanesa napolitana",
+    "price": "1200",
+    "image": "img/Imagen de WhatsApp 2025-08-30 a las 22.06.52_a70aceb2.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0027",
+    "name": "MEDIO LOMO",
+    "description": "medio lomo",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0028",
+    "name": "CHORRELLANA",
+    "description": "chorrellana",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0029",
+    "name": "LOMO SALTEADO",
+    "description": "lomo salteado",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0030",
+    "name": "BIFE A LA CHORRELLANA",
+    "description": "bife a la chorrellana",
+    "price": "1200",
+    "image": "img/Imagen de WhatsApp 2025-08-30 a las 22.06.52_9b5d8f7d.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0031",
+    "name": "SILPANCHO COCHABAMBINO",
+    "description": "silpancho cochabambino",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0032",
+    "name": "TALLARINES SALTEADOS",
+    "description": "tallarines salteados",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "FRITOS"
+  },
+  {
+    "id": "prod0033",
+    "name": "CHICHARRON DE CERDO",
+    "description": "chicharron de cerdo",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0034",
+    "name": "CHICHARRON DE POLLO",
+    "description": "chicharron de pollo",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0035",
+    "name": "LECHON AL HORNO",
+    "description": "lechon al horno",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0036",
+    "name": "MATAMBRE AL HORNO",
+    "description": "matambre al horno",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0037",
+    "name": "MATAMBRE A LA PIZZA",
+    "description": "matambre a la pizza",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0038",
+    "name": "POLLO AL HORNO",
+    "description": "pollo al horno",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0039",
+    "name": "VACIO AL HORNO",
+    "description": "vacio al horno",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0040",
+    "name": "PIQUE A LO MACHO",
+    "description": "pique a lo macho",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0041",
+    "name": "PIQUE CON ARROZ",
+    "description": "pique con arroz",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0042",
+    "name": "THIMPU",
+    "description": "thimpu",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0043",
+    "name": "LAPPING",
+    "description": "lapping",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0044",
+    "name": "CHARQUEKAN",
+    "description": "charquekan",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0045",
+    "name": "MONDONGO CHUQUISAQUEÑO",
+    "description": "mondongo chuquisaqueño",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "DOMINGOS"
+  },
+  {
+    "id": "prod0046",
+    "name": "FLAN",
+    "description": "flan",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "POSTRES"
+  },
+  {
+    "id": "prod0047",
+    "name": "GELATINA",
+    "description": "gelatina",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "POSTRES"
+  },
+  {
+    "id": "prod0048",
+    "name": "TORTAS",
+    "description": "tortas",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "POSTRES"
+  },
+  {
+    "id": "prod0049",
+    "name": "ENSALADA DE FRUTAS",
+    "description": "ensalada de frutas",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "POSTRES"
+  },
+  {
+    "id": "prod0050",
+    "name": "AGUA 2 1/4L",
+    "description": "agua 2 1/4L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0051",
+    "name": "AGUA 500",
+    "description": "agua 500ml",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0052",
+    "name": "COCA-SPRITE-FANTA 2L",
+    "description": "coca-sprite-fanta 2L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0053",
+    "name": "COCA-SPRITE-FANTA 1L",
+    "description": "coca-sprite-fanta 1L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0054",
+    "name": "COCA-SPRITE-FANTA 500",
+    "description": "coca-sprite-fanta 500ml",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0055",
+    "name": "COCA-SPRITE-FANTA VIDRIO",
+    "description": "coca-sprite-fanta vidrio",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0056",
+    "name": "COCA-COLA 2 1/2",
+    "description": "coca-cola 2 1/2",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0057",
+    "name": "COCA-COLA 1 1/2",
+    "description": "coca-cola 1 1/2",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0058",
+    "name": "PEPSI-7UP 2L",
+    "description": "pepsi-7up 2L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0059",
+    "name": "PEPSI CHICA",
+    "description": "pepsi chica",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0060",
+    "name": "MANAOS CHICA",
+    "description": "manaos chica",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0061",
+    "name": "MANAOS 2L",
+    "description": "manaos 2L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0062",
+    "name": "PASO DE LOS TOROS 2L",
+    "description": "paso de los toros 2L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0063",
+    "name": "PASO DE LOS TOROS CH",
+    "description": "paso de los toros chico",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0064",
+    "name": "PLACER 1 1/4",
+    "description": "placer 1 1/4",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0065",
+    "name": "PLACER CHICA",
+    "description": "placer chica",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0066",
+    "name": "FRESH 1 1/4",
+    "description": "fresh 1 1/4",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0067",
+    "name": "LEVITE 2L",
+    "description": "levite 2L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0068",
+    "name": "LEVITE CH",
+    "description": "levite chico",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0069",
+    "name": "BAGGIO 1L",
+    "description": "baggio 1L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0070",
+    "name": "BAGGIO CHICO",
+    "description": "baggio chico",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0071",
+    "name": "ADES 1L",
+    "description": "ades 1L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0072",
+    "name": "SALVIETTI - CHOLA DE ORO - ORIENTAL",
+    "description": "salvietti, chola de oro, oriental",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "BEBIDAS"
+  },
+  {
+    "id": "prod0073",
+    "name": "LATA BRAHMA",
+    "description": "lata brahma",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0074",
+    "name": "LATA STELLA",
+    "description": "lata stella",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0075",
+    "name": "LATA ANDES",
+    "description": "lata andes",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0076",
+    "name": "LATA HEINEKEN",
+    "description": "lata heineken",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0077",
+    "name": "LATA MILLER",
+    "description": "lata miller",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0078",
+    "name": "PORRÓN BRAHMA",
+    "description": "porrón brahma",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0079",
+    "name": "BOTELLA BRAHMA 1L",
+    "description": "botella brahma 1L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0080",
+    "name": "BOTELLA HEINEKEN 1L",
+    "description": "botella heineken 1L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0081",
+    "name": "BOTELLA STELLA 1L",
+    "description": "botella stella 1L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0082",
+    "name": "BOTELLA MILLER 1L",
+    "description": "botella miller 1L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0083",
+    "name": "SPEED GRANDE / CHICO",
+    "description": "speed grande o chico",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0084",
+    "name": "DR. LEMÓN PRONTO SHAKE",
+    "description": "dr. limón pronto shake",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "CERVEZA"
+  },
+  {
+    "id": "prod0085",
+    "name": "ALVER",
+    "description": "alver",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "VINO"
+  },
+  {
+    "id": "prod0086",
+    "name": "SANTA FILOMENA",
+    "description": "santa filomena",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "VINO"
+  },
+  {
+    "id": "prod0087",
+    "name": "SANTA ANA 1 1/4L",
+    "description": "santa ana 1 1/4L",
+    "price": "1200",
+    "image": "saltena.jpg",
+    "category": "VINO"
+  }
+]
