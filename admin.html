@@ -299,10 +299,9 @@ function previewImage(){
   }
 
   // si NO es URL, asumimos que es ruta local en img/
-  img.src = v.startsWith('http')
-    ? v
-    : BASE_IMG + v;
-
+  img.src = p.imagen
+  ? (p.imagen.startsWith('http') ? p.imagen : IMG_BASE + p.imagen)
+  : '';
   img.style.display = 'block';
   img.onerror = () => { img.style.display = 'none'; };
 }
