@@ -109,7 +109,7 @@
 const USERNAME = "sequispe";
 const REPO = "carta";
 const BRANCH = "main";
-const BASE_IMG = "https://cdn.jsdelivr.net/gh/sequispe/carta@main/img/";
+const IMG_BASE_URL = "https://cdn.jsdelivr.net/gh/sequispe/carta@main/img/";
 const MAIN_JSON = "productos.json";
 const EN_JSON = "productos-en.json";
 const PT_JSON = "productos-port.json";
@@ -209,7 +209,7 @@ function render(lista){
     const img = document.createElement('img');
     img.className = 'mini';
 img.src = p.imagen
-  ? (p.imagen.startsWith('http') ? p.imagen : BASE_IMG + p.imagen)
+  ? (p.imagen.startsWith('http') ? p.imagen : IMG_BASE_URL + p.imagen)
   : '';
     img.onerror = () => { img.style.display='none'; };
     tdImg.appendChild(img);
@@ -288,24 +288,9 @@ function findIndexById(id){ return productos.findIndex(x => x.id === id); }
  **********************************************************/
 function toggleForm(){ const f=document.getElementById('form'); f.style.display = f.style.display === 'none' || f.style.display === '' ? 'block' : 'none'; if(f.style.display==='block') f.scrollIntoView({behavior:'smooth', block:'center'}); }
 function cancelForm(){ document.getElementById('editId').value=''; document.getElementById('nombre').value=''; document.getElementById('descripcion').value=''; document.getElementById('precio').value=''; document.getElementById('imagen').value=''; document.getElementById('categoria').value=''; document.getElementById('preview').style.display='none'; document.getElementById('form').style.display='none'; }
-function previewImage(){
-  const v = document.getElementById('imagen').value.trim();
-  const img = document.getElementById('preview');
-
-  if(!v){
-    img.style.display = 'none';
-    img.src = '';
-    return;
-  }
-
-  // si NO es URL, asumimos que es ruta local en img/
-  img.src = v.startsWith('http')
-    ? v
-    : BASE_IMG + v;
-
-  img.style.display = 'block';
-  img.onerror = () => { img.style.display = 'none'; };
-}
+img.src = v.startsWith('http')
+  ? v
+  : IMG_BASE_URL + v;
 function loadIntoFormById(id){ const idx = findIndexById(id); if(idx === -1){ showToast('Producto no encontrado para editar','err'); return; } const p = productos[idx]; document.getElementById('editId').value = p.id; document.getElementById('nombre').value = p.nombre||''; document.getElementById('descripcion').value = p.descripcion||''; document.getElementById('precio').value = p.precio||''; document.getElementById('imagen').value = p.imagen||''; document.getElementById('categoria').value = p.categoria||''; previewImage(); const f = document.getElementById('form'); f.style.display = 'block'; f.scrollIntoView({behavior:'smooth', block:'center'}); }
 function validarProductoObj(obj){ if(!obj.nombre) return "Falta nombre"; if(!obj.precio) return "Falta precio"; return null; }
 function guardarFormulario(){ const nombre=document.getElementById('nombre').value.trim(); const descripcion=document.getElementById('descripcion').value.trim(); const precio=sanitizePrice(document.getElementById('precio').value.trim()); const imagen=document.getElementById('imagen').value.trim(); const categoria=document.getElementById('categoria').value.trim(); const editId=document.getElementById('editId').value; const obj={ nombre, descripcion, precio, imagen, categoria }; const err=validarProductoObj(obj); if(err){ showToast(err,'err'); return; } if(editId){ const idx = findIndexById(editId); if(idx !== -1){ productos[idx] = { ...productos[idx], ...obj }; if(!productos[idx].id || !/^prod\d{4}$/.test(productos[idx].id)) productos[idx].id = generateNextProdId(); } else { showToast('ID de edición no encontrado','err'); }
