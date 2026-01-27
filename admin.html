@@ -39,7 +39,7 @@
   <h1>Admin Carta — sequispe</h1>
   <div class="topRow">
     <div style="flex:1">
-      <div style="margin-bottom:6px"><span class="small">Repositorio:</span> <b> sequispe / cartaa</b></div>
+      <div style="margin-bottom:6px"><span class="small">Repositorio:</span> <b> sequispe / carta</b></div>
       <div style="display:flex;gap:8px;align-items:center">
         <label style="min-width:40px">Token:</label>
         <input type="password" id="token" placeholder="Pegar token de GitHub (repo contents)" style="max-width:340px">
@@ -109,7 +109,7 @@
 const USERNAME = "sequispe";
 const REPO = "carta";
 const BRANCH = "main";
-const BASE_IMG_= "https://cdn.jsdelivr.net/gh/sequispe/carta@main/img/";
+const BASE_IMG = "https://cdn.jsdelivr.net/gh/sequispe/carta@main/img/";
 const MAIN_JSON = "productos.json";
 const EN_JSON = "productos-en.json";
 const PT_JSON = "productos-port.json";
@@ -161,16 +161,21 @@ function ordenarCamposPorIdioma(item, idioma){
 /**********************************************************
  * Cargar productos.json (desde raw.githubusercontent)
  **********************************************************/
-async function const USERNAME = "sequispe";
-const REPO = "carta";
-const BRANCH = "main";
-const MAIN_JSON = "productos.json";
- loadProducts(){
+async function loadProducts(){
   try{
-    const r = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${MAIN_JSON}`);
-    if(!r.ok) throw new Error(`No se pudo cargar ${MAIN_JSON} (${r.status})`);
+    const r = await fetch(
+      `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${MAIN_JSON}`,
+      { cache: "no-store" }
+    );
+
+    if(!r.ok){
+      throw new Error(`No se pudo cargar ${MAIN_JSON} (${r.status})`);
+    }
+
     const arr = await r.json();
-    if(!Array.isArray(arr)) throw new Error('Formato inválido en productos.json');
+    if(!Array.isArray(arr)){
+      throw new Error('Formato inválido en productos.json');
+    }
 
     productos = arr.map(item => ({
       id: item.id || '',
@@ -182,9 +187,18 @@ const MAIN_JSON = "productos.json";
     }));
 
     let changed = false;
-    productos.forEach(p => { if(!p.id || !/^prod\d{4}$/.test(p.id)){ p.id = generateNextProdId(); changed = true; } });
+    productos.forEach(p => {
+      if(!p.id || !/^prod\d{4}$/.test(p.id)){
+        p.id = generateNextProdId();
+        changed = true;
+      }
+    });
+
     render(productos);
-    if(changed) showToast('Se asignaron IDs faltantes (prodXXXX)', 'info', 2500);
+
+    if(changed){
+      showToast('Se asignaron IDs faltantes (prodXXXX)', 'info', 2500);
+    }
 
   }catch(e){
     console.warn(e);
@@ -290,8 +304,6 @@ function findIndexById(id){ return productos.findIndex(x => x.id === id); }
 /**********************************************************
  * Form helpers (ahora cargan por ID y scrollean al form)
  **********************************************************/
-function toggleForm(){ const f=document.getElementById('form'); f.style.display = f.style.display === 'none' || f.style.display === '' ? 'block' : 'none'; if(f.style.display==='block') f.scrollIntoView({behavior:'smooth', block:'center'}); }
-function cancelForm(){ document.getElementById('editId').value=''; document.getElementById('nombre').value=''; document.getElementById('descripcion').value=''; document.getElementById('precio').value=''; document.getElementById('imagen').value=''; document.getElementById('categoria').value=''; document.getElementById('preview').style.display='none'; document.getElementById('form').style.display='none'; }
 function previewImage(){
   const v = document.getElementById('imagen').value.trim();
   const img = document.getElementById('preview');
@@ -301,6 +313,19 @@ function previewImage(){
     img.src = '';
     return;
   }
+
+  // si es URL completa, se usa tal cual
+  // si no, se arma con jsDelivr
+  img.src = v.startsWith('http')
+    ? v
+    : BASE_IMG + v;
+
+  img.style.display = 'block';
+  img.onerror = () => {
+    img.style.display = 'none';
+  };
+}
+
 
   // si NO es URL, asumimos que es ruta local en img/
   img.src = p.imagen
@@ -328,24 +353,31 @@ function eliminarProductoPorId(id){ if(!confirm('Eliminar producto?')) return; c
 function refrescarArrayDesdeTabla(){
   const filas = document.querySelectorAll("#tbody tr");
   const nuevos = [];
+
   filas.forEach((fila) => {
-    const id = fila.dataset.rowId || generateNextProdId();
+    const id = fila.dataset.rowId;
+    if(!id) return; // seguridad extra
+
     const celdas = fila.querySelectorAll("td");
     const nombre = celdas[1].querySelector("input").value.trim();
     const descripcion = celdas[2].querySelector("textarea").value.trim();
     const categoria = celdas[3].querySelector("input").value.trim();
     const precio = sanitizePrice(celdas[4].querySelector("input").value.trim());
+
     const productoExistente = productos.find(p => p.id === id) || {};
     const imagen = productoExistente.imagen || '';
+
     nuevos.push({ id, nombre, descripcion, categoria, precio, imagen });
   });
+
   productos = nuevos;
 }
+
 
 /**********************************************************
  * GitHub helpers
  **********************************************************/
-async function githubGetFileInfo(path){
+async function githubPutFile(path, contentString, message, sha){
   const token = getToken();
   const headers = token ? { Authorization: 'token ' + token, 'Accept': 'application/vnd.github.v3+json' } : { 'Accept': 'application/vnd.github.v3+json' };
   const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${path}?ref=${BRANCH}`;
@@ -385,12 +417,21 @@ async function saveMainJson(arr, commitMessage){
   const out = arr.map(item => ordenarCamposPorIdioma(item, 'ES'));
   const contentString = JSON.stringify(out, null, 2);
 
-  let shaActual;
-  try{ const info = await githubGetFileInfo(MAIN_JSON); shaActual = info.sha; }catch(e){ shaActual = undefined; }
+  let shaActual = undefined;
 
-  try{ const info2 = await githubGetFileInfo(MAIN_JSON); shaActual = info2.sha; }catch(e){ }
+  try {
+    const info = await githubGetFileInfo(MAIN_JSON);
+    shaActual = info.sha; // si existe el archivo
+  } catch (e) {
+    // si no existe, se crea (sha queda undefined)
+  }
 
-  await githubPutFile(MAIN_JSON, contentString, commitMessage, shaActual);
+  await githubPutFile(
+    MAIN_JSON,
+    contentString,
+    commitMessage,
+    shaActual
+  );
 }
 
 /**********************************************************
@@ -425,24 +466,26 @@ async function syncPricesToLangs(){
         if('preco' in item && String(item.preco) !== nuevo){ item.preco = nuevo; changed = true; }
       }
       // 🔄 sincronizar imagen por ID (ES / EN / PT)
-const nuevaImagen = byId[itemId].imagen || '';
 
-if('imagen' in item && item.imagen !== nuevaImagen){
-  item.imagen = nuevaImagen;
-  changed = true;
+if(itemId && byId[itemId]){
+  const nuevaImagen = byId[itemId].imagen || '';
+
+  if('imagen' in item && item.imagen !== nuevaImagen){
+    item.imagen = nuevaImagen;
+    changed = true;
+  }
+
+  if('image' in item && item.image !== nuevaImagen){
+    item.image = nuevaImagen;
+    changed = true;
+  }
+
+  if('imagem' in item && item.imagem !== nuevaImagen){
+    item.imagem = nuevaImagen;
+    changed = true;
+  }
 }
 
-if('image' in item && item.image !== nuevaImagen){
-  item.image = nuevaImagen;
-  changed = true;
-}
-
-if('imagem' in item && item.imagem !== nuevaImagen){
-  item.imagem = nuevaImagen;
-  changed = true;
-}
-
-      if(!item.id && itemId) item.id = itemId;
       return ordenarCamposPorIdioma(item, idioma);
     });
 
@@ -468,16 +511,24 @@ async function guardarFilaPorId(id){
   try{
     const idx = findIndexById(id);
     if(idx === -1) throw new Error('Producto no encontrado');
+
     const p = productos[idx];
-    if(!p.id || !/^prod\d{4}$/.test(p.id)) p.id = generateNextProdId();
+    if(!p.id || !/^prod\d{4}$/.test(p.id)){
+      p.id = generateNextProdId();
+    }
+
     p.precio = sanitizePrice(p.precio);
 
-    await saveMainJson(productos, `Actualiza producto ${p.id} - precio ${p.precio}`);
+    await saveMainJson(productos, `Actualiza productos (editado ${p.id})`);
     await syncPricesToLangs();
 
-    showToast('Producto guardado y precios sincronizados en EN/PT', 'ok', 2600);
+    showToast('Producto guardado y sincronizado en EN/PT', 'ok', 2600);
     render(productos);
-  }catch(e){ console.error(e); showToast('Error al guardar fila: ' + (e.message||e), 'err', 5000); }
+
+  }catch(e){
+    console.error(e);
+    showToast('Error al guardar fila: ' + (e.message || e), 'err', 5000);
+  }
 }
 
 /**********************************************************
@@ -485,39 +536,64 @@ async function guardarFilaPorId(id){
  **********************************************************/
 async function guardarTodosLosPrecios(){
   try{
-    // NO reconstruir productos desde la tabla
     productos = productos.map(p => ({
       ...p,
+      id: (!p.id || !/^prod\d{4}$/.test(p.id)) ? generateNextProdId() : p.id,
       precio: sanitizePrice(p.precio)
     }));
 
-    await saveMainJson(productos, `Guardar TODOS los productos - sincronizando precios a EN/PT`);
+    await saveMainJson(
+      productos,
+      'Guardar TODOS los productos (ES → EN/PT)'
+    );
+
     await syncPricesToLangs();
 
-    showToast('Todos los cambios guardados y sincronizados (ES/EN/PT)', 'ok', 3000);
+    showToast(
+      'Todos los cambios guardados y sincronizados (ES / EN / PT)',
+      'ok',
+      3000
+    );
+
     render(productos);
 
   }catch(e){
     console.error(e);
-    showToast('Error al guardar todos: ' + (e.message||e), 'err', 6000);
+    showToast(
+      'Error al guardar todos: ' + (e.message || e),
+      'err',
+      6000
+    );
   }
 }
 
+
+<script>
 /**********************************************************
- * Filtrado (no rompe indices: actions usan ids)
+ * Filtrado (no rompe índices: actions usan IDs)
  **********************************************************/
 function filterProducts(){
   const q = document.getElementById('search').value.toLowerCase().trim();
-  if(!q){ render(productos); return; }
+
+  if(!q){
+    render(productos);
+    return;
+  }
+
   const filtered = productos.filter(p =>
-    (p.nombre||'').toLowerCase().includes(q) ||
-    (p.descripcion||'').toLowerCase().includes(q) ||
-    (p.categoria||'').toLowerCase().includes(q)
+    (p.nombre || '').toLowerCase().includes(q) ||
+    (p.descripcion || '').toLowerCase().includes(q) ||
+    (p.categoria || '').toLowerCase().includes(q)
   );
+
   render(filtered);
 }
+
+/**********************************************************
+ * WhatsApp ayuda
+ **********************************************************/
 function irWhatsApp(){
-  const numero = "5491123140119"; // ← poné tu número real
+  const numero = "5491123140119"; // ← tu número real
   const mensaje = encodeURIComponent(
     "Hola, necesito ayuda con el admin de la carta digital"
   );
@@ -525,12 +601,17 @@ function irWhatsApp(){
 }
 
 /**********************************************************
- * Init
+ * Init seguro
  **********************************************************/
-document.addEventListener('DOMContentLoaded', () => { loadProducts(); });
+document.addEventListener('DOMContentLoaded', () => {
+  try{
+    loadProducts();
+  }catch(e){
+    console.error(e);
+    showToast('Error al iniciar el admin', 'err', 5000);
+  }
+});
 </script>
 
-</body>
-</html>
 </body>
 </html>
