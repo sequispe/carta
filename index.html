@@ -265,7 +265,7 @@ header img{
   <div id="product-list"></div>
 
   <button id="btnUp">⬆️</button>
-<button id="btnSound">🔊</button>
+  <button id="btnSound">🔊</button>
 
 
 <script>
@@ -440,7 +440,11 @@ function playSound(src, volume = 0.4) {
   btnEn.addEventListener("click", () => { idiomaActual = "en"; localStorage.setItem("idioma", "en"); load(); });
   btnPt.addEventListener("click", () => { idiomaActual = "pt"; localStorage.setItem("idioma", "pt"); load(); });
 
-  btnSearch.addEventListener("click", buscar);
+  btnSearch.addEventListener("click", () => {
+  playSound("sounds/buscar.wav", 0.35);
+  buscar();
+});
+
   searchInput.addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
 
   window.addEventListener("scroll", () => {
