@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement("div");
       div.className = "item";
       div.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}">
+       <img src="img/${p.imagen}" alt="${p.nombre}">
         <h3>${p.nombre}</h3>
         <p>${p.descripcion || ""}</p>
         <span class="price">$${p.precio}</span>`;
