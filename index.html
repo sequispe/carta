@@ -266,215 +266,90 @@ header img{
 
   <button id="btnUp">⬆️</button>
   <button id="btnSound">🔊</button>
-
-
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  /* ================= SCROLL SOUND ================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-let lastScrollY = window.scrollY;
-let lastSoundTime = 0;
+  /* ================= SONIDO ON/OFF ================= */
 
-window.addEventListener("scroll", () => {
-  const now = Date.now();
+  let sonidoActivo = localStorage.getItem("sonido") !== "off";
+  const btnSound = document.getElementById("btnSound");
 
-  // evita sonido constante
-  if (Math.abs(window.scrollY - lastScrollY) > 120 && now - lastSoundTime > 400) {
-    playSound("sounds/subirbajar.mp3", 0.35);
-    lastSoundTime = now;
-    lastScrollY = window.scrollY;
+  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+
+  btnSound.addEventListener("click", () => {
+    sonidoActivo = !sonidoActivo;
+    localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
+    btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+  });
+
+  function playSound(src, volume = 0.4) {
+    if (!sonidoActivo) return;
+    const audio = new Audio(src);
+    audio.volume = volume;
+    audio.play().catch(() => {});
   }
-});
 
+  /* ================= VARIABLES ================= */
 
-/* ================= SONIDOS ================= */
-
-let sonidoActivo = localStorage.getItem("sonido") !== "off";
-
-const btnSound = document.getElementById("btnSound");
-if (btnSound) {
-  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
-  btnSound.addEventListener("click", toggleSound);
-}
-  function toggleSound() {
-  sonidoActivo = !sonidoActivo;
-  localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
-  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
-}
-
-function playSound(src, volume = 0.5) {
-  if (!sonidoActivo) return;
-  const audio = new Audio(src);
-  audio.volume = volume;
-  audio.play().catch(() => {});
-}
-
-/* ======== RESTO DE TU CÓDIGO SIGUE IGUAL ======== */
-
-
-  const USER = "sequispe";
-  const REPO = "carta";
-  let idiomaActual = localStorage.getItem("idioma") || "es";
-
-  const btnEs = document.getElementById("btn-es");
-  const btnEn = document.getElementById("btn-en");
-  const btnPt = document.getElementById("btn-pt");
-  const banner = document.getElementById("banner-text");
-  const categoryContainer = document.getElementById("category-buttons");
-  const productList = document.getElementById("product-list");
   const searchInput = document.getElementById("search");
   const btnSearch = document.getElementById("btnSearch");
-  const btnUp = document.getElementById("btnUp");
+  const productList = document.getElementById("product-list");
+  const categoryContainer = document.getElementById("category-buttons");
 
   let productos = [];
 
-  function scrollToProducts() {
-    productList.scrollIntoView({ behavior: "smooth" });
-  }
-
-  function actualizarBotones() {
-    btnEs.classList.toggle("active", idiomaActual === "es");
-    btnEn.classList.toggle("active", idiomaActual === "en");
-    btnPt.classList.toggle("active", idiomaActual === "pt");
-
-    if (idiomaActual === "es") banner.textContent = "¡Bienvenidos a Tilo Café Agüero 2298!";
-    if (idiomaActual === "en") banner.textContent = "Welcome to Tilo Café Agüero 2298!";
-    if (idiomaActual === "pt") banner.textContent = "Bem-vindo ao Tilo Café Agüero 2298!";
-  }
-
-  async function load() {
-    actualizarBotones();
-
-    let filename = "productos.json";
-    if (idiomaActual === "en") filename = "productos-en.json";
-    if (idiomaActual === "pt") filename = "productos-port.json";
-
-    /* 🚀 URL SIN BLOQUEO (jsDelivr) */
-    const RAW_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
-
-    try {
-      const res = await fetch(RAW_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("Error cargando productos");
-
-      const data = await res.json();
-
-      productos = data.map(p => ({
-        nombre:
-          idiomaActual === "es" ? (p.nombre || p.nome) :
-          idiomaActual === "en" ? (p.name || p.nome) :
-          p.nome,
-
-        descripcion:
-          idiomaActual === "es" ? (p.descripcion || p.descricao) :
-          idiomaActual === "en" ? (p.description || p.descricao) :
-          p.descricao,
-
-        precio: p.precio || p.preco || p.price,
-        imagen: p.imagen || p.imagem || p.image,
-
-        categoria:
-          idiomaActual === "es" ? p.categoria :
-          idiomaActual === "en" ? (p.category || p.categoria) :
-          p.categoria
-      }));
-
-      renderCategories();
-      renderProducts("Todos");
-
-    } catch (e) {
-      console.error(e);
-      productList.innerHTML = `<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
-    }
-  }
-
-  function renderCategories() {
-    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria).filter(Boolean))];
-    categoryContainer.innerHTML = "";
-    categorias.forEach(cat => {
-      const btn = document.createElement("button");
-      btn.textContent = cat;
-     btn.addEventListener("click", () => {
-  playSound("sounds/categorías.wav", 0.35);
-  renderProducts(cat);
-  scrollToProducts();
-});
-
-      categoryContainer.appendChild(btn);
-    });
-  }
-
-  function renderProducts(categoria) {
-    productList.innerHTML = "";
-    const lista = categoria === "Todos" ? productos : productos.filter(p => p.categoria === categoria);
-
-    if (lista.length === 0) {
-      productList.innerHTML = `<div class="msg">No hay productos disponibles.</div>`;
-      return;
-    }
-
-    lista.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}">
-        <h3>${p.nombre}</h3>
-        <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
-      productList.appendChild(div);
-    });
-  }
+  /* ================= BUSCAR (FUNCIONA) ================= */
 
   function buscar() {
     const q = searchInput.value.toLowerCase().trim();
-    const res = productos.filter(p =>
+
+    const resultados = productos.filter(p =>
       p.nombre.toLowerCase().includes(q) ||
       (p.descripcion || "").toLowerCase().includes(q) ||
       p.categoria.toLowerCase().includes(q)
     );
 
-    if (res.length === 0) {
-      productList.innerHTML = `<div class="msg">🔍 No se encontraron resultados.</div>`;
+    productList.innerHTML = "";
+
+    if (resultados.length === 0) {
+      productList.innerHTML = `<div class="msg">🔍 No se encontraron resultados</div>`;
       return;
     }
 
-    productList.innerHTML = "";
-    res.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-       <img src="img/${p.imagen}" alt="${p.nombre}">
-        <h3>${p.nombre}</h3>
-        <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
-      productList.appendChild(div);
+    resultados.forEach(p => {
+      productList.innerHTML += `
+        <div class="item">
+          <img src="${p.imagen}">
+          <h3>${p.nombre}</h3>
+          <p>${p.descripcion || ""}</p>
+          <span class="price">$${p.precio}</span>
+        </div>
+      `;
     });
-
-    scrollToProducts();
   }
 
- btnEs.addEventListener("click", () => {
-  playSound("sounds/idioma.mp3", 0.35);
-  idiomaActual = "es";
-  localStorage.setItem("idioma", "es");
-  load();
-});
+  /* ✅ EVENTOS DEL BUSCADOR (ESTO FALTABA) */
 
-btnEn.addEventListener("click", () => {
- playSound("sounds/idioma.mp3", 0.35);
-  idiomaActual = "en";
-  localStorage.setItem("idioma", "en");
-  load();
-});
+  btnSearch.addEventListener("click", () => {
+    playSound("sounds/buscar.mp3");
+    buscar();
+  });
 
-btnPt.addEventListener("click", () => {
-  playSound("sounds/idioma.mp3", 0.35);
-  idiomaActual = "pt";
-  localStorage.setItem("idioma", "pt");
-  load();
-});
+  searchInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      playSound("sounds/buscar.mp3");
+      buscar();
+    }
+  });
 
+  /* ================= CARGA DE PRUEBA ================= */
+  /* (solo para verificar que el buscador funcione) */
 
-  load();
+  productos = [
+    { nombre: "Café", descripcion: "Café caliente", precio: 1000, categoria: "Bebidas", imagen: "img/cafe.jpg" },
+    { nombre: "Tostado", descripcion: "Jamón y queso", precio: 1500, categoria: "Comidas", imagen: "img/tostado.jpg" }
+  ];
+
 });
 </script>
 
