@@ -292,7 +292,6 @@ window.addEventListener("scroll", () => {
 let sonidoActivo = localStorage.getItem("sonido") !== "off";
 
 const btnSound = document.getElementById("btnSound");
-
 if (btnSound) {
   btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
   btnSound.addEventListener("click", toggleSound);
@@ -479,6 +478,8 @@ btnPt.addEventListener("click", () => {
   load();
 });
 </script>
+
+<button id="btnSound">🔊</button>
 
 </body>
 </html>
