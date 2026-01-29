@@ -237,26 +237,7 @@ header img{
     max-height: 160px;
     object-position: center 30%;
   }
-  #btnSound {
-  position: fixed;
-  bottom: 25px;
-  right: 80px;
-  background: #8c6954;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-  transition: 0.3s;
-}
 
-#btnSound:hover {
-  background: #6b4e3d;
-  transform: scale(1.1);
-}
 }
   </style>
 </head>
@@ -284,6 +265,8 @@ header img{
   <div id="product-list"></div>
 
   <button id="btnUp">⬆️</button>
+<button id="btnSound">🔊</button>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -293,11 +276,11 @@ document.addEventListener('DOMContentLoaded', () => {
 let sonidoActivo = localStorage.getItem("sonido") !== "off";
 
 const btnSound = document.getElementById("btnSound");
-btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
 
-btnSound.addEventListener("click", () => {
-  toggleSound();
-});
+if (btnSound) {
+  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+  btnSound.addEventListener("click", toggleSound);
+}
 
 function toggleSound() {
   sonidoActivo = !sonidoActivo;
