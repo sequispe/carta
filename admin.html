@@ -1,372 +1,428 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin Carta — sequispe</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>quispe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
-<style>
-@media(max-width:720px){
-  table,thead,tbody,tr,td,th{
-    display:block;
+  <style>
+   body {
+  font-family: 'Poppins', sans-serif;
+  background: url("img/Fondo2.jpg") repeat;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  color: #45270a;
+  text-align: center;
+  scroll-behavior: smooth;
+}
+
+/* ================= HEADER / LOGO ================= */
+header{
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;         /* o contain si querés que se vea entero */
+  object-position: center;   /* centra el recorte */
+  display: block;
+}
+/* ================= BANNER ================= */
+
+.banner {
+  font-family: 'Playfair Display', serif;
+  padding: 12px 18px;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 600;
+  background: rgba(255,255,255,0.85);
+  border-radius: 10px;
+  margin: 15px auto;
+  width: fit-content;
+  color: #3b2314;
+}
+
+/* ================= IDIOMAS ================= */
+
+#languageSwitcher {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.lang-btn {
+  background: #806250;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.lang-btn.active {
+  background: #a07b68;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ================= BUSCADOR ================= */
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px;
+}
+
+.search-box input {
+  padding: 10px;
+  width: 60%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.search-box button {
+  background: #806250;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* ================= CATEGORÍAS ================= */
+
+#category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 18px 12px;
+}
+
+#category-buttons button {
+  background: linear-gradient(135deg, #9a7b65, #7a5a46);
+  color: #fff;
+  border: none;
+  border-radius: 999px; /* redonditos tipo app */
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+  transition: all 0.25s ease;
+}
+
+#category-buttons button:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, #a8866f, #6b4e3d);
+}
+
+#category-buttons button:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* ================= PRODUCTOS ================= */
+
+#product-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 10px;
+}
+
+.item {
+  background: rgba(255,255,255,0.95);
+  border-radius: 14px;
+  width: min(420px, 100%);   /* 🔥 se adapta */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+
+.item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.item h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  margin: 8px;
+}
+
+.item p {
+  margin: 0 8px 10px;
+}
+
+.price {
+  font-weight: bold;
+  margin: 0 8px 12px;
+  display: block;
+}
+
+.msg {
+  padding: 20px;
+  color: #a00;
+}
+
+/* ================= BOTÓN SUBIR ================= */
+
+#btnUp {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #8c6954;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  display: none;
+  transition: 0.3s;
+}
+
+#btnUp:hover {
+  background: #6b4e3d;
+  transform: scale(1.1);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+  .item {
+    width: 45%;
   }
-  thead{display:none}
-  tr{
-    margin-bottom:12px;
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:8px;
-    background:#fff;
+}
+
+@media (max-width: 600px) {
+  .item {
+    width: 90%;
   }
-  td{
-    border:none;
-    padding:6px 0;
-  }
-  img.mini{
-    max-width:80px;
+
+  .search-box input {
+    width: 90%;
   }
 }
-body{
-  font-family:'Segoe UI',sans-serif;
-  margin:0;
-  padding:16px;
-  background:#f7f3f0;
-  color:#333;
+
+@media (max-width: 380px) {
+  .item {
+    width: 95%;
+  }
+  @media (max-width: 600px) {
+  header img {
+    object-position: center 30%;
+  }
 }
-h1{
-  text-align:center;
-  color:#806250;
-  margin-bottom:12px;
+@media (max-width: 600px) {
+  header img {
+    height: 160px;
+    max-height: 160px;
+    object-position: center 30%;
+  }
 }
-.topRow{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
 }
-button{
-  background:#806250;
-  color:#fff;
-  border:none;
-  padding:8px 12px;
-  border-radius:6px;
-  cursor:pointer;
-}
-button.secondary{background:#5c8a50}
-button.danger{background:#c0392b}
-input,textarea{
-  width:100%;
-  padding:8px;
-  border-radius:6px;
-  border:1px solid #ccc;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-}
-th{
-  background:#806250;
-  color:#fff;
-}
-th,td{
-  border:1px solid #ddd;
-  padding:8px;
-  vertical-align:top;
-}
-img.mini{
-  max-width:60px;
-  border-radius:6px;
-}
-.toast{
-  position:fixed;
-  top:20px;
-  right:20px;
-  padding:12px 16px;
-  border-radius:8px;
-  color:#fff;
-  font-weight:600;
-  opacity:0;
-  transform:translateY(-10px);
-  transition:.3s;
-}
-.toast.show{opacity:1;transform:none}
-.toast.ok{background:#2ecc71}
-.toast.err{background:#e74c3c}
-body{font-family:Arial,Helvetica,sans-serif;margin:18px;background:#f7f3f0;color:#333}
-h1{text-align:center;color:#806250}
-.topRow{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px}
-input,textarea{padding:8px;border-radius:6px;border:1px solid #ccc;width:100%}
-button{background:#806250;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer}
-button.danger{background:#c0392b}
-button.secondary{background:#5c8a50}
-table{width:100%;border-collapse:collapse;background:#fff}
-th,td{border:1px solid #ddd;padding:8px}
-th{background:#806250;color:#fff}
-img.mini{max-width:60px;border-radius:6px}
-.toast{position:fixed;top:20px;right:20px;padding:12px 16px;border-radius:8px;color:#fff;font-weight:bold;opacity:0;transition:.3s}
-.toast.show{opacity:1}
-.toast.ok{background:#2ecc71}
-.toast.err{background:#e74c3c}
-</style>
+  </style>
 </head>
 
 <body>
 
-<h1>Admin Carta — sequispe</h1>
+  <header>
+    <img src="img/logo1.png" alt="Tilo Café">
+  </header>
 
-<div class="topRow">
-  <div>
-    <b>Repositorio:</b> sequispe / carta<br>
-    <input type="password" id="token" placeholder="Token GitHub (repo)">
-    <button onclick="saveToken()">Guardar token</button>
+  <div class="banner" id="banner-text">¡Bienvenidos a quispe!</div>
+
+  <div id="languageSwitcher">
+    <button id="btn-es" class="lang-btn">🇪🇸 Español</button>
+    <button id="btn-en" class="lang-btn">🇬🇧 English</button>
+    <button id="btn-pt" class="lang-btn">🇧🇷 Português</button>
   </div>
-  <div>
-    <input id="search" placeholder="Buscar..." oninput="filterProducts()">
+
+  <div class="search-box">
+    <input id="search" type="text" placeholder="Buscar por nombre, descripción o categoría...">
+    <button id="btnSearch">Buscar</button>
   </div>
-</div>
 
-<button onclick="guardarTodos()">💾 Guardar TODOS</button>
+  <div id="category-buttons"></div>
+  <div id="product-list"></div>
 
-<table>
-<thead>
-<tr>
-  <th>Img</th>
-  <th>Nombre</th>
-  <th>Descripción</th>
-  <th>Categoría</th>
-  <th>Precio</th>
-  <th>Acciones</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
+  <button id="btnUp">⬆️</button>
 
 <script>
-/* ================= CONFIG ================= */
-const USERNAME = "sequispe";
-const REPO = "carta";
-const BRANCH = "main";
-const MAIN_JSON = "productos.json";
-const EN_JSON = "productos-en.json";
-const PT_JSON = "productos-port.json";
-const BASE_IMG="https://raw.githubusercontent.com/sequispe/carta/main/img/";
+document.addEventListener('DOMContentLoaded', () => {
 
+  const USER = "sequispe";
+  const REPO = "carta";
+  let idiomaActual = localStorage.getItem("idioma") || "es";
 
-let productos = [];
+  const btnEs = document.getElementById("btn-es");
+  const btnEn = document.getElementById("btn-en");
+  const btnPt = document.getElementById("btn-pt");
+  const banner = document.getElementById("banner-text");
+  const categoryContainer = document.getElementById("category-buttons");
+  const productList = document.getElementById("product-list");
+  const searchInput = document.getElementById("search");
+  const btnSearch = document.getElementById("btnSearch");
+  const btnUp = document.getElementById("btnUp");
 
-/* ================= TOAST ================= */
-function toast(msg, ok=true){
-  const t=document.createElement("div");
-  t.className="toast "+(ok?"ok":"err");
-  t.textContent=msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.classList.add("show"),10);
-  setTimeout(()=>{t.remove()},3000);
-}
+  let productos = [];
 
-/* ================= TOKEN ================= */
-function saveToken(){
-  const t=document.getElementById("token").value.trim();
-  if(!t) return toast("Pegá el token",false);
-  localStorage.setItem("gh_token",t);
-  toast("Token guardado");
-}
-function getToken(){ return localStorage.getItem("gh_token"); }
+  function scrollToProducts() {
+    productList.scrollIntoView({ behavior: "smooth" });
+  }
 
-/* ================= GITHUB ================= */
-async function githubGetFileInfo(path){
-  const token=getToken();
-  const res=await fetch(
-    `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${path}?ref=${BRANCH}`,
-    {headers:{Authorization:"token "+token}}
-  );
-  if(!res.ok) throw new Error("No existe "+path);
-  return await res.json();
-}
+  function actualizarBotones() {
+    btnEs.classList.toggle("active", idiomaActual === "es");
+    btnEn.classList.toggle("active", idiomaActual === "en");
+    btnPt.classList.toggle("active", idiomaActual === "pt");
 
-async function githubPutFile(path,content,message,sha){
-  const token=getToken();
-  const body={
-    message,
-    content:btoa(unescape(encodeURIComponent(content))),
-    branch:BRANCH
-  };
-  if(sha) body.sha=sha;
+    if (idiomaActual === "es") banner.textContent = "¡Bienvenidos a Tilo Café Agüero 2298!";
+    if (idiomaActual === "en") banner.textContent = "Welcome to Tilo Café Agüero 2298!";
+    if (idiomaActual === "pt") banner.textContent = "Bem-vindo ao Tilo Café Agüero 2298!";
+  }
 
-  const res=await fetch(
-    `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${path}`,
-    {
-      method:"PUT",
-      headers:{
-        Authorization:"token "+token,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(body)
+  async function load() {
+    actualizarBotones();
+
+    let filename = "productos.json";
+    if (idiomaActual === "en") filename = "productos-en.json";
+    if (idiomaActual === "pt") filename = "productos-port.json";
+
+    /* 🚀 URL SIN BLOQUEO (jsDelivr) */
+    const RAW_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
+
+    try {
+      const res = await fetch(RAW_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("Error cargando productos");
+
+      const data = await res.json();
+
+      productos = data.map(p => ({
+        nombre:
+          idiomaActual === "es" ? (p.nombre || p.nome) :
+          idiomaActual === "en" ? (p.name || p.nome) :
+          p.nome,
+
+        descripcion:
+          idiomaActual === "es" ? (p.descripcion || p.descricao) :
+          idiomaActual === "en" ? (p.description || p.descricao) :
+          p.descricao,
+
+        precio: p.precio || p.preco || p.price,
+        imagen: p.imagen || p.imagem || p.image,
+
+        categoria:
+          idiomaActual === "es" ? p.categoria :
+          idiomaActual === "en" ? (p.category || p.categoria) :
+          p.categoria
+      }));
+
+      renderCategories();
+      renderProducts("Todos");
+
+    } catch (e) {
+      console.error(e);
+      productList.innerHTML = `<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
     }
-  );
-  if(!res.ok) throw new Error("Error al guardar "+path);
-}
+  }
 
-/* ================= LOAD ================= */
-async function loadProducts(){
-  const r=await fetch(
-    `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${MAIN_JSON}`,
-    {cache:"no-store"}
-  );
-  if(!r.ok) return toast("No se pudo cargar productos.json",false);
+  function renderCategories() {
+    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria).filter(Boolean))];
+    categoryContainer.innerHTML = "";
+    categorias.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.textContent = cat;
+      btn.addEventListener("click", () => {
+        renderProducts(cat);
+        scrollToProducts();
+      });
+      categoryContainer.appendChild(btn);
+    });
+  }
 
-  productos=await r.json();
-  render(productos);
-}
-loadProducts();
+  function renderProducts(categoria) {
+    productList.innerHTML = "";
+    const lista = categoria === "Todos" ? productos : productos.filter(p => p.categoria === categoria);
 
-/* ================= RENDER ================= */
-function render(arr){
-  const tb=document.getElementById("tbody");
-  tb.innerHTML="";
-  arr.forEach(p=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td><img class="mini" src="${p.imagen?BASE_IMG+p.imagen:""}"></td>
-      <td><input value="${p.nombre||""}"></td>
-      <td><textarea>${p.descripcion||""}</textarea></td>
-      <td><input value="${p.categoria||""}"></td>
-      <td><input value="${p.precio||""}"></td>
-      <td>
-        <button onclick="guardarFila('${p.id}')">Guardar</button>
-        <button class="danger" onclick="eliminar('${p.id}')">X</button>
-      </td>`;
-    tb.appendChild(tr);
+    if (lista.length === 0) {
+      productList.innerHTML = `<div class="msg">No hay productos disponibles.</div>`;
+      return;
+    }
+
+    lista.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>`;
+      productList.appendChild(div);
+    });
+  }
+
+  function buscar() {
+    const q = searchInput.value.toLowerCase().trim();
+    const res = productos.filter(p =>
+      p.nombre.toLowerCase().includes(q) ||
+      (p.descripcion || "").toLowerCase().includes(q) ||
+      p.categoria.toLowerCase().includes(q)
+    );
+
+    if (res.length === 0) {
+      productList.innerHTML = `<div class="msg">🔍 No se encontraron resultados.</div>`;
+      return;
+    }
+
+    productList.innerHTML = "";
+    res.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>`;
+      productList.appendChild(div);
+    });
+
+    scrollToProducts();
+  }
+
+  btnEs.addEventListener("click", () => { idiomaActual = "es"; localStorage.setItem("idioma", "es"); load(); });
+  btnEn.addEventListener("click", () => { idiomaActual = "en"; localStorage.setItem("idioma", "en"); load(); });
+  btnPt.addEventListener("click", () => { idiomaActual = "pt"; localStorage.setItem("idioma", "pt"); load(); });
+
+  btnSearch.addEventListener("click", buscar);
+  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+
+  window.addEventListener("scroll", () => {
+    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
   });
-}
 
-/* ================= ACTIONS ================= */
-async function guardarFila(id){
-  const info=await githubGetFileInfo(MAIN_JSON);
-  await githubPutFile(
-    MAIN_JSON,
-    JSON.stringify(productos,null,2),
-    "Actualiza producto "+id,
-    info.sha
-  );
-  toast("Producto guardado");
-}
+  btnUp.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
-async function guardarTodos(){
-  const info=await githubGetFileInfo(MAIN_JSON);
-  await githubPutFile(
-    MAIN_JSON,
-    JSON.stringify(productos,null,2),
-    "Guardar todos",
-    info.sha
-  );
-  toast("Todo guardado ✔");
-}
-
-function eliminar(id){
-  productos=productos.filter(p=>p.id!==id);
-  render(productos);
-}
-
-/* ================= FILTER ================= */
-function filterProducts(){
-  const q=document.getElementById("search").value.toLowerCase();
-  render(productos.filter(p=>
-    (p.nombre||"").toLowerCase().includes(q) ||
-    (p.descripcion||"").toLowerCase().includes(q)
-  ));
-}
-/* ================= SINCRONIZAR EN / PT ================= */
-
-function ordenarPorIdioma(item, lang){
-  if(lang === "EN"){
-    return {
-      id: item.id,
-      name: item.nombre,
-      description: item.descripcion,
-      price: item.precio,
-      image: item.imagen,
-      category: item.categoria
-    };
-  }
-  if(lang === "PT"){
-    return {
-      nome: item.nombre,
-      descricao: item.descripcion,
-      preco: item.precio,
-      imagem: item.imagen,
-      categoria: item.categoria,
-      id: item.id
-    };
-  }
-}
-
-async function syncLangFile(filename, lang){
-  let sha = null;
-  try{
-    const info = await githubGetFileInfo(filename);
-    sha = info.sha;
-  }catch(e){}
-
-  const arr = productos.map(p => ordenarPorIdioma(p, lang));
-  const content = JSON.stringify(arr, null, 2);
-
-  await githubPutFile(
-    filename,
-    content,
-    "Sincroniza desde productos.json",
-    sha
-  );
-}
-
-async function syncAllLangs(){
-  await syncLangFile(EN_JSON, "EN");
-  await syncLangFile(PT_JSON, "PT");
-}
-async function guardarFila(id){
-  const info = await githubGetFileInfo(MAIN_JSON);
-
-  await githubPutFile(
-    MAIN_JSON,
-    JSON.stringify(productos, null, 2),
-    "Actualiza producto " + id,
-    info.sha
-  );
-
-  await syncAllLangs();
-  toast("Producto sincronizado ES / EN / PT ✔");
-}
-
-async function guardarTodos(){
-  const info = await githubGetFileInfo(MAIN_JSON);
-
-  await githubPutFile(
-    MAIN_JSON,
-    JSON.stringify(productos, null, 2),
-    "Guardar todos (sync)",
-    info.sha
-  );
-
-  await syncAllLangs();
-  toast("Todo guardado y sincronizado ✔");
-}	
-function saveToken(){
-  const t = document.getElementById("token").value.trim();
-  if(!t) return toast("Pegá el token",false);
-  localStorage.setItem("gh_token", t);
-  document.getElementById("token").value = "********";
-  toast("Token guardado");
-}
-
-function getToken(){
-  return localStorage.getItem("gh_token");
-}
-
-window.addEventListener("DOMContentLoaded", ()=>{
-  if(getToken()){
-    document.getElementById("token").value = "********";
-  }
+  load();
 });
 </script>
 
