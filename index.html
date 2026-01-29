@@ -379,10 +379,12 @@ function playSound(src, volume = 0.4) {
     categorias.forEach(cat => {
       const btn = document.createElement("button");
       btn.textContent = cat;
-      btn.addEventListener("click", () => {
-        renderProducts(cat);
-        scrollToProducts();
-      });
+     btn.addEventListener("click", () => {
+  playSound("sounds/categoria.wav", 0.3);
+  renderProducts(cat);
+  scrollToProducts();
+});
+
       categoryContainer.appendChild(btn);
     });
   }
