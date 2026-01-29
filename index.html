@@ -255,6 +255,17 @@ header img{
     <button id="btn-en" class="lang-btn">🇬🇧 English</button>
     <button id="btn-pt" class="lang-btn">🇧🇷 Português</button>
   </div>
+  <button id="btnSound" style="
+  margin: 10px auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+">
+🔊
+</button>
+
 
   <div class="search-box">
     <input id="search" type="text" placeholder="Buscar por nombre, descripción o categoría...">
@@ -268,6 +279,30 @@ header img{
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+/* ================= SONIDOS ================= */
+const btnSound = document.getElementById("btnSound");
+
+// estado inicial del icono
+btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+
+btnSound.addEventListener("click", () => {
+  toggleSound(btnSound);
+});
+
+let sonidoActivo = localStorage.getItem("sonido") !== "off";
+
+function playSound(src, volume = 0.4) {
+  if (!sonidoActivo) return;
+  const audio = new Audio(src);
+  audio.volume = volume;
+  audio.play().catch(() => {});
+}
+
+function toggleSound(btn) {
+  sonidoActivo = !sonidoActivo;
+  localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
+  btn.textContent = sonidoActivo ? "🔊" : "🔇";
+}
 
   const USER = "sequispe";
   const REPO = "carta";
