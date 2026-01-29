@@ -237,6 +237,25 @@ header img{
     max-height: 160px;
     object-position: center 30%;
   }
+  #btnSound {
+  position: fixed;
+  bottom: 25px;
+  right: 80px;
+  background: #8c6954;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
+#btnSound:hover {
+  background: #6b4e3d;
+  transform: scale(1.1);
 }
 }
   </style>
@@ -255,17 +274,6 @@ header img{
     <button id="btn-en" class="lang-btn">🇬🇧 English</button>
     <button id="btn-pt" class="lang-btn">🇧🇷 Português</button>
   </div>
-  <button id="btnSound" style="
-  margin: 10px auto;
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-">
-🔊
-</button>
-
 
   <div class="search-box">
     <input id="search" type="text" placeholder="Buscar por nombre, descripción o categoría...">
@@ -279,17 +287,23 @@ header img{
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-/* ================= SONIDOS ================= */
-const btnSound = document.getElementById("btnSound");
 
-// estado inicial del icono
+/* ================= SONIDOS ================= */
+
+let sonidoActivo = localStorage.getItem("sonido") !== "off";
+
+const btnSound = document.getElementById("btnSound");
 btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
 
 btnSound.addEventListener("click", () => {
-  toggleSound(btnSound);
+  toggleSound();
 });
 
-let sonidoActivo = localStorage.getItem("sonido") !== "off";
+function toggleSound() {
+  sonidoActivo = !sonidoActivo;
+  localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
+  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+}
 
 function playSound(src, volume = 0.4) {
   if (!sonidoActivo) return;
@@ -298,11 +312,8 @@ function playSound(src, volume = 0.4) {
   audio.play().catch(() => {});
 }
 
-function toggleSound(btn) {
-  sonidoActivo = !sonidoActivo;
-  localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
-  btn.textContent = sonidoActivo ? "🔊" : "🔇";
-}
+/* ======== RESTO DE TU CÓDIGO SIGUE IGUAL ======== */
+
 
   const USER = "sequispe";
   const REPO = "carta";
