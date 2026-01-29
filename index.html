@@ -296,7 +296,11 @@ if (btnSound) {
   btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
   btnSound.addEventListener("click", toggleSound);
 }
-
+  function toggleSound() {
+  sonidoActivo = !sonidoActivo;
+  localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
+  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+}
 
 function playSound(src, volume = 0.5) {
   if (!sonidoActivo) return;
