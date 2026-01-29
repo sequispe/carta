@@ -288,7 +288,7 @@ function toggleSound() {
   btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
 }
 
-function playSound(src, volume = 0.4) {
+function playSound(src, volume = 0.5) {
   if (!sonidoActivo) return;
   const audio = new Audio(src);
   audio.volume = volume;
@@ -438,24 +438,27 @@ function playSound(src, volume = 0.4) {
     scrollToProducts();
   }
 
-  btnEs.addEventListener("click", () => { idiomaActual = "es"; localStorage.setItem("idioma", "es"); load(); });
-  btnEn.addEventListener("click", () => { idiomaActual = "en"; localStorage.setItem("idioma", "en"); load(); });
-  btnPt.addEventListener("click", () => { idiomaActual = "pt"; localStorage.setItem("idioma", "pt"); load(); });
-
-  btnSearch.addEventListener("click", () => {
-  playSound("sounds/buscar.wav", 0.35);
-  buscar();
+ btnEs.addEventListener("click", () => {
+  playSound("sounds/idioma.wav", 0.3);
+  idiomaActual = "es";
+  localStorage.setItem("idioma", "es");
+  load();
 });
 
-  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+btnEn.addEventListener("click", () => {
+  playSound("sounds/idioma.wav", 0.3);
+  idiomaActual = "en";
+  localStorage.setItem("idioma", "en");
+  load();
+});
 
-  window.addEventListener("scroll", () => {
-    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
-  });
+btnPt.addEventListener("click", () => {
+  playSound("sounds/idioma.wav", 0.3);
+  idiomaActual = "pt";
+  localStorage.setItem("idioma", "pt");
+  load();
+});
 
-  btnUp.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
 
   load();
 });
