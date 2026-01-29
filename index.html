@@ -380,7 +380,7 @@ function playSound(src, volume = 0.5) {
       const btn = document.createElement("button");
       btn.textContent = cat;
      btn.addEventListener("click", () => {
-  playSound("sounds/categoria.wav", 0.35);
+  playSound("sounds/categorías.wav", 0.35);
   renderProducts(cat);
   scrollToProducts();
 });
@@ -439,21 +439,21 @@ function playSound(src, volume = 0.5) {
   }
 
  btnEs.addEventListener("click", () => {
-  playSound("sounds/idioma.wav", 0.3);
+  playSound("sounds/idioma.mp3", 0.35);
   idiomaActual = "es";
   localStorage.setItem("idioma", "es");
   load();
 });
 
 btnEn.addEventListener("click", () => {
-  playSound("sounds/idioma.wav", 0.3);
+ playSound("sounds/idioma.mp3", 0.35);
   idiomaActual = "en";
   localStorage.setItem("idioma", "en");
   load();
 });
 
 btnPt.addEventListener("click", () => {
-  playSound("sounds/idioma.wav", 0.3);
+  playSound("sounds/idioma.mp3", 0.35);
   idiomaActual = "pt";
   localStorage.setItem("idioma", "pt");
   load();
