@@ -269,48 +269,30 @@ header img{
 
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  /* ================= SCROLL SOUND ================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-let lastScrollY = window.scrollY;
-let lastSoundTime = 0;
+  /* ================= SONIDO ================= */
 
-window.addEventListener("scroll", () => {
-  const now = Date.now();
+  let sonidoActivo = localStorage.getItem("sonido") !== "off";
+  const btnSound = document.getElementById("btnSound");
 
-  // evita sonido constante
-  if (Math.abs(window.scrollY - lastScrollY) > 120 && now - lastSoundTime > 400) {
-    playSound("sounds/subirbajar.mp3", 0.35);
-    lastSoundTime = now;
-    lastScrollY = window.scrollY;
+  if (btnSound) {
+    btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+    btnSound.addEventListener("click", () => {
+      sonidoActivo = !sonidoActivo;
+      localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
+      btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+    });
   }
-});
 
+  function playSound(src, volume = 0.4) {
+    if (!sonidoActivo) return;
+    const audio = new Audio(src);
+    audio.volume = volume;
+    audio.play().catch(() => {});
+  }
 
-/* ================= SONIDOS ================= */
-
-let sonidoActivo = localStorage.getItem("sonido") !== "off";
-
-const btnSound = document.getElementById("btnSound");
-if (btnSound) {
-  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
-  btnSound.addEventListener("click", toggleSound);
-}
-  function toggleSound() {
-  sonidoActivo = !sonidoActivo;
-  localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
-  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
-}
-
-function playSound(src, volume = 0.5) {
-  if (!sonidoActivo) return;
-  const audio = new Audio(src);
-  audio.volume = volume;
-  audio.play().catch(() => {});
-}
-
-/* ======== RESTO DE TU CÓDIGO SIGUE IGUAL ======== */
-
+  /* ================= CONFIG ================= */
 
   const USER = "sequispe";
   const REPO = "carta";
@@ -320,6 +302,7 @@ function playSound(src, volume = 0.5) {
   const btnEn = document.getElementById("btn-en");
   const btnPt = document.getElementById("btn-pt");
   const banner = document.getElementById("banner-text");
+
   const categoryContainer = document.getElementById("category-buttons");
   const productList = document.getElementById("product-list");
   const searchInput = document.getElementById("search");
@@ -332,6 +315,8 @@ function playSound(src, volume = 0.5) {
     productList.scrollIntoView({ behavior: "smooth" });
   }
 
+  /* ================= IDIOMAS ================= */
+
   function actualizarBotones() {
     btnEs.classList.toggle("active", idiomaActual === "es");
     btnEn.classList.toggle("active", idiomaActual === "en");
@@ -342,6 +327,8 @@ function playSound(src, volume = 0.5) {
     if (idiomaActual === "pt") banner.textContent = "Bem-vindo ao Tilo Café Agüero 2298!";
   }
 
+  /* ================= LOAD ================= */
+
   async function load() {
     actualizarBotones();
 
@@ -349,11 +336,10 @@ function playSound(src, volume = 0.5) {
     if (idiomaActual === "en") filename = "productos-en.json";
     if (idiomaActual === "pt") filename = "productos-port.json";
 
-    /* 🚀 URL SIN BLOQUEO (jsDelivr) */
-    const RAW_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
+    const URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
 
     try {
-      const res = await fetch(RAW_URL, { cache: "no-store" });
+      const res = await fetch(URL, { cache: "no-store" });
       if (!res.ok) throw new Error("Error cargando productos");
 
       const data = await res.json();
@@ -387,25 +373,32 @@ function playSound(src, volume = 0.5) {
     }
   }
 
+  /* ================= CATEGORÍAS ================= */
+
   function renderCategories() {
-    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria).filter(Boolean))];
+    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
     categoryContainer.innerHTML = "";
+
     categorias.forEach(cat => {
       const btn = document.createElement("button");
       btn.textContent = cat;
-     btn.addEventListener("click", () => {
-  playSound("sounds/categorías.wav", 0.35);
-  renderProducts(cat);
-  scrollToProducts();
-});
-
+      btn.addEventListener("click", () => {
+        playSound("sounds/categorías.wav");
+        renderProducts(cat);
+        scrollToProducts();
+      });
       categoryContainer.appendChild(btn);
     });
   }
 
+  /* ================= PRODUCTOS ================= */
+
   function renderProducts(categoria) {
     productList.innerHTML = "";
-    const lista = categoria === "Todos" ? productos : productos.filter(p => p.categoria === categoria);
+
+    const lista = categoria === "Todos"
+      ? productos
+      : productos.filter(p => p.categoria === categoria);
 
     if (lista.length === 0) {
       productList.innerHTML = `<div class="msg">No hay productos disponibles.</div>`;
@@ -419,13 +412,22 @@ function playSound(src, volume = 0.5) {
         <img src="${p.imagen}" alt="${p.nombre}">
         <h3>${p.nombre}</h3>
         <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
+        <span class="price">$${p.precio}</span>
+      `;
       productList.appendChild(div);
     });
   }
 
+  /* ================= BUSCAR ================= */
+
   function buscar() {
     const q = searchInput.value.toLowerCase().trim();
+
+    if (!q) {
+      renderProducts("Todos");
+      return;
+    }
+
     const res = productos.filter(p =>
       p.nombre.toLowerCase().includes(q) ||
       (p.descripcion || "").toLowerCase().includes(q) ||
@@ -442,200 +444,65 @@ function playSound(src, volume = 0.5) {
       const div = document.createElement("div");
       div.className = "item";
       div.innerHTML = `
-       <img src="img/${p.imagen}" alt="${p.nombre}">
+        <img src="${p.imagen}" alt="${p.nombre}">
         <h3>${p.nombre}</h3>
         <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>`;
+        <span class="price">$${p.precio}</span>
+      `;
       productList.appendChild(div);
     });
 
     scrollToProducts();
   }
 
- btnEs.addEventListener("click", () => {
-  playSound("sounds/idioma.mp3", 0.35);
-  idiomaActual = "es";
-  localStorage.setItem("idioma", "es");
-  load();
-});
+  btnSearch.addEventListener("click", () => {
+    playSound("sounds/buscar.mp3");
+    buscar();
+  });
 
-btnEn.addEventListener("click", () => {
- playSound("sounds/idioma.mp3", 0.35);
-  idiomaActual = "en";
-  localStorage.setItem("idioma", "en");
-  load();
-});
+  searchInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") buscar();
+  });
 
-btnPt.addEventListener("click", () => {
-  playSound("sounds/idioma.mp3", 0.35);
-  idiomaActual = "pt";
-  localStorage.setItem("idioma", "pt");
-  load();
-});
+  /* ================= BOTÓN SUBIR ================= */
 
+  window.addEventListener("scroll", () => {
+    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
+  });
+
+  btnUp.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* ================= EVENTOS IDIOMA ================= */
+
+  btnEs.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "es";
+    localStorage.setItem("idioma", "es");
+    load();
+  });
+
+  btnEn.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "en";
+    localStorage.setItem("idioma", "en");
+    load();
+  });
+
+  btnPt.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "pt";
+    localStorage.setItem("idioma", "pt");
+    load();
+  });
+
+  /* ================= INIT ================= */
 
   load();
 });
 </script>
 
-<button id="btnSound">🔊</button>
-
-</body>
-</html>......no se ve lo de abajo  width: 60%;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.search-box button {
-  background: #806250;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  cursor: pointer;
-}
-
-/* ================= CATEGORÍAS ================= */
-
-#category-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin: 18px 12px;
-}
-
-#category-buttons button {
-  background: linear-gradient(135deg, #9a7b65, #7a5a46);
-  color: #fff;
-  border: none;
-  border-radius: 999px; /* redonditos tipo app */
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
-  transition: all 0.25s ease;
-}
-
-#category-buttons button:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-  background: linear-gradient(135deg, #a8866f, #6b4e3d);
-}
-
-#category-buttons button:active {
-  transform: scale(0.97);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-/* ================= PRODUCTOS ================= */
-
-#product-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  padding: 10px;
-}
-
-.item {
-  background: rgba(255,255,255,0.95);
-  border-radius: 14px;
-  width: min(420px, 100%);   /* 🔥 se adapta */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-  overflow: hidden;
-  transition: 0.2s;
-}
-
-
-.item img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.item h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
-  margin: 8px;
-}
-
-.item p {
-  margin: 0 8px 10px;
-}
-
-.price {
-  font-weight: bold;
-  margin: 0 8px 12px;
-  display: block;
-}
-
-.msg {
-  padding: 20px;
-  color: #a00;
-}
-
-/* ================= BOTÓN SUBIR ================= */
-
-#btnSound {
-  position: fixed;
-  bottom: 25px;
-  right: 80px; /* al lado del botón subir */
-  background: #8c6954;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-  z-index: 9999;
-  transition: 0.3s;
-}
-
-#btnSound:hover {
-  background: #6b4e3d;
-  transform: scale(1.1);
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 900px) {
-  .item {
-    width: 45%;
-  }
-}
-
-@media (max-width: 600px) {
-  .item {
-    width: 90%;
-  }
-
-  .search-box input {
-    width: 90%;
-  }
-}
-
-@media (max-width: 380px) {
-  .item {
-    width: 95%;
-  }
-  @media (max-width: 600px) {
-  header img {
-    object-position: center 30%;
-  }
-}
-@media (max-width: 600px) {
-  header img {
-    height: 160px;
-    max-height: 160px;
-    object-position: center 30%;
-  }
-
-}
-  </style>
 </head>
 
 <body>
