@@ -270,6 +270,22 @@ header img{
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  /* ================= SCROLL SOUND ================= */
+
+let lastScrollY = window.scrollY;
+let lastSoundTime = 0;
+
+window.addEventListener("scroll", () => {
+  const now = Date.now();
+
+  // evita sonido constante
+  if (Math.abs(window.scrollY - lastScrollY) > 120 && now - lastSoundTime > 400) {
+    playSound("sounds/subirbajar.mp3", 0.35);
+    lastSoundTime = now;
+    lastScrollY = window.scrollY;
+  }
+});
+
 
 /* ================= SONIDOS ================= */
 
