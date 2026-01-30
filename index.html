@@ -73,9 +73,6 @@ body{
 </div>
 
 <script>
-const JSON_URL = "productos.json";
-
-/* ───────── TELEPROMPTER ───────── */
 function iniciarTeleprompter(mensaje, velocidad = 22){
   const tele = document.getElementById("teleprompter");
   const text = document.getElementById("tele-text");
@@ -84,57 +81,33 @@ function iniciarTeleprompter(mensaje, velocidad = 22){
   tele.style.display = "block";
 
   let x = window.innerWidth;
-  const anchoTexto = text.offsetWidth;
 
-  function animar(){
-    x -= velocidad / 10;
-    if(x < -anchoTexto) x = window.innerWidth;
-    text.style.transform = `translate(${x}px, -50%)`;
-    requestAnimationFrame(animar);
-  }
-  animar();
-}
+  // Esperar un frame para que el navegador calcule bien el ancho
+  requestAnimationFrame(() => {
+    const anchoTexto = text.offsetWidth;
 
-/* ───────── RENDER PRODUCTOS ───────── */
-function renderProductos(productos){
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
+    function animar(){
+      x -= velocidad / 10;
 
-  productos.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "producto";
+      // Cuando el texto se fue completamente:
+      if(x < -anchoTexto){
+        // lo mandamos a la derecha otra vez PERO con pausa
+        x = window.innerWidth;
 
-    div.innerHTML = `
-      ${p.imagen ? `<img src="${p.imagen}">` : ""}
-      <div class="nombre">${p.nombre || ""}</div>
-      <div class="descripcion">${p.descripcion || ""}</div>
-      <div class="precio">$${p.precio || ""}</div>
-    `;
+        // pausa suave (más natural)
+        setTimeout(() => {
+          requestAnimationFrame(animar);
+        }, 800); // <-- pausa en ms (podés subirlo o bajarlo)
+        return;
+      }
 
-    lista.appendChild(div);
-  });
-}
-
-/* ───────── INIT ───────── */
-fetch(JSON_URL)
-  .then(r => r.json())
-  .then(productos => {
-
-    if(!Array.isArray(productos) || productos.length === 0) return;
-
-    /* 👉 1️⃣ PRIMER ITEM = TELEPROMPTER */
-    const teleItem = productos[0];
-
-    if(teleItem.descripcion && teleItem.descripcion.trim() !== ""){
-      iniciarTeleprompter(teleItem.descripcion, 22);
+      text.style.transform = `translate(${x}px, -50%)`;
+      requestAnimationFrame(animar);
     }
 
-    /* 👉 2️⃣ RESTO = CARTA */
-    const productosCarta = productos.slice(1);
-    renderProductos(productosCarta);
-
-  })
-  .catch(err => console.error("Error cargando productos", err));
+    animar();
+  });
+}
 </script>
 
 </body>
