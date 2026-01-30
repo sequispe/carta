@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teleprompter</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  /* CONTENEDOR TELEPROMPTER */
+  #teleprompter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 42px;
+    background: #806250;
+    color: #fff;
+    overflow: hidden;
+    display: none;
+    z-index: 9999;
+  }
+
+  #tele-text {
+    position: absolute;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 42px;
+    left: 100%;
+  }
+
+  /* CONTENIDO FAKE PARA VER ESPACIO */
+  main {
+    padding-top: 60px;
+    text-align: center;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="teleprompter">
+  <div id="tele-text"></div>
+</div>
+
+<main>
+  <h1>Contenido de prueba</h1>
+  <p>Este espacio después será tu carta, logo, etc.</p>
+</main>
+
+<script>
+fetch("teleprompter.json")
+  .then(res => res.json())
+  .then(cfg => {
+    if (!cfg.activo) return;
+    if (!cfg.mensaje || cfg.mensaje.trim() === "") return;
+
+    const tele = document.getElementById("teleprompter");
+    const text = document.getElementById("tele-text");
+
+    tele.style.display = "block";
+    text.textContent = cfg.mensaje;
+
+    const velocidad = cfg.velocidad || 22;
+
+    let x = window.innerWidth;
+
+    function mover() {
+      x -= velocidad / 10;
+      if (x < -text.offsetWidth) {
+        x = window.innerWidth;
+      }
+      text.style.transform = `translateX(${x}px)`;
+      requestAnimationFrame(mover);
+    }
+
+    mover();
+  })
+  .catch(err => console.error("Teleprompter error:", err));
+</script>
+
+</body>
+</html>
