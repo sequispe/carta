@@ -83,16 +83,25 @@ function iniciarTeleprompter(mensaje, velocidad = 22){
   text.textContent = mensaje;
   tele.style.display = "block";
 
-  let x = window.innerWidth;
-  const anchoTexto = text.offsetWidth;
+  // Esperamos un frame para que el navegador calcule el ancho real del texto
+  requestAnimationFrame(() => {
+    let x = window.innerWidth;
+    const anchoTexto = text.offsetWidth;
 
-  function animar(){
-    x -= velocidad / 10;
-    if(x < -anchoTexto) x = window.innerWidth;
-    text.style.transform = `translate(${x}px, -50%)`;
-    requestAnimationFrame(animar);
-  }
-  animar();
+    function animar(){
+      x -= velocidad / 10;
+
+      // cuando termina de salir COMPLETO por la izquierda, vuelve a empezar
+      if (x < -anchoTexto - 50) {
+        x = window.innerWidth + 50; // pequeño margen para que sea suave
+      }
+
+      text.style.transform = `translate(${x}px, -50%)`;
+      requestAnimationFrame(animar);
+    }
+
+    animar();
+  });
 }
 
 /* ───────── RENDER PRODUCTOS ───────── */
@@ -135,35 +144,6 @@ fetch(JSON_URL)
 
   })
   .catch(err => console.error("Error cargando productos", err));
-/* ───────── TELEPROMPTER ───────── */
-function iniciarTeleprompter(mensaje, velocidad = 22){
-  const tele = document.getElementById("teleprompter");
-  const text = document.getElementById("tele-text");
-
-  text.textContent = mensaje;
-  tele.style.display = "block";
-
-  // Esperamos un frame para que el navegador calcule el ancho real del texto
-  requestAnimationFrame(() => {
-    let x = window.innerWidth;
-    const anchoTexto = text.offsetWidth;
-
-    function animar(){
-      x -= velocidad / 10;
-
-      // cuando termina de salir COMPLETO por la izquierda, vuelve a empezar
-      if (x < -anchoTexto - 50) {
-        x = window.innerWidth + 50; // pequeño margen para que sea suave
-      }
-
-      text.style.transform = `translate(${x}px, -50%)`;
-      requestAnimationFrame(animar);
-    }
-
-    animar();
-  });
-}
 </script>
-
 </body>
 </html> 
