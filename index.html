@@ -2,90 +2,139 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teleprompter</title>
+<title>Carta Digital</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f7f3f0;
+}
 
-  /* CONTENEDOR TELEPROMPTER */
-  #teleprompter {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 42px;
-    background: #806250;
-    color: #fff;
-    overflow: hidden;
-    display: none;
-    z-index: 9999;
-  }
+/* ───────── TELEPROMPTER ───────── */
+#teleprompter{
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:44px;
+  background:#111;
+  color:#fff;
+  overflow:hidden;
+  display:none;
+  z-index:9999;
+}
 
-  #tele-text {
-    position: absolute;
-    white-space: nowrap;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 42px;
-    left: 100%;
-  }
+#tele-text{
+  white-space: nowrap;
+  position:absolute;
+  left:100%;
+  top:50%;
+  transform: translateY(-50%);
+  font-size:16px;
+  padding-left:100%;
+}
 
-  /* CONTENIDO FAKE PARA VER ESPACIO */
-  main {
-    padding-top: 60px;
-    text-align: center;
-  }
+/* ───────── CONTENIDO ───────── */
+#contenido{
+  padding:60px 16px 16px; /* deja espacio al teleprompter */
+}
+
+.producto{
+  background:#fff;
+  border-radius:8px;
+  padding:12px;
+  margin-bottom:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.producto img{
+  max-width:100%;
+  border-radius:6px;
+}
+
+.nombre{font-weight:bold;font-size:18px}
+.descripcion{font-size:14px;color:#555;margin:6px 0}
+.precio{font-weight:bold;color:#806250}
 </style>
 </head>
 
 <body>
 
+<!-- TELEPROMPTER -->
 <div id="teleprompter">
   <div id="tele-text"></div>
 </div>
 
-<main>
-  <h1>Contenido de prueba</h1>
-  <p>Este espacio después será tu carta, logo, etc.</p>
-</main>
+<!-- CARTA -->
+<div id="contenido">
+  <div id="lista"></div>
+</div>
 
 <script>
-fetch("./teleprompter.json")
-  .then(res => {
-    if (!res.ok) throw new Error("No se pudo cargar teleprompter.json");
-    return res.json();
-  })
-  .then(cfg => {
-    console.log("Teleprompter config:", cfg);
+const JSON_URL = "productos.json";
 
-    if (!cfg.activo) return;
-    if (!cfg.mensaje || cfg.mensaje.trim() === "") return;
+/* ───────── TELEPROMPTER ───────── */
+function iniciarTeleprompter(mensaje, velocidad = 22){
+  const tele = document.getElementById("teleprompter");
+  const text = document.getElementById("tele-text");
 
-    const tele = document.getElementById("teleprompter");
-    const text = document.getElementById("tele-text");
+  text.textContent = mensaje;
+  tele.style.display = "block";
 
-    tele.style.display = "block";
-    text.textContent = cfg.mensaje;
+  let x = window.innerWidth;
+  const anchoTexto = text.offsetWidth;
 
-    let x = window.innerWidth;
-    const velocidad = cfg.velocidad || 22;
+  function animar(){
+    x -= velocidad / 10;
+    if(x < -anchoTexto) x = window.innerWidth;
+    text.style.transform = `translate(${x}px, -50%)`;
+    requestAnimationFrame(animar);
+  }
+  animar();
+}
 
-    function mover() {
-      x -= velocidad / 10;
-      if (x < -text.offsetWidth) x = window.innerWidth;
-      text.style.transform = `translateX(${x}px)`;
-      requestAnimationFrame(mover);
+/* ───────── RENDER PRODUCTOS ───────── */
+function renderProductos(productos){
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  productos.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "producto";
+
+    div.innerHTML = `
+      ${p.imagen ? `<img src="${p.imagen}">` : ""}
+      <div class="nombre">${p.nombre || ""}</div>
+      <div class="descripcion">${p.descripcion || ""}</div>
+      <div class="precio">$${p.precio || ""}</div>
+    `;
+
+    lista.appendChild(div);
+  });
+}
+
+/* ───────── INIT ───────── */
+fetch(JSON_URL)
+  .then(r => r.json())
+  .then(productos => {
+
+    if(!Array.isArray(productos) || productos.length === 0) return;
+
+    /* 👉 1️⃣ PRIMER ITEM = TELEPROMPTER */
+    const teleItem = productos[0];
+
+    if(teleItem.descripcion && teleItem.descripcion.trim() !== ""){
+      iniciarTeleprompter(teleItem.descripcion, 22);
     }
 
-    mover();
+    /* 👉 2️⃣ RESTO = CARTA */
+    const productosCarta = productos.slice(1);
+    renderProductos(productosCarta);
+
   })
-  .catch(err => {
-    console.error("❌ Teleprompter:", err);
-  });
+  .catch(err => console.error("Error cargando productos", err));
 </script>
 
 </body>
