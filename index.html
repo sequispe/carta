@@ -4,6 +4,142 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>quispe</title>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>quispe</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= BASE ================= */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url("img/Fondo2.jpg") repeat;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: #45270a;
+      text-align: center;
+    }
+
+    /* ================= TELEPROMPTER ================= */
+    :root {
+      --teleprompter-height: 42px;
+    }
+
+    #teleprompter {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--teleprompter-height);
+      background: #806250;
+      color: #fff;
+      overflow: hidden;
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+    }
+
+    #teleprompterText {
+      white-space: nowrap;
+      padding-left: 100%;
+      font-size: 14px;
+      font-weight: 600;
+      animation: teleMove linear infinite;
+    }
+
+    @keyframes teleMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+
+    /* ================= HEADER / LOGO ================= */
+    header {
+      margin-top: var(--teleprompter-height);
+      width: 100%;
+      max-height: 240px;
+      overflow: hidden;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header img {
+      width: 100%;
+      height: auto;
+      max-height: 240px;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* ================= BANNER ================= */
+    .banner {
+      font-family: 'Playfair Display', serif;
+      padding: 12px 18px;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 600;
+      background: rgba(255,255,255,0.85);
+      border-radius: 10px;
+      margin: 15px auto;
+      width: fit-content;
+      color: #3b2314;
+    }
+
+    /* ================= MOBILE ================= */
+    @media (max-width: 600px) {
+      header {
+        max-height: 160px;
+      }
+
+      header img {
+        max-height: 160px;
+        object-position: center 30%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TELEPROMPTER -->
+  <div id="teleprompter">
+    <div id="teleprompterText"></div>
+  </div>
+
+  <!-- LOGO -->
+  <header>
+    <img src="img/logi1.jpg" alt="quispe">
+  </header>
+
+  <!-- BANNER -->
+  <div class="banner">¡Bienvenidos a Tilo Café!</div>
+
+  <!-- JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("teleprompter.json")
+        .then(r => r.json())
+        .then(cfg => {
+          if (!cfg.activo) return;
+
+          const text = document.getElementById("teleprompterText");
+          text.textContent = cfg.texto;
+          text.style.animationDuration = cfg.velocidad + "s";
+        })
+        .catch(() => {
+          console.warn("No se pudo cargar teleprompter.json");
+        });
+    });
+  </script>
+
+</body>
+</html>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
