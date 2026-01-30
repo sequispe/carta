@@ -73,6 +73,34 @@ header img{
   background: #a07b68;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
+#teleprompter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 42px;
+  background: #806250;
+  color: #fff;
+  overflow: hidden;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+}
+
+#teleprompterText {
+  white-space: nowrap;
+  padding-left: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  animation-name: mover;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes mover {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
 
 /* ================= BUSCADOR ================= */
 
@@ -243,6 +271,10 @@ header img{
 </head>
 
 <body>
+  <div id="teleprompter">
+  <div id="teleprompterText"></div>
+</div>
+
 
   <header>
     <img src="img/logi1.jpg" alt="quispe">
@@ -270,6 +302,20 @@ header img{
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+  fetch("teleprompter.json")
+  .then(r => r.json())
+  .then(cfg => {
+    if (!cfg.activo) return;
+
+    const text = document.getElementById("teleprompterText");
+    text.textContent = cfg.texto;
+    text.style.animationDuration = cfg.velocidad + "s";
+
+    // Empuja el contenido hacia abajo para no tapar el logo
+    document.body.style.paddingTop = "42px";
+  })
+  .catch(() => {});
+
 
   /* ================= SONIDO ================= */
 
