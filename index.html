@@ -1,287 +1,232 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>quispe</title>
+document.addEventListener("DOMContentLoaded", () => {
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  /* ================= SONIDO ================= */
 
-<style>
-body{
-  font-family:'Poppins',sans-serif;
-  background:url("img/Fondo2.jpg") repeat;
-  background-size:cover;
-  margin:0;
-  color:#45270a;
-  text-align:center;
-  scroll-behavior:smooth;
-  padding-top:42px;
-}
+  let sonidoActivo = localStorage.getItem("sonido") !== "off";
+  const btnSound = document.getElementById("btnSound");
 
-/* TELEPROMPTER */
-#teleprompter{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:42px;
-  background:#806250;
-  color:#fff;
-  overflow:hidden;
-  z-index:2000;
-  display:flex;
-  align-items:center;
-}
+  if (btnSound) {
+    btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+    btnSound.addEventListener("click", () => {
+      sonidoActivo = !sonidoActivo;
+      localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
+      btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+    });
+  }
 
-#teleprompterText{
-  white-space:nowrap;
-  padding-left:100%;
-  font-size:14px;
-  font-weight:600;
-  animation:mover linear infinite;
-}
+  function playSound(src, volume = 0.4) {
+    if (!sonidoActivo) return;
+    const audio = new Audio(src);
+    audio.volume = volume;
+    audio.play().catch(() => {});
+  }
 
-@keyframes mover{
-  from{transform:translateX(0)}
-  to{transform:translateX(-100%)}
-}
+  /* ================= CONFIG ================= */
 
-/* HEADER */
-header{
-  width:100%;
-  height:220px;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
+  const USER = "sequispe";
+  const REPO = "carta";
+  let idiomaActual = localStorage.getItem("idioma") || "es";
 
-header img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+  const btnEs = document.getElementById("btn-es");
+  const btnEn = document.getElementById("btn-en");
+  const btnPt = document.getElementById("btn-pt");
+  const banner = document.getElementById("banner-text");
 
-/* BANNER */
-.banner{
-  font-family:'Playfair Display',serif;
-  padding:12px 18px;
-  font-size:clamp(1.2rem,2.5vw,1.6rem);
-  font-weight:600;
-  background:rgba(255,255,255,.85);
-  border-radius:10px;
-  margin:15px auto;
-  width:fit-content;
-}
+  const categoryContainer = document.getElementById("category-buttons");
+  const productList = document.getElementById("product-list");
+  const searchInput = document.getElementById("search");
+  const btnSearch = document.getElementById("btnSearch");
+  const btnUp = document.getElementById("btnUp");
 
-/* IDIOMAS */
-#languageSwitcher{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:10px 0;
-}
+  let productos = [];
 
-.lang-btn{
-  background:#806250;
-  color:white;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-}
+  function scrollToProducts() {
+    productList.scrollIntoView({ behavior: "smooth" });
+  }
 
-.lang-btn.active{
-  background:#a07b68;
-}
+  /* ================= IDIOMAS ================= */
 
-/* BUSCADOR */
-.search-box{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:15px;
-}
+  function actualizarBotones() {
+    btnEs.classList.toggle("active", idiomaActual === "es");
+    btnEn.classList.toggle("active", idiomaActual === "en");
+    btnPt.classList.toggle("active", idiomaActual === "pt");
 
-.search-box input{
-  padding:10px;
-  width:60%;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
+    if (idiomaActual === "es") banner.textContent = "¡Bienvenidos a Tilo Café Agüero 2298!";
+    if (idiomaActual === "en") banner.textContent = "Welcome to Tilo Café Agüero 2298!";
+    if (idiomaActual === "pt") banner.textContent = "Bem-vindo ao Tilo Café Agüero 2298!";
+  }
 
-/* CATEGORÍAS */
-#category-buttons{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:12px;
-  margin:18px;
-}
+  /* ================= LOAD ================= */
 
-#category-buttons button{
-  background:linear-gradient(135deg,#9a7b65,#7a5a46);
-  color:#fff;
-  border:none;
-  border-radius:999px;
-  padding:10px 18px;
-  cursor:pointer;
-}
+  async function load() {
+    actualizarBotones();
 
-/* PRODUCTOS */
-#product-list{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:15px;
-}
+    let filename = "productos.json";
+    if (idiomaActual === "en") filename = "productos-en.json";
+    if (idiomaActual === "pt") filename = "productos-port.json";
 
-.item{
-  background:#fff;
-  border-radius:14px;
-  width:min(420px,100%);
-  box-shadow:0 2px 10px rgba(0,0,0,.15);
-}
+    const URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
 
-.item img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-}
+    try {
+      const res = await fetch(URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("Error cargando productos");
 
-/* BOTONES FLOTANTES */
-#btnUp,#btnSound{
-  position:fixed;
-  right:20px;
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  border:none;
-  font-size:20px;
-  cursor:pointer;
-  background:#8c6954;
-  color:white;
-}
+      const data = await res.json();
 
-#btnUp{bottom:25px;display:none}
-#btnSound{bottom:80px}
-</style>
-</head>
+      productos = data.map(p => ({
+        nombre:
+          idiomaActual === "es" ? (p.nombre || p.nome) :
+          idiomaActual === "en" ? (p.name || p.nome) :
+          p.nome,
 
-<body>
+        descripcion:
+          idiomaActual === "es" ? (p.descripcion || p.descricao) :
+          idiomaActual === "en" ? (p.description || p.descricao) :
+          p.descricao,
 
-<div id="teleprompter">
-  <div id="teleprompterText"></div>
-</div>
+        precio: p.precio || p.preco || p.price,
+        imagen: p.imagen || p.imagem || p.image,
 
-<header>
-  <img src="img/logi1.jpg" alt="quispe">
-</header>
+        categoria:
+          idiomaActual === "es" ? p.categoria :
+          idiomaActual === "en" ? (p.category || p.categoria) :
+          p.categoria
+      }));
 
-<div class="banner" id="banner-text">¡Bienvenidos!</div>
+      renderCategories();
+      renderProducts("Todos");
 
-<div id="languageSwitcher">
-  <button id="btn-es" class="lang-btn">🇪🇸</button>
-  <button id="btn-en" class="lang-btn">🇬🇧</button>
-  <button id="btn-pt" class="lang-btn">🇧🇷</button>
-</div>
+    } catch (e) {
+      console.error(e);
+      productList.innerHTML = `<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
+    }
+  }
 
-<div class="search-box">
-  <input id="search" placeholder="Buscar...">
-  <button id="btnSearch">Buscar</button>
-</div>
+  /* ================= CATEGORÍAS ================= */
 
-<div id="category-buttons"></div>
-<div id="product-list"></div>
+  function renderCategories() {
+    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
+    categoryContainer.innerHTML = "";
 
-<button id="btnUp">⬆️</button>
-<button id="btnSound">🔊</button>
+    categorias.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.textContent = cat;
+      btn.addEventListener("click", () => {
+        playSound("sounds/categorías.wav");
+        renderProducts(cat);
+        scrollToProducts();
+      });
+      categoryContainer.appendChild(btn);
+    });
+  }
 
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
+  /* ================= PRODUCTOS ================= */
 
-/* TELEPROMPTER */
-fetch("teleprompter.json")
-.then(r=>r.json())
-.then(cfg=>{
-  if(!cfg.activo) return;
-  const t=document.getElementById("teleprompterText");
-  t.textContent=cfg.texto;
-  t.style.animationDuration=cfg.velocidad+"s";
-});
+  function renderProducts(categoria) {
+    productList.innerHTML = "";
 
-/* SONIDO */
-let sonido=localStorage.getItem("sonido")!=="off";
-const btnSound=document.getElementById("btnSound");
-btnSound.textContent=sonido?"🔊":"🔇";
+    const lista = categoria === "Todos"
+      ? productos
+      : productos.filter(p => p.categoria === categoria);
 
-btnSound.onclick=()=>{
-  sonido=!sonido;
-  localStorage.setItem("sonido",sonido?"on":"off");
-  btnSound.textContent=sonido?"🔊":"🔇";
-};
+    if (lista.length === 0) {
+      productList.innerHTML = `<div class="msg">No hay productos disponibles.</div>`;
+      return;
+    }
 
-function playSound(src){
-  if(!sonido) return;
-  new Audio(src).play().catch(()=>{});
-}
-
-/* CONFIG */
-const USER="sequispe";
-const REPO="carta";
-let idioma=localStorage.getItem("idioma")||"es";
-let productos=[];
-
-/* LOAD */
-async function load(){
-  const file=idioma==="en"?"productos-en.json":idioma==="pt"?"productos-port.json":"productos.json";
-  const url=`https://raw.githubusercontent.com/${USER}/${REPO}/main/${file}`;
-  const res=await fetch(url);
-  productos=await res.json();
-  renderCategories();
-  renderProducts("Todos");
-}
-
-function renderCategories(){
-  const cats=["Todos",...new Set(productos.map(p=>p.categoria))];
-  const c=document.getElementById("category-buttons");
-  c.innerHTML="";
-  cats.forEach(cat=>{
-    const b=document.createElement("button");
-    b.textContent=cat;
-    b.onclick=()=>renderProducts(cat);
-    c.appendChild(b);
-  });
-}
-
-function renderProducts(cat){
-  const list=document.getElementById("product-list");
-  list.innerHTML="";
-  productos.filter(p=>cat==="Todos"||p.categoria===cat)
-  .forEach(p=>{
-    list.innerHTML+=`
-      <div class="item">
-        <img src="${p.imagen}">
+    lista.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
         <h3>${p.nombre}</h3>
-        <p>${p.descripcion||""}</p>
-        <b>$${p.precio}</b>
-      </div>`;
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>
+      `;
+      productList.appendChild(div);
+    });
+  }
+
+  /* ================= BUSCAR ================= */
+
+  function buscar() {
+    const q = searchInput.value.toLowerCase().trim();
+
+    if (!q) {
+      renderProducts("Todos");
+      return;
+    }
+
+    const res = productos.filter(p =>
+      p.nombre.toLowerCase().includes(q) ||
+      (p.descripcion || "").toLowerCase().includes(q) ||
+      p.categoria.toLowerCase().includes(q)
+    );
+
+    if (res.length === 0) {
+      productList.innerHTML = `<div class="msg">🔍 No se encontraron resultados.</div>`;
+      return;
+    }
+
+    productList.innerHTML = "";
+    res.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>
+      `;
+      productList.appendChild(div);
+    });
+
+    scrollToProducts();
+  }
+
+  btnSearch.addEventListener("click", () => {
+    playSound("sounds/buscar.mp3");
+    buscar();
   });
-}
 
-/* BTN UP */
-window.onscroll=()=>btnUp.style.display=scrollY>300?"block":"none";
-btnUp.onclick=()=>scrollTo({top:0,behavior:"smooth"});
+  searchInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") buscar();
+  });
 
-/* IDIOMAS */
-btn-es.onclick=()=>{idioma="es";localStorage.setItem("idioma","es");load()};
-btn-en.onclick=()=>{idioma="en";localStorage.setItem("idioma","en");load()};
-btn-pt.onclick=()=>{idioma="pt";localStorage.setItem("idioma","pt");load()};
+  /* ================= BOTÓN SUBIR ================= */
 
-load();
+  window.addEventListener("scroll", () => {
+    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
+  });
+
+  btnUp.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* ================= EVENTOS IDIOMA ================= */
+
+  btnEs.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "es";
+    localStorage.setItem("idioma", "es");
+    load();
+  });
+
+  btnEn.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "en";
+    localStorage.setItem("idioma", "en");
+    load();
+  });
+
+  btnPt.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "pt";
+    localStorage.setItem("idioma", "pt");
+    load();
+  });
+
+  /* ================= INIT ================= */
+
+  load();
 });
-</script>
-
-</body>
-</html>
