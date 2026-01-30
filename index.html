@@ -123,7 +123,240 @@ fetch("teleprompter.json?cache=" + Date.now())
 
     mover();
   })
-  .catch(err => console.error("Teleprompter error:", err));
+  .catch(err => console.error("Teleprompter error:", err));<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= SONIDO ================= */
+
+  let sonidoActivo = localStorage.getItem("sonido") !== "off";
+  const btnSound = document.getElementById("btnSound");
+
+  if (btnSound) {
+    btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+    btnSound.addEventListener("click", () => {
+      sonidoActivo = !sonidoActivo;
+      localStorage.setItem("sonido", sonidoActivo ? "on" : "off");
+      btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+    });
+  }
+
+  function playSound(src, volume = 0.4) {
+    if (!sonidoActivo) return;
+    const audio = new Audio(src);
+    audio.volume = volume;
+    audio.play().catch(() => {});
+  }
+
+  /* ================= CONFIG ================= */
+
+  const USER = "sequispe";
+  const REPO = "carta";
+  let idiomaActual = localStorage.getItem("idioma") || "es";
+
+  const btnEs = document.getElementById("btn-es");
+  const btnEn = document.getElementById("btn-en");
+  const btnPt = document.getElementById("btn-pt");
+  const banner = document.getElementById("banner-text");
+
+  const categoryContainer = document.getElementById("category-buttons");
+  const productList = document.getElementById("product-list");
+  const searchInput = document.getElementById("search");
+  const btnSearch = document.getElementById("btnSearch");
+  const btnUp = document.getElementById("btnUp");
+
+  let productos = [];
+
+  function scrollToProducts() {
+    productList.scrollIntoView({ behavior: "smooth" });
+  }
+
+  /* ================= IDIOMAS ================= */
+
+  function actualizarBotones() {
+    btnEs.classList.toggle("active", idiomaActual === "es");
+    btnEn.classList.toggle("active", idiomaActual === "en");
+    btnPt.classList.toggle("active", idiomaActual === "pt");
+
+    if (idiomaActual === "es") banner.textContent = "¡Bienvenidos a Tilo Café Agüero 2298!";
+    if (idiomaActual === "en") banner.textContent = "Welcome to Tilo Café Agüero 2298!";
+    if (idiomaActual === "pt") banner.textContent = "Bem-vindo ao Tilo Café Agüero 2298!";
+  }
+
+  /* ================= LOAD ================= */
+
+  async function load() {
+    actualizarBotones();
+
+    let filename = "productos.json";
+    if (idiomaActual === "en") filename = "productos-en.json";
+    if (idiomaActual === "pt") filename = "productos-port.json";
+
+    const URL = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${filename}`;
+
+    try {
+      const res = await fetch(URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("Error cargando productos");
+
+      const data = await res.json();
+
+      productos = data.map(p => ({
+        nombre:
+          idiomaActual === "es" ? (p.nombre || p.nome) :
+          idiomaActual === "en" ? (p.name || p.nome) :
+          p.nome,
+
+        descripcion:
+          idiomaActual === "es" ? (p.descripcion || p.descricao) :
+          idiomaActual === "en" ? (p.description || p.descricao) :
+          p.descricao,
+
+        precio: p.precio || p.preco || p.price,
+        imagen: p.imagen || p.imagem || p.image,
+
+        categoria:
+          idiomaActual === "es" ? p.categoria :
+          idiomaActual === "en" ? (p.category || p.categoria) :
+          p.categoria
+      }));
+
+      renderCategories();
+      renderProducts("Todos");
+
+    } catch (e) {
+      console.error(e);
+      productList.innerHTML = `<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
+    }
+  }
+
+  /* ================= CATEGORÍAS ================= */
+
+  function renderCategories() {
+    const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
+    categoryContainer.innerHTML = "";
+
+    categorias.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.textContent = cat;
+      btn.addEventListener("click", () => {
+        playSound("sounds/categorías.wav");
+        renderProducts(cat);
+        scrollToProducts();
+      });
+      categoryContainer.appendChild(btn);
+    });
+  }
+
+  /* ================= PRODUCTOS ================= */
+
+  function renderProducts(categoria) {
+    productList.innerHTML = "";
+
+    const lista = categoria === "Todos"
+      ? productos
+      : productos.filter(p => p.categoria === categoria);
+
+    if (lista.length === 0) {
+      productList.innerHTML = `<div class="msg">No hay productos disponibles.</div>`;
+      return;
+    }
+
+    lista.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>
+      `;
+      productList.appendChild(div);
+    });
+  }
+
+  /* ================= BUSCAR ================= */
+
+  function buscar() {
+    const q = searchInput.value.toLowerCase().trim();
+
+    if (!q) {
+      renderProducts("Todos");
+      return;
+    }
+
+    const res = productos.filter(p =>
+      p.nombre.toLowerCase().includes(q) ||
+      (p.descripcion || "").toLowerCase().includes(q) ||
+      p.categoria.toLowerCase().includes(q)
+    );
+
+    if (res.length === 0) {
+      productList.innerHTML = `<div class="msg">🔍 No se encontraron resultados.</div>`;
+      return;
+    }
+
+    productList.innerHTML = "";
+    res.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>
+      `;
+      productList.appendChild(div);
+    });
+
+    scrollToProducts();
+  }
+
+  btnSearch.addEventListener("click", () => {
+    playSound("sounds/buscar.mp3");
+    buscar();
+  });
+
+  searchInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") buscar();
+  });
+
+  /* ================= BOTÓN SUBIR ================= */
+
+  window.addEventListener("scroll", () => {
+    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
+  });
+
+  btnUp.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* ================= EVENTOS IDIOMA ================= */
+
+  btnEs.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "es";
+    localStorage.setItem("idioma", "es");
+    load();
+  });
+
+  btnEn.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "en";
+    localStorage.setItem("idioma", "en");
+    load();
+  });
+
+  btnPt.addEventListener("click", () => {
+    playSound("sounds/idioma.mp3");
+    idiomaActual = "pt";
+    localStorage.setItem("idioma", "pt");
+    load();
+  });
+
+  /* ================= INIT ================= */
+
+  load();
+});
+
 </script>
 
 </body>
