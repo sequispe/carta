@@ -15,28 +15,25 @@ body{
 /* ───────── TELEPROMPTER ───────── */
 #teleprompter{
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 42px;
-  background: #806250;
-  color: #fff;
-  overflow: hidden;
-  z-index: 3000;
-  display: flex;
-  align-items: center;
+  top:0;
+  left:0;
+  width:100%;
+  height:44px;
+  background:#111;
+  color:#fff;
+  overflow:hidden;
+  display:none;
+  z-index:9999;
 }
 
 #tele-text{
-  position: absolute;
   white-space: nowrap;
-  font-weight: 600;
-  font-size: 14px;
-  will-change: transform;
-}
-
-.oculto{
-  display: none;
+  position:absolute;
+  left:100%;
+  top:50%;
+  transform: translateY(-50%);
+  font-size:16px;
+  padding-left:100%;
 }
 
 /* ───────── CONTENIDO ───────── */
@@ -66,10 +63,9 @@ body{
 <body>
 
 <!-- TELEPROMPTER -->
-<div id="teleprompter" class="oculto">
+<div id="teleprompter">
   <div id="tele-text"></div>
 </div>
-
 
 <!-- CARTA -->
 <div id="contenido">
@@ -77,51 +73,69 @@ body{
 </div>
 
 <script>
-fetch("productos.json")
+const JSON_URL = "productos.json";
+
+/* ───────── TELEPROMPTER ───────── */
+function iniciarTeleprompter(mensaje, velocidad = 22){
+  const tele = document.getElementById("teleprompter");
+  const text = document.getElementById("tele-text");
+
+  text.textContent = mensaje;
+  tele.style.display = "block";
+
+  let x = window.innerWidth;
+  const anchoTexto = text.offsetWidth;
+
+  function animar(){
+    x -= velocidad / 10;
+    if(x < -anchoTexto) x = window.innerWidth;
+    text.style.transform = `translate(${x}px, -50%)`;
+    requestAnimationFrame(animar);
+  }
+  animar();
+}
+
+/* ───────── RENDER PRODUCTOS ───────── */
+function renderProductos(productos){
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  productos.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "producto";
+
+    div.innerHTML = `
+      ${p.imagen ? `<img src="${p.imagen}">` : ""}
+      <div class="nombre">${p.nombre || ""}</div>
+      <div class="descripcion">${p.descripcion || ""}</div>
+      <div class="precio">$${p.precio || ""}</div>
+    `;
+
+    lista.appendChild(div);
+  });
+}
+
+/* ───────── INIT ───────── */
+fetch(JSON_URL)
   .then(r => r.json())
-  .then(cfg => {
-    if (!cfg.activo) return;
-    if (!cfg.mensajes || cfg.mensajes.length === 0) return;
+  .then(productos => {
 
-    const tele = document.getElementById("teleprompter");
-    const text = document.getElementById("tele-text");
+    if(!Array.isArray(productos) || productos.length === 0) return;
 
-    tele.classList.remove("oculto");
+    /* 👉 1️⃣ PRIMER ITEM = TELEPROMPTER */
+    const teleItem = productos[0];
 
-    let index = 0;
-    const velocidad = cfg.velocidad || 22;
-
-    function iniciarMensaje(){
-      text.textContent = cfg.mensajes[index];
-
-      // esperar a que el navegador calcule el ancho
-      requestAnimationFrame(() => {
-        const anchoTexto = text.offsetWidth;
-        const anchoPantalla = window.innerWidth;
-
-        let x = anchoPantalla;
-
-        function mover(){
-          x -= velocidad / 10;
-          text.style.transform = `translateX(${x}px)`;
-
-          if (x < -anchoTexto){
-            index = (index + 1) % cfg.mensajes.length;
-            iniciarMensaje(); // 🔁 siguiente mensaje
-            return;
-          }
-          requestAnimationFrame(mover);
-        }
-
-        mover();
-      });
+    if(teleItem.descripcion && teleItem.descripcion.trim() !== ""){
+      iniciarTeleprompter(teleItem.descripcion, 22);
     }
 
-    iniciarMensaje();
-  })
-  .catch(err => console.error("Teleprompter error", err));
-</script>
+    /* 👉 2️⃣ RESTO = CARTA */
+    const productosCarta = productos.slice(1);
+    renderProductos(productosCarta);
 
+  })
+  .catch(err => console.error("Error cargando productos", err));
+</script>
 
 </body>
 </html>
