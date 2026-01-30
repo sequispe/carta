@@ -54,9 +54,14 @@
 </main>
 
 <script>
-fetch("teleprompter.json")
-  .then(res => res.json())
+fetch("./teleprompter.json")
+  .then(res => {
+    if (!res.ok) throw new Error("No se pudo cargar teleprompter.json");
+    return res.json();
+  })
   .then(cfg => {
+    console.log("Teleprompter config:", cfg);
+
     if (!cfg.activo) return;
     if (!cfg.mensaje || cfg.mensaje.trim() === "") return;
 
@@ -66,22 +71,21 @@ fetch("teleprompter.json")
     tele.style.display = "block";
     text.textContent = cfg.mensaje;
 
-    const velocidad = cfg.velocidad || 22;
-
     let x = window.innerWidth;
+    const velocidad = cfg.velocidad || 22;
 
     function mover() {
       x -= velocidad / 10;
-      if (x < -text.offsetWidth) {
-        x = window.innerWidth;
-      }
+      if (x < -text.offsetWidth) x = window.innerWidth;
       text.style.transform = `translateX(${x}px)`;
       requestAnimationFrame(mover);
     }
 
     mover();
   })
-  .catch(err => console.error("Teleprompter error:", err));
+  .catch(err => {
+    console.error("❌ Teleprompter:", err);
+  });
 </script>
 
 </body>
