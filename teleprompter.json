@@ -3,3 +3,31 @@
   "mensaje": "",
   "velocidad": 22
 }
+fetch("teleprompter.json")
+  .then(res => res.json())
+  .then(cfg => {
+    if (!cfg.activo) return;
+    if (!cfg.mensaje || cfg.mensaje.trim() === "") return;
+
+    const tele = document.getElementById("teleprompter");
+    const text = document.getElementById("tele-text");
+
+    text.textContent = cfg.mensaje;
+    tele.classList.remove("oculto");
+
+    const velocidad = cfg.velocidad || 22;
+    const anchoTexto = text.offsetWidth;
+    const anchoPantalla = window.innerWidth;
+
+    let x = anchoPantalla;
+
+    function mover() {
+      x -= velocidad / 10;
+      if (x < -anchoTexto) x = anchoPantalla;
+      text.style.transform = `translateX(${x}px)`;
+      requestAnimationFrame(mover);
+    }
+
+    mover();
+  })
+  .catch(err => console.error("Teleprompter error", err));
