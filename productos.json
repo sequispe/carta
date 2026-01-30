@@ -1,5 +1,11 @@
 [
   {
+  "activo": true,
+  "velocidad": 20,
+  "texto": "☕ Bienvenidos · Carta digital · Pedidos en caja · Consultá las promos del día · Gracias por visitarnos 🤍"
+}
+
+  {
     "nombre": "Sopa de mani",
     "descripcion": "sopa de mani",
     "precio": "4000",
