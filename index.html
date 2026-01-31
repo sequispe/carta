@@ -163,6 +163,19 @@
     #btnSound {
       right: 74px;
     }
+    /* ───────── ANIMACIÓN PRODUCTOS ───────── */
+
+.producto {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+
+.producto.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
   </style>
 </head>
 
@@ -197,7 +210,7 @@
   <!-- JS (VACÍO POR AHORA) -->
   <script>
     // acá vamos a armar TODO paso a paso
- <script>
+ 
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= TELEPROMPTER ================= */
@@ -254,6 +267,170 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= SONIDO CATEGORÍAS ================= */
+
+  const sonidoCategoria = new Audio("sonidos/categoria.mp3");
+  sonidoCategoria.volume = 0.4;
+
+  function playCategoria() {
+    if (window.sonidoActivo) {
+      sonidoCategoria.currentTime = 0;
+      sonidoCategoria.play().catch(() => {});
+    }
+  }
+
+  /* ⬇️ interceptamos renderCategories si existe */
+  const originalRenderCategories = window.renderCategories;
+
+  if (typeof originalRenderCategories === "function") {
+    window.renderCategories = function () {
+      originalRenderCategories();
+
+      // agregar sonido a cada botón
+      document
+        .querySelectorAll("#category-buttons button")
+        .forEach(btn => {
+          btn.addEventListener("click", playCategoria);
+        });
+    };
+  }
+  
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= SONIDO BUSCAR ================= */
+
+  const sonidoBuscar = new Audio("sonidos/buscar.mp3");
+  sonidoBuscar.volume = 0.4;
+
+  function playBuscar() {
+    if (window.sonidoActivo) {
+      sonidoBuscar.currentTime = 0;
+      sonidoBuscar.play().catch(() => {});
+    }
+  }
+
+  /* ================= BUSCADOR ================= */
+
+  const input = document.getElementById("search");
+  const btnBuscar = document.getElementById("btnSearch");
+
+  if (!input || !btnBuscar) return;
+
+  function ejecutarBusqueda() {
+    playBuscar();
+
+    // usamos la función buscarProductos si existe
+    if (typeof window.buscarProductos === "function") {
+      window.buscarProductos();
+    }
+  }
+
+  // click en botón
+  btnBuscar.addEventListener("click", ejecutarBusqueda);
+
+  // Enter en input
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      ejecutarBusqueda();
+    }
+  });
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= SONIDO IDIOMA ================= */
+
+  const sonidoIdioma = new Audio("sonidos/idioma.mp3");
+  sonidoIdioma.volume = 0.4;
+
+  function playIdioma() {
+    if (window.sonidoActivo) {
+      sonidoIdioma.currentTime = 0;
+      sonidoIdioma.play().catch(() => {});
+    }
+  }
+
+  /* ================= BOTONES IDIOMA ================= */
+
+  const btnES = document.getElementById("btn-es");
+  const btnEN = document.getElementById("btn-en");
+  const btnPT = document.getElementById("btn-pt");
+
+  [btnES, btnEN, btnPT].forEach(btn => {
+    if (!btn) return;
+    btn.addEventListener("click", playIdioma);
+  });
+
+});
+</script>
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= SONIDO CATEGORÍAS ================= */
+
+  const sonidoCategoria = new Audio("sonidos/categoria.mp3");
+  sonidoCategoria.volume = 0.35;
+
+  function playCategoria() {
+    if (window.sonidoActivo) {
+      sonidoCategoria.currentTime = 0;
+      sonidoCategoria.play().catch(() => {});
+    }
+  }
+
+  /* ================= HOOK A BOTONES ================= */
+
+  const contenedorCategorias = document.getElementById("category-buttons");
+  if (!contenedorCategorias) return;
+
+  contenedorCategorias.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") {
+      playCategoria();
+    }
+  });
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= SONIDO IDIOMA ================= */
+
+  const sonidoIdioma = new Audio("sonidos/idioma.mp3");
+  sonidoIdioma.volume = 0.4;
+
+  function playIdioma() {
+    if (window.sonidoActivo) {
+      sonidoIdioma.currentTime = 0;
+      sonidoIdioma.play().catch(() => {});
+    }
+  }
+
+  /* ================= BOTONES IDIOMA ================= */
+
+  const btnES = document.getElementById("btn-es");
+  const btnEN = document.getElementById("btn-en");
+  const btnPT = document.getElementById("btn-pt");
+
+  [btnES, btnEN, btnPT].forEach(btn => {
+    if (!btn) return;
+    btn.addEventListener("click", playIdioma);
+  });
+<script>
+function animarProductos() {
+  const items = document.querySelectorAll(".producto");
+  items.forEach((item, i) => {
+    setTimeout(() => {
+      item.classList.add("visible");
+    }, i * 60);
+    function renderProducts(categoria) {
+  // ... render normal
+  animarProductos();
+}
+
+  });
+}
+</script>
 
 });
 </script>
