@@ -209,8 +209,7 @@
 
   <!-- JS (VACÍO POR AHORA) -->
   <script>
-    // acá vamos a armar TODO paso a paso
- 
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= TELEPROMPTER ================= */
@@ -236,7 +235,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   iniciarTeleprompter();
   teleText.addEventListener("transitionend", iniciarTeleprompter);
-  
+
+});
+</script>
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= SONIDO ON / OFF ================= */
@@ -265,8 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("sonidoActivo", window.sonidoActivo);
     actualizarIconoSonido();
   });
-
-
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= SONIDO CATEGORÍAS ================= */
@@ -296,7 +297,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
   }
-  
+
+});
+</script>
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= SONIDO BUSCAR ================= */
@@ -336,36 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ejecutarBusqueda();
     }
   });
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= SONIDO IDIOMA ================= */
-
-  const sonidoIdioma = new Audio("sonidos/idioma.mp3");
-  sonidoIdioma.volume = 0.4;
-
-  function playIdioma() {
-    if (window.sonidoActivo) {
-      sonidoIdioma.currentTime = 0;
-      sonidoIdioma.play().catch(() => {});
-    }
-  }
-
-  /* ================= BOTONES IDIOMA ================= */
-
-  const btnES = document.getElementById("btn-es");
-  const btnEN = document.getElementById("btn-en");
-  const btnPT = document.getElementById("btn-pt");
-
-  [btnES, btnEN, btnPT].forEach(btn => {
-    if (!btn) return;
-    btn.addEventListener("click", playIdioma);
-  });
-
-});
-</script>
-
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= SONIDO CATEGORÍAS ================= */
@@ -390,8 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
       playCategoria();
     }
   });
-
-<script>
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= SONIDO IDIOMA ================= */
@@ -416,25 +390,36 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!btn) return;
     btn.addEventListener("click", playIdioma);
   });
-<script>
+
+});
+</script>
+  <script>
 function animarProductos() {
   const items = document.querySelectorAll(".producto");
   items.forEach((item, i) => {
     setTimeout(() => {
       item.classList.add("visible");
     }, i * 60);
-    function renderProducts(categoria) {
-  // ... render normal
-  animarProductos();
-}
-
   });
 }
 </script>
 
+
+
 });
 </script>
 
+
+});
+</script>
+
+
+
+});
+</script>
+
+
+  </script>
 
 </body>
 </html>
