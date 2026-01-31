@@ -197,7 +197,67 @@
   <!-- JS (VACÍO POR AHORA) -->
   <script>
     // acá vamos a armar TODO paso a paso
-  </script>
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= TELEPROMPTER ================= */
+
+  const textoTele = "✨ Bienvenidos a Quispe · Disfrutá nuestra carta de platos, bebidas y especialidades ✨";
+
+  const tele = document.getElementById("teleprompter");
+  const teleText = document.getElementById("tele-text");
+
+  teleText.textContent = textoTele;
+  tele.style.display = "block";
+
+  function iniciarTeleprompter() {
+    teleText.style.transition = "none";
+    teleText.style.left = "100%";
+
+    requestAnimationFrame(() => {
+      const duracion = Math.max(textoTele.length * 90, 9000);
+      teleText.style.transition = `left ${duracion}ms linear`;
+      teleText.style.left = "-100%";
+    });
+  }
+
+  iniciarTeleprompter();
+  teleText.addEventListener("transitionend", iniciarTeleprompter);
+  
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= SONIDO ON / OFF ================= */
+
+  const btnSound = document.getElementById("btnSound");
+
+  // estado global del sonido
+  window.sonidoActivo = true;
+
+  // recuperar estado guardado
+  const estadoGuardado = localStorage.getItem("sonidoActivo");
+  if (estadoGuardado !== null) {
+    window.sonidoActivo = estadoGuardado === "true";
+  }
+
+  // actualizar icono
+  function actualizarIconoSonido() {
+    btnSound.textContent = window.sonidoActivo ? "🔊" : "🔇";
+  }
+
+  actualizarIconoSonido();
+
+  // click botón
+  btnSound.addEventListener("click", () => {
+    window.sonidoActivo = !window.sonidoActivo;
+    localStorage.setItem("sonidoActivo", window.sonidoActivo);
+    actualizarIconoSonido();
+  });
+
+
+
+});
+</script>
+
 
 </body>
 </html>
