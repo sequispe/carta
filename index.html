@@ -403,6 +403,58 @@ function animarProductos() {
   });
 }
 </script>
+let productosGlobal = [];
+
+function renderProductos(lista) {
+  const cont = document.getElementById("product-list");
+  cont.innerHTML = "";
+
+  if (lista.length === 0) {
+    cont.innerHTML = "<p>No se encontraron productos</p>";
+    return;
+  }
+
+  lista.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "item producto";
+
+    div.innerHTML = `
+      ${p.imagen ? `<img src="${p.imagen}">` : ""}
+      <h3>${p.nombre}</h3>
+      <p>${p.descripcion}</p>
+      <span class="price">$${p.precio}</span>
+    `;
+
+    cont.appendChild(div);
+  });
+
+  animarProductos(); // animación suave
+}
+
+fetch("productos.json")
+  .then(r => r.json())
+  .then(data => {
+    productosGlobal = data.slice(1); // sacamos el primero (teleprompter)
+    renderProductos(productosGlobal);
+  });
+window.buscarProductos = function () {
+  const texto = document.getElementById("search").value
+    .toLowerCase()
+    .trim();
+
+  if (texto === "") {
+    renderProductos(productosGlobal);
+    return;
+  }
+
+  const filtrados = productosGlobal.filter(p =>
+    p.nombre.toLowerCase().includes(texto) ||
+    p.descripcion.toLowerCase().includes(texto) ||
+    p.categoria.toLowerCase().includes(texto)
+  );
+
+  renderProductos(filtrados);
+};
 
 
 
