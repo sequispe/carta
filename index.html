@@ -209,6 +209,30 @@
 
   <!-- JS (VACÍO POR AHORA) -->
   <script>
+    /* ================= CARGAR PRODUCTOS ================= */
+
+let productosGlobal = [];
+
+fetch("productos.json")
+  .then(res => res.json())
+  .then(data => {
+
+    if (!Array.isArray(data) || data.length === 0) {
+      console.error("JSON vacío o mal formado");
+      return;
+    }
+
+    // 👉 1º producto = teleprompter
+    if (data[0].descripcion) {
+      iniciarTeleprompter(data[0].descripcion);
+    }
+
+    // 👉 resto = carta
+    productosGlobal = data.slice(1);
+    renderProductos(productosGlobal);
+  })
+  .catch(err => console.error("Error cargando productos:", err));
+
   <script>
 document.addEventListener("DOMContentLoaded", () => {
 
