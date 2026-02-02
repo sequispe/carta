@@ -208,227 +208,37 @@
   <button id="btnSound">🔊</button>
 
   <!-- JS (VACÍO POR AHORA) -->
-  <script>
-    /* ================= CARGAR PRODUCTOS ================= */
-
+ <script>
+/* ================= ESTADO GLOBAL ================= */
 let productosGlobal = [];
+let sonidoActivo = localStorage.getItem("sonidoActivo") !== "false";
 
-fetch("productos.json")
-  .then(res => res.json())
-  .then(data => {
+/* ================= TELEPROMPTER ================= */
+const tele = document.getElementById("teleprompter");
+const teleText = document.getElementById("tele-text");
 
-    if (!Array.isArray(data) || data.length === 0) {
-      console.error("JSON vacío o mal formado");
-      return;
-    }
+function iniciarTeleprompter(texto) {
+  if (!texto) return;
 
-    // 👉 1º producto = teleprompter
-    if (data[0].descripcion) {
-      iniciarTeleprompter(data[0].descripcion);
-    }
-
-    // 👉 resto = carta
-    productosGlobal = data.slice(1);
-    renderProductos(productosGlobal);
-  })
-  .catch(err => console.error("Error cargando productos:", err));
-
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= TELEPROMPTER ================= */
-
-  const textoTele = "✨ Bienvenidos a Quispe · Disfrutá nuestra carta de platos, bebidas y especialidades ✨";
-
-  const tele = document.getElementById("teleprompter");
-  const teleText = document.getElementById("tele-text");
-
-  teleText.textContent = textoTele;
   tele.style.display = "block";
+  teleText.textContent = texto;
 
-  function iniciarTeleprompter() {
+  function animar() {
     teleText.style.transition = "none";
     teleText.style.left = "100%";
 
     requestAnimationFrame(() => {
-      const duracion = Math.max(textoTele.length * 90, 9000);
+      const duracion = Math.max(texto.length * 90, 9000);
       teleText.style.transition = `left ${duracion}ms linear`;
       teleText.style.left = "-100%";
     });
   }
 
-  iniciarTeleprompter();
-  teleText.addEventListener("transitionend", iniciarTeleprompter);
-
-});
-</script>
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= SONIDO ON / OFF ================= */
-
-  const btnSound = document.getElementById("btnSound");
-
-  // estado global del sonido
-  window.sonidoActivo = true;
-
-  // recuperar estado guardado
-  const estadoGuardado = localStorage.getItem("sonidoActivo");
-  if (estadoGuardado !== null) {
-    window.sonidoActivo = estadoGuardado === "true";
-  }
-
-  // actualizar icono
-  function actualizarIconoSonido() {
-    btnSound.textContent = window.sonidoActivo ? "🔊" : "🔇";
-  }
-
-  actualizarIconoSonido();
-
-  // click botón
-  btnSound.addEventListener("click", () => {
-    window.sonidoActivo = !window.sonidoActivo;
-    localStorage.setItem("sonidoActivo", window.sonidoActivo);
-    actualizarIconoSonido();
-  });
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= SONIDO CATEGORÍAS ================= */
-
-  const sonidoCategoria = new Audio("sonidos/categoria.mp3");
-  sonidoCategoria.volume = 0.4;
-
-  function playCategoria() {
-    if (window.sonidoActivo) {
-      sonidoCategoria.currentTime = 0;
-      sonidoCategoria.play().catch(() => {});
-    }
-  }
-
-  /* ⬇️ interceptamos renderCategories si existe */
-  const originalRenderCategories = window.renderCategories;
-
-  if (typeof originalRenderCategories === "function") {
-    window.renderCategories = function () {
-      originalRenderCategories();
-
-      // agregar sonido a cada botón
-      document
-        .querySelectorAll("#category-buttons button")
-        .forEach(btn => {
-          btn.addEventListener("click", playCategoria);
-        });
-    };
-  }
-
-});
-</script>
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= SONIDO BUSCAR ================= */
-
-  const sonidoBuscar = new Audio("sonidos/buscar.mp3");
-  sonidoBuscar.volume = 0.4;
-
-  function playBuscar() {
-    if (window.sonidoActivo) {
-      sonidoBuscar.currentTime = 0;
-      sonidoBuscar.play().catch(() => {});
-    }
-  }
-
-  /* ================= BUSCADOR ================= */
-
-  const input = document.getElementById("search");
-  const btnBuscar = document.getElementById("btnSearch");
-
-  if (!input || !btnBuscar) return;
-
-  function ejecutarBusqueda() {
-    playBuscar();
-
-    // usamos la función buscarProductos si existe
-    if (typeof window.buscarProductos === "function") {
-      window.buscarProductos();
-    }
-  }
-
-  // click en botón
-  btnBuscar.addEventListener("click", ejecutarBusqueda);
-
-  // Enter en input
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      ejecutarBusqueda();
-    }
-  });
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= SONIDO CATEGORÍAS ================= */
-
-  const sonidoCategoria = new Audio("sonidos/categoria.mp3");
-  sonidoCategoria.volume = 0.35;
-
-  function playCategoria() {
-    if (window.sonidoActivo) {
-      sonidoCategoria.currentTime = 0;
-      sonidoCategoria.play().catch(() => {});
-    }
-  }
-
-  /* ================= HOOK A BOTONES ================= */
-
-  const contenedorCategorias = document.getElementById("category-buttons");
-  if (!contenedorCategorias) return;
-
-  contenedorCategorias.addEventListener("click", (e) => {
-    if (e.target.tagName === "BUTTON") {
-      playCategoria();
-    }
-  });
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= SONIDO IDIOMA ================= */
-
-  const sonidoIdioma = new Audio("sonidos/idioma.mp3");
-  sonidoIdioma.volume = 0.4;
-
-  function playIdioma() {
-    if (window.sonidoActivo) {
-      sonidoIdioma.currentTime = 0;
-      sonidoIdioma.play().catch(() => {});
-    }
-  }
-
-  /* ================= BOTONES IDIOMA ================= */
-
-  const btnES = document.getElementById("btn-es");
-  const btnEN = document.getElementById("btn-en");
-  const btnPT = document.getElementById("btn-pt");
-
-  [btnES, btnEN, btnPT].forEach(btn => {
-    if (!btn) return;
-    btn.addEventListener("click", playIdioma);
-  });
-
-});
-</script>
-  <script>
-function animarProductos() {
-  const items = document.querySelectorAll(".producto");
-  items.forEach((item, i) => {
-    setTimeout(() => {
-      item.classList.add("visible");
-    }, i * 60);
-  });
+  animar();
+  teleText.addEventListener("transitionend", animar);
 }
-</script>
-let productosGlobal = [];
 
+/* ================= RENDER PRODUCTOS ================= */
 function renderProductos(lista) {
   const cont = document.getElementById("product-list");
   cont.innerHTML = "";
@@ -452,19 +262,12 @@ function renderProductos(lista) {
     cont.appendChild(div);
   });
 
-  animarProductos(); // animación suave
+  animarProductos();
 }
 
-fetch("productos.json")
-  .then(r => r.json())
-  .then(data => {
-    productosGlobal = data.slice(1); // sacamos el primero (teleprompter)
-    renderProductos(productosGlobal);
-  });
+/* ================= BUSCADOR ================= */
 window.buscarProductos = function () {
-  const texto = document.getElementById("search").value
-    .toLowerCase()
-    .trim();
+  const texto = document.getElementById("search").value.toLowerCase().trim();
 
   if (texto === "") {
     renderProductos(productosGlobal);
@@ -480,10 +283,47 @@ window.buscarProductos = function () {
   renderProductos(filtrados);
 };
 
+/* ================= ANIMACIÓN ================= */
+function animarProductos() {
+  document.querySelectorAll(".producto").forEach((item, i) => {
+    setTimeout(() => item.classList.add("visible"), i * 60);
+  });
+}
 
+/* ================= BOTÓN SONIDO ================= */
+const btnSound = document.getElementById("btnSound");
 
+function actualizarIconoSonido() {
+  btnSound.textContent = sonidoActivo ? "🔊" : "🔇";
+}
+
+actualizarIconoSonido();
+
+btnSound.addEventListener("click", () => {
+  sonidoActivo = !sonidoActivo;
+  localStorage.setItem("sonidoActivo", sonidoActivo);
+  actualizarIconoSonido();
 });
+
+/* ================= BUSCAR EVENTOS ================= */
+document.getElementById("btnSearch").addEventListener("click", buscarProductos);
+document.getElementById("search").addEventListener("keydown", e => {
+  if (e.key === "Enter") buscarProductos();
+});
+
+/* ================= CARGAR JSON ================= */
+fetch("productos.json")
+  .then(r => r.json())
+  .then(data => {
+    if (!Array.isArray(data) || data.length === 0) return;
+
+    iniciarTeleprompter(data[0].descripcion);
+    productosGlobal = data.slice(1);
+    renderProductos(productosGlobal);
+  })
+  .catch(err => console.error("Error JSON:", err));
 </script>
+
 
 
 </body>
