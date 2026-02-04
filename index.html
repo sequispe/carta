@@ -208,37 +208,13 @@
   <button id="btnSound">🔊</button>
 
   <!-- JS (VACÍO POR AHORA) -->
-  <script>
-    /* ================= CARGAR PRODUCTOS ================= */
-
-let productosGlobal = [];
-
-fetch("productos.json")
-  .then(res => res.json())
-  .then(data => {
-
-    if (!Array.isArray(data) || data.length === 0) {
-      console.error("JSON vacío o mal formado");
-      return;
-    }
-
-    // 👉 1º producto = teleprompter
-    if (data[0].descripcion) {
-      iniciarTeleprompter(data[0].descripcion);
-    }
-
-    // 👉 resto = carta
-    productosGlobal = data.slice(1);
-    renderProductos(productosGlobal);
-  })
-  .catch(err => console.error("Error cargando productos:", err));
 <script>
 /* ================= ESTADO GLOBAL ================= */
 let productosGlobal = [];
 let sonidoActivo = localStorage.getItem("sonidoActivo") !== "false";
 
 /* ================= TELEPROMPTER ================= */
-<script>
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const tele = document.getElementById("teleprompter");
@@ -376,7 +352,7 @@ fetch("productos.json")
   })
   .catch(err => console.error("Error JSON:", err));
 
-/* ================= CATEGORÍAS AUTOMÁTICAS ================= */
+  /* ================= CATEGORÍAS AUTOMÁTICAS ================= */
 function renderCategorias() {
   const cont = document.getElementById("category-buttons");
   cont.innerHTML = "";
@@ -405,7 +381,8 @@ function renderCategorias() {
   });
 }
 
-  </script>
+</script>
+
   
 </body>
 </html>
