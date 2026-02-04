@@ -206,9 +206,7 @@
   <!-- BOTONES -->
   <button id="btnUp">⬆️</button>
   <button id="btnSound">🔊</button>
-
-  <!-- JS (VACÍO POR AHORA) -->
- <script>
+<script>
 /* ================= ESTADO GLOBAL ================= */
 let productosGlobal = [];
 let sonidoActivo = localStorage.getItem("sonidoActivo") !== "false";
@@ -323,7 +321,6 @@ fetch("productos.json")
   })
   .catch(err => console.error("Error JSON:", err));
 </script>
-
 
 
 </body>
