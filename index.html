@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+iniciarTeleprompter()
+
+renderProductos() esta esta centa ya esta con figurada para las cartas digitales pero mira como se ve https://sequispe.github.io/carta/<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -204,36 +206,88 @@
   <div id="product-list"></div>
 
   <!-- BOTONES -->
-  <button id="btnSound">🔊</button><button id="btnUp">⬆️</button>
+  <button id="btnUp">⬆️</button>
+  <button id="btnSound">🔊</button>
+
+  <!-- JS (VACÍO POR AHORA) -->
+  <script>
+    /* ================= CARGAR PRODUCTOS ================= */
+
+let productosGlobal = [];
+
+fetch("productos.json")
+  .then(res => res.json())
+  .then(data => {
+
+    if (!Array.isArray(data) || data.length === 0) {
+      console.error("JSON vacío o mal formado");
+      return;
+    }
+
+    // 👉 1º producto = teleprompter
+    if (data[0].descripcion) {
+      iniciarTeleprompter(data[0].descripcion);
+    }
+
+    // 👉 resto = carta
+    productosGlobal = data.slice(1);
+    renderProductos(productosGlobal);
+  })
+  .catch(err => console.error("Error cargando productos:", err));
 <script>
 /* ================= ESTADO GLOBAL ================= */
 let productosGlobal = [];
 let sonidoActivo = localStorage.getItem("sonidoActivo") !== "false";
 
 /* ================= TELEPROMPTER ================= */
-const tele = document.getElementById("teleprompter");
-const teleText = document.getElementById("tele-text");
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-function iniciarTeleprompter(texto) {
-  if (!texto) return;
+  const tele = document.getElementById("teleprompter");
+  const teleText = document.getElementById("tele-text");
 
-  tele.style.display = "block";
-  teleText.textContent = texto;
+  function iniciarTeleprompter(texto) {
+    if (!texto) return;
 
-  function animar() {
-    teleText.style.transition = "none";
-    teleText.style.left = "100%";
+    tele.style.display = "block";
+    teleText.textContent = texto;
 
-    requestAnimationFrame(() => {
-      const duracion = Math.max(texto.length * 90, 9000);
-      teleText.style.transition = `left ${duracion}ms linear`;
-      teleText.style.left = "-100%";
-    });
+    let x = window.innerWidth;
+    const velocidad = 0.8; // 🔥 ajustá si querés más rápido
+
+    function animar() {
+      x -= velocidad;
+      teleText.style.transform = `translate(${x}px, -50%)`;
+
+      if (x < -teleText.offsetWidth - 50) {
+        x = window.innerWidth + 50; // vuelve a empezar
+      }
+
+      requestAnimationFrame(animar);
+    }
+
+    animar();
   }
 
-  animar();
-  teleText.addEventListener("transitionend", animar);
-}
+  /* 👉 CONECTAMOS EL JSON */
+  fetch("productos.json")
+    .then(r => r.json())
+    .then(data => {
+      if (!Array.isArray(data) || data.length === 0) return;
+
+      // 1️⃣ primer producto = teleprompter
+      iniciarTeleprompter(data[0].descripcion);
+
+      // 2️⃣ resto = carta
+      window.productosGlobal = data.slice(1);
+      renderProductos(window.productosGlobal);
+      renderCategorias();
+    })
+    .catch(err => console.error("Error JSON:", err));
+
+});
+</script>
+
 
 /* ================= RENDER PRODUCTOS ================= */
 function renderProductos(lista) {
@@ -308,55 +362,25 @@ document.getElementById("search").addEventListener("keydown", e => {
   if (e.key === "Enter") buscarProductos();
 });
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+/* ================= CARGAR JSON ================= */
+fetch("productos.json")
+  .then(r => r.json())
+  .then(data => {
+    if (!Array.isArray(data) || data.length === 0) return;
 
-  const tele = document.getElementById("teleprompter");
-  const teleText = document.getElementById("tele-text");
+    // 1️⃣ teleprompter
+    iniciarTeleprompter(data[0].descripcion);
 
-  function iniciarTeleprompter(texto) {
-    if (!texto) return;
+    // 2️⃣ productos
+    productosGlobal = data.slice(1);
+    renderProductos(productosGlobal);
 
-    tele.style.display = "block";
-    teleText.textContent = texto;
+    // 3️⃣ categorías
+    renderCategorias();
+  })
+  .catch(err => console.error("Error JSON:", err));
 
-    let x = window.innerWidth;
-    const velocidad = 0.8; // 🔥 ajustá si querés más rápido
-
-    function animar() {
-      x -= velocidad;
-      teleText.style.transform = `translate(${x}px, -50%)`;
-
-      if (x < -teleText.offsetWidth - 50) {
-        x = window.innerWidth + 50; // vuelve a empezar
-      }
-
-      requestAnimationFrame(animar);
-    }
-
-    animar();
-  }
-
-  /* 👉 CONECTAMOS EL JSON */
-  fetch("productos.json")
-    .then(r => r.json())
-    .then(data => {
-      if (!Array.isArray(data) || data.length === 0) return;
-
-      // 1️⃣ primer producto = teleprompter
-      iniciarTeleprompter(data[0].descripcion);
-
-      // 2️⃣ resto = carta
-      window.productosGlobal = data.slice(1);
-      renderProductos(window.productosGlobal);
-      renderCategorias();
-    })
-    .catch(err => console.error("Error JSON:", err));
-
-
-
-
-  /* ================= CATEGORÍAS AUTOMÁTICAS ================= */
+/* ================= CATEGORÍAS AUTOMÁTICAS ================= */
 function renderCategorias() {
   const cont = document.getElementById("category-buttons");
   cont.innerHTML = "";
@@ -382,8 +406,14 @@ function renderCategorias() {
     });
 
     cont.appendChild(btn);
-});
-</script>
+  });
+}
+
+  </script>
+  
+
+
+
 
 
 </body>
