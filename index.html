@@ -315,11 +315,47 @@ fetch("productos.json")
   .then(data => {
     if (!Array.isArray(data) || data.length === 0) return;
 
+    // 1️⃣ teleprompter
     iniciarTeleprompter(data[0].descripcion);
+
+    // 2️⃣ productos
     productosGlobal = data.slice(1);
     renderProductos(productosGlobal);
+
+    // 3️⃣ categorías
+    renderCategorias();
   })
   .catch(err => console.error("Error JSON:", err));
+
+  /* ================= CATEGORÍAS AUTOMÁTICAS ================= */
+function renderCategorias() {
+  const cont = document.getElementById("category-buttons");
+  cont.innerHTML = "";
+
+  // obtener categorías únicas
+  const categorias = ["Todos", ...new Set(
+    productosGlobal.map(p => p.categoria).filter(Boolean)
+  )];
+
+  categorias.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+
+    btn.addEventListener("click", () => {
+      if (cat === "Todos") {
+        renderProductos(productosGlobal);
+      } else {
+        const filtrados = productosGlobal.filter(
+          p => p.categoria === cat
+        );
+        renderProductos(filtrados);
+      }
+    });
+
+    cont.appendChild(btn);
+  });
+}
+
 </script>
 
 
