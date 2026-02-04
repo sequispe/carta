@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -57,6 +57,7 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 14px;
+      padding-left: 100%;
     }
 
     /* BUSCADOR */
@@ -204,7 +205,7 @@
 
   <!-- BOTONES -->
  
-  <button id="btnSound">🔊</button> <button id="btnUp">⬆️</button>
+  <button id="btnSound">🔊</button> <button id="btnUp">⬆️</button>f
 
   <!-- JS (VACÍO POR AHORA) -->
 <script>
@@ -218,6 +219,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const tele = document.getElementById("teleprompter");
   const teleText = document.getElementById("tele-text");
+
+function iniciarTeleprompter(texto) {
+  if (!texto) return;
+
+  tele.style.display = "block";
+  teleText.textContent = texto;
+
+  let x = window.innerWidth;
+  const velocidad = 0.6; // ajustá a gusto
+
+  function animar() {
+    x -= velocidad;
+    teleText.style.left = x + "px";
+
+    if (x < -teleText.offsetWidth) {
+      x = window.innerWidth;
+    }
+
+    requestAnimationFrame(animar);
+  }
+
+  animar();
+}
 
 
   /* 👉 CONECTAMOS EL JSON */
