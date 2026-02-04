@@ -309,23 +309,53 @@ document.getElementById("search").addEventListener("keydown", e => {
   if (e.key === "Enter") buscarProductos();
 });
 
-/* ================= CARGAR JSON ================= */
-fetch("productos.json")
-  .then(r => r.json())
-  .then(data => {
-    if (!Array.isArray(data) || data.length === 0) return;
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-    // 1️⃣ teleprompter
-    iniciarTeleprompter(data[0].descripcion);
+  const tele = document.getElementById("teleprompter");
+  const teleText = document.getElementById("tele-text");
 
-    // 2️⃣ productos
-    productosGlobal = data.slice(1);
-    renderProductos(productosGlobal);
+  function iniciarTeleprompter(texto) {
+    if (!texto) return;
 
-    // 3️⃣ categorías
-    renderCategorias();
-  })
-  .catch(err => console.error("Error JSON:", err));
+    tele.style.display = "block";
+    teleText.textContent = texto;
+
+    let x = window.innerWidth;
+    const velocidad = 0.8; // 🔥 ajustá si querés más rápido
+
+    function animar() {
+      x -= velocidad;
+      teleText.style.transform = `translate(${x}px, -50%)`;
+
+      if (x < -teleText.offsetWidth - 50) {
+        x = window.innerWidth + 50; // vuelve a empezar
+      }
+
+      requestAnimationFrame(animar);
+    }
+
+    animar();
+  }
+
+  /* 👉 CONECTAMOS EL JSON */
+  fetch("productos.json")
+    .then(r => r.json())
+    .then(data => {
+      if (!Array.isArray(data) || data.length === 0) return;
+
+      // 1️⃣ primer producto = teleprompter
+      iniciarTeleprompter(data[0].descripcion);
+
+      // 2️⃣ resto = carta
+      window.productosGlobal = data.slice(1);
+      renderProductos(window.productosGlobal);
+      renderCategorias();
+    })
+    .catch(err => console.error("Error JSON:", err));
+
+
+
 
   /* ================= CATEGORÍAS AUTOMÁTICAS ================= */
 function renderCategorias() {
@@ -353,9 +383,7 @@ function renderCategorias() {
     });
 
     cont.appendChild(btn);
-  });
-}
-
+});
 </script>
 
 
