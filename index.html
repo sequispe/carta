@@ -57,7 +57,6 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 14px;
-      padding-left: 100%;
     }
 
     /* BUSCADOR */
@@ -204,8 +203,9 @@
   <div id="product-list"></div>
 
   <!-- BOTONES -->
- 
-  <button id="btnSound">🔊</button> <button id="btnUp">⬆️</button>f
+ <button id="btnSound">🔊</button>
+<button id="btnUp">⬆️</button>
+
 
   <!-- JS (VACÍO POR AHORA) -->
 <script>
@@ -244,21 +244,7 @@ function iniciarTeleprompter(texto) {
 }
 
 
-  /* 👉 CONECTAMOS EL JSON */
-  fetch("productos.json")
-    .then(r => r.json())
-    .then(data => {
-      if (!Array.isArray(data) || data.length === 0) return;
-
-      // 1️⃣ primer producto = teleprompter
-      iniciarTeleprompter(data[0].descripcion);
-
-      // 2️⃣ resto = carta
-      window.productosGlobal = data.slice(1);
-      renderProductos(window.productosGlobal);
-      renderCategorias();
-    })
-    .catch(err => console.error("Error JSON:", err));
+  
 
 
 
