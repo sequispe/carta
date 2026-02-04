@@ -57,7 +57,6 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 14px;
-      padding-left: 100%;
     }
 
     /* BUSCADOR */
@@ -220,28 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const tele = document.getElementById("teleprompter");
   const teleText = document.getElementById("tele-text");
 
-  function iniciarTeleprompter(texto) {
-    if (!texto) return;
-
-    tele.style.display = "block";
-    teleText.textContent = texto;
-
-    let x = window.innerWidth;
-    const velocidad = 0.8; // 🔥 ajustá si querés más rápido
-
-    function animar() {
-      x -= velocidad;
-      teleText.style.transform = `translate(${x}px, -50%)`;
-
-      if (x < -teleText.offsetWidth - 50) {
-        x = window.innerWidth + 50; // vuelve a empezar
-      }
-
-      requestAnimationFrame(animar);
-    }
-
-    animar();
-  }
 
   /* 👉 CONECTAMOS EL JSON */
   fetch("productos.json")
