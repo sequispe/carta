@@ -203,6 +203,22 @@ header img{
   background: #6b4e3d;
   transform: scale(1.1);
 }
+    #teleprompter {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 16px;
+  text-align: center;
+}
+
+#teleprompter-text {
+  transition: opacity 0.5s ease;
+  display: block;
+}
+
 
 /* ================= RESPONSIVE ================= */
 
@@ -255,6 +271,37 @@ header img{
     <button id="btn-en" class="lang-btn">🇬🇧 English</button>
     <button id="btn-pt" class="lang-btn">🇧🇷 Português</button>
   </div>
+<script>
+let sugerencias = [];
+let indiceSugerencia = 0;
+
+// Este idioma ya lo tenés en tu carta
+// ejemplo: let idiomaActual = "es";
+
+fetch("sugerencias.json")
+  .then(res => res.json())
+  .then(data => {
+    sugerencias = data[idiomaActual] || [];
+    if (sugerencias.length > 0) {
+      mostrarSugerencia();
+      setInterval(cambiarSugerencia, 8000); // cada 8 segundos
+    }
+  });
+
+function mostrarSugerencia() {
+  const el = document.getElementById("teleprompter-text");
+  el.style.opacity = 0;
+  setTimeout(() => {
+    el.textContent = sugerencias[indiceSugerencia];
+    el.style.opacity = 1;
+  }, 500);
+}
+
+function cambiarSugerencia() {
+  indiceSugerencia = (indiceSugerencia + 1) % sugerencias.length;
+  mostrarSugerencia();
+}
+</script>
 
   <div class="search-box">
     <input id="search" type="text" placeholder="Buscar por nombre, descripción o categoría...">
@@ -269,8 +316,8 @@ header img{
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  const USER = "tilo-restocafe";
-  const REPO = "cartaaguero";
+  const USER = "sequispe";
+  const REPO = "carta";
   let idiomaActual = localStorage.getItem("idioma") || "es";
 
   const btnEs = document.getElementById("btn-es");
