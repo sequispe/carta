@@ -203,20 +203,27 @@ header img{
   background: #6b4e3d;
   transform: scale(1.1);
 }
-    #teleprompter {
-  position: sticky;
+ /* ================= TELEPROMPTER / MOZO DIGITAL ================= */
+
+#teleprompter {
+  position: fixed;
   top: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
+  left: 0;
+  width: 100%;
+  z-index: 2000;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  color: #3b2314;
   padding: 10px 15px;
-  font-size: 16px;
-  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 #teleprompter-text {
-  transition: opacity 0.5s ease;
   display: block;
+  transition: opacity 0.5s ease;
 }
 
 
@@ -253,6 +260,26 @@ header img{
     max-height: 160px;
     object-position: center 30%;
   }
+  /* ================= TELEPROMPTER / MOZO DIGITAL ================= */
+
+#teleprompter {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  color: #3b2314;
+  padding: 10px 15px;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+#teleprompter-text {
+  display: block;
+  transition: opacity 0.5s ease;
+}
 }
 }
   </style>
@@ -261,6 +288,12 @@ header img{
 <body>
 
   <header>
+    <div id="teleprompter">
+  <span id="teleprompter-text">Cargando sugerencias...</span>
+      body {
+  padding-top: 55px; /* altura del teleprompter */
+}
+</div>
     <img src="img/logo1.png" alt="Tilo Café">
   </header>
   <div id="languageSwitcher">
@@ -314,7 +347,8 @@ function cambiarSugerencia() {
 document.addEventListener('DOMContentLoaded', () => {
 
   const USER = "sequispe";
-  const REPO = "carta";
+const REPO = "carta";
+
   let idiomaActual = localStorage.getItem("idioma") || "es";
 
   const btnEs = document.getElementById("btn-es");
@@ -328,6 +362,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnUp = document.getElementById("btnUp");
 
   let productos = [];
+  let sugerencias = [];
+let indiceSugerencia = 0;
+let intervaloTeleprompter = null;
+
 
   function scrollToProducts() {
     productList.scrollIntoView({ behavior: "smooth" });
@@ -338,9 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btnEn.classList.toggle("active", idiomaActual === "en");
     btnPt.classList.toggle("active", idiomaActual === "pt");
 
-    if (idiomaActual === "es") banner.textContent = "¡Bienvenidos a Tilo Café Agüero 2298!";
-    if (idiomaActual === "en") banner.textContent = "Welcome to Tilo Café Agüero 2298!";
-    if (idiomaActual === "pt") banner.textContent = "Bem-vindo ao Tilo Café Agüero 2298!";
   }
 
   async function load() {
@@ -387,6 +422,46 @@ document.addEventListener('DOMContentLoaded', () => {
       productList.innerHTML = `<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
     }
   }
+  function loadSugerencias() {
+  const teleText = document.getElementById("teleprompter-text");
+
+  fetch("sugerencias.json", { cache: "no-store" })
+    .then(res => res.json())
+    .then(data => {
+      sugerencias = data[idiomaActual] || [];
+
+      if (!sugerencias.length) {
+        teleText.textContent = "";
+        return;
+      }
+
+      indiceSugerencia = 0;
+      mostrarSugerencia();
+
+      if (intervaloTeleprompter) clearInterval(intervaloTeleprompter);
+
+      intervaloTeleprompter = setInterval(cambiarSugerencia, 8000);
+    })
+    .catch(() => {
+      teleText.textContent = "";
+    });
+}
+
+function mostrarSugerencia() {
+  const el = document.getElementById("teleprompter-text");
+  el.style.opacity = 0;
+
+  setTimeout(() => {
+    el.textContent = sugerencias[indiceSugerencia];
+    el.style.opacity = 1;
+  }, 400);
+}
+
+function cambiarSugerencia() {
+  indiceSugerencia = (indiceSugerencia + 1) % sugerencias.length;
+  mostrarSugerencia();
+}
+
 
   function renderCategories() {
     const categorias = ["Todos", ...new Set(productos.map(p => p.categoria).filter(Boolean))];
