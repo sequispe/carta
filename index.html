@@ -35,11 +35,17 @@
       border-bottom: 1px solid rgba(255,255,255,0.15);
     }
 
+  #teleprompter-text {
+  display: inline-block;
+  padding-left: 100%;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
     #teleprompter-text {
-      display: inline-block;
-      padding-left: 100%;
-      white-space: nowrap;
-    }
+  cursor: pointer;
+}
+
 
     @keyframes scrollText {
       0% { transform: translateX(100%); }
@@ -253,25 +259,40 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
- function mostrarSugerencia() {
+function mostrarSugerencia() {
   const texto = sugerencias[indiceSugerencia];
-
-  // velocidad: píxeles por segundo (ajustable)
   const velocidad = 60;
 
-  teleText.style.animation = "none";
-  teleText.offsetHeight;
+  // Fade OUT
+  teleText.style.opacity = 0;
 
-  teleText.textContent = texto;
+  setTimeout(() => {
+    teleText.style.animation = "none";
+    teleText.offsetHeight;
 
-  // cálculo dinámico
-  const anchoTexto = teleText.scrollWidth;
-  const anchoPantalla = window.innerWidth;
-  const distancia = anchoTexto + anchoPantalla;
-  const duracion = distancia / velocidad;
+    teleText.textContent = texto;
 
-  teleText.style.animation = `scrollText ${duracion}s linear infinite`;
+    const anchoTexto = teleText.scrollWidth;
+    const anchoPantalla = window.innerWidth;
+    const distancia = anchoTexto + anchoPantalla;
+    const duracion = distancia / velocidad;
+
+    teleText.style.animation = `scrollText ${duracion}s linear infinite`;
+
+    // Fade IN
+    teleText.style.opacity = 1;
+  }, 400); // tiempo del fade
 }
+  let telePausado = false;
+
+teleText.addEventListener("click", () => {
+  telePausado = !telePausado;
+
+  teleText.style.animationPlayState = telePausado
+    ? "paused"
+    : "running";
+});
+
 
   /* ================= PRODUCTOS ================= */
   async function loadProductos() {
