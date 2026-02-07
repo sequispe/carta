@@ -253,17 +253,25 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  function mostrarSugerencia() {
-    teleText.style.animation = "none";
-    teleText.offsetHeight; // 🔥 fix Safari
-    teleText.textContent = sugerencias[indiceSugerencia];
-    teleText.style.animation = "scrollText 15s linear infinite";
-  }
+ function mostrarSugerencia() {
+  const texto = sugerencias[indiceSugerencia];
 
-  function cambiarSugerencia() {
-    indiceSugerencia = (indiceSugerencia + 1) % sugerencias.length;
-    mostrarSugerencia();
-  }
+  // velocidad: píxeles por segundo (ajustable)
+  const velocidad = 60;
+
+  teleText.style.animation = "none";
+  teleText.offsetHeight;
+
+  teleText.textContent = texto;
+
+  // cálculo dinámico
+  const anchoTexto = teleText.scrollWidth;
+  const anchoPantalla = window.innerWidth;
+  const distancia = anchoTexto + anchoPantalla;
+  const duracion = distancia / velocidad;
+
+  teleText.style.animation = `scrollText ${duracion}s linear infinite`;
+}
 
   /* ================= PRODUCTOS ================= */
   async function loadProductos() {
