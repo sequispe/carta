@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let productos = [];
   let sugerencias = [];
   let indiceSugerencia = 0;
-  let intervaloTeleprompter = null;
+  let telePausado = false;
 
   /* ================= ELEMENTOS ================= */
   const teleText = document.getElementById("teleprompter-text");
@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSearch = document.getElementById("btnSearch");
 
   /* ================= TELEPROMPTER ================= */
+
   function loadSugerencias() {
     fetch("sugerencias.json", { cache: "no-store" })
       .then(res => res.json())
@@ -33,31 +34,49 @@ document.addEventListener("DOMContentLoaded", () => {
           teleText.textContent = "";
           return;
         }
-
         indiceSugerencia = 0;
         mostrarSugerencia();
-
-        if (intervaloTeleprompter) clearInterval(intervaloTeleprompter);
-        intervaloTeleprompter = setInterval(cambiarSugerencia, 15000);
-      })
-      .catch(() => {
-        teleText.textContent = "";
       });
   }
 
   function mostrarSugerencia() {
-    teleText.style.animation = "none";
-    teleText.offsetHeight; // 🔥 fix Safari
-    teleText.textContent = sugerencias[indiceSugerencia];
-    teleText.style.animation = "scrollText 15s linear infinite";
+    if (telePausado) return;
+
+    const texto = sugerencias[indiceSugerencia];
+    const velocidad = 60; // px por segundo
+
+    teleText.style.opacity = 0;
+
+    setTimeout(() => {
+      teleText.style.animation = "none";
+      teleText.offsetHeight;
+
+      teleText.textContent = texto;
+
+      const anchoTexto = teleText.scrollWidth;
+      const anchoPantalla = window.innerWidth;
+      const distancia = anchoTexto + anchoPantalla;
+      const duracion = distancia / velocidad;
+
+      teleText.style.animation = `scrollText ${duracion}s linear forwards`;
+      teleText.style.opacity = 1;
+
+      setTimeout(() => {
+        indiceSugerencia = (indiceSugerencia + 1) % sugerencias.length;
+        mostrarSugerencia();
+      }, duracion * 1000 + 800);
+
+    }, 400);
   }
 
-  function cambiarSugerencia() {
-    indiceSugerencia = (indiceSugerencia + 1) % sugerencias.length;
-    mostrarSugerencia();
-  }
+  teleText.addEventListener("click", () => {
+    telePausado = !telePausado;
+    teleText.style.animationPlayState = telePausado ? "paused" : "running";
+    if (!telePausado) mostrarSugerencia();
+  });
 
   /* ================= PRODUCTOS ================= */
+
   async function loadProductos() {
     let file = "productos.json";
     if (idiomaActual === "en") file = "productos-en.json";
@@ -65,22 +84,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const url = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${file}`;
 
-    try {
-      const res = await fetch(url, { cache: "no-store" });
-      const data = await res.json();
-      productos = data.map(p => ({
-        nombre: p.nombre || p.name || p.nome,
-        descripcion: p.descripcion || p.description || p.descricao || "",
-        precio: p.precio || p.price || p.preco,
-        imagen: p.imagen || p.image || p.imagem,
-        categoria: p.categoria || p.category
-      }));
+    const res = await fetch(url, { cache: "no-store" });
+    const data = await res.json();
 
-      renderCategorias();
-      renderProductos(productos);
-    } catch (e) {
-      productList.innerHTML = `<div class="msg">⚠️ Error cargando productos</div>`;
-    }
+    productos = data.map(p => ({
+      nombre: p.nombre || p.name || p.nome,
+      descripcion: p.descripcion || p.description || p.descricao || "",
+      precio: p.precio || p.price || p.preco,
+      imagen: p.imagen || p.image || p.imagem,
+      categoria: p.categoria || p.category
+    }));
+
+    renderCategorias();
+    renderProductos(productos);
   }
 
   function renderCategorias() {
@@ -114,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ================= BUSCADOR ================= */
+
   function buscar() {
     const q = searchInput.value.toLowerCase().trim();
     const res = productos.filter(p =>
@@ -124,10 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProductos(res);
   }
 
-  /* ================= EVENTOS ================= */
-  btnEs.onclick = () => cambiarIdioma("es");
-  btnEn.onclick = () => cambiarIdioma("en");
-  btnPt.onclick = () => cambiarIdioma("pt");
+  /* ================= IDIOMAS ================= */
 
   function cambiarIdioma(id) {
     idiomaActual = id;
@@ -135,18 +149,17 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciar();
   }
 
-  btnSearch.onclick = buscar;
-  searchInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") buscar();
-  });
+  btnEs.onclick = () => cambiarIdioma("es");
+  btnEn.onclick = () => cambiarIdioma("en");
+  btnPt.onclick = () => cambiarIdioma("pt");
 
-  window.addEventListener("scroll", () => {
-    btnUp.style.display = window.scrollY > 300 ? "block" : "none";
-  });
+  btnSearch.onclick = buscar;
+  searchInput.addEventListener("keydown", e => e.key === "Enter" && buscar());
 
   btnUp.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-  /* ================= INICIO ================= */
+  /* ================= INIT ================= */
+
   function iniciar() {
     loadSugerencias();
     loadProductos();
