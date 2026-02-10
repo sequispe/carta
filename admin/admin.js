@@ -33,4 +33,16 @@ window.addEventListener("message", e => {
       "*"
     );
   }
+  document.getElementById("guardar").onclick = () => {
+  const data = {
+    es: editor.value.split("\n").filter(Boolean)
+  };
+
+  const json = JSON.stringify(data, null, 2);
+
+  navigator.clipboard.writeText(json);
+
+  estado.textContent = "📋 JSON copiado · pegalo en sugerencias.json";
+};
+
 });
