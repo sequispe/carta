@@ -1,12 +1,36 @@
 const editor = document.getElementById("editor");
 const estado = document.getElementById("estado");
+const iframe = document.getElementById("preview");
+
+let timeout = null;
 
 /* CARGAR SUGERENCIAS */
-fetch("../sugerencias.json", { cache:"no-store" })
+fetch("../sugerencias.json", { cache: "no-store" })
   .then(r => r.json())
   .then(data => {
     editor.value = data.es.join("\n");
-  })
-  .catch(() => {
-    estado.textContent = "⚠️ No se pudo cargar sugerencias";
   });
+
+/* ENVIAR PREVIEW EN VIVO */
+editor.addEventListener("input", () => {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    const mensajes = editor.value
+      .split("\n")
+      .map(t => t.trim())
+      .filter(Boolean);
+
+    iframe.contentWindow.postMessage(mensajes, "*");
+    estado.textContent = "👁 Preview en vivo";
+  }, 300);
+});
+
+/* CUANDO LA CARTA AVISA QUE ESTÁ LISTA */
+window.addEventListener("message", e => {
+  if (Array.isArray(e.data)) {
+    iframe.contentWindow.postMessage(
+      editor.value.split("\n").filter(Boolean),
+      "*"
+    );
+  }
+});
