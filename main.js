@@ -91,11 +91,25 @@ function idioma(i){
   localStorage.setItem("idioma",i);
   start();
 }
+window.parent?.postMessage("ready", "*");
 
 function start(){
   loadSugerencias();
   loadProductos();
 }
+  /* ===== PREVIEW DESDE ADMIN ===== */
+window.addEventListener("message", e => {
+  if (Array.isArray(e.data)) {
+    sugerencias = e.data;
+    indice = 0;
+    mostrar();
+  }
+
+  if (e.data === "ready") {
+    e.source.postMessage(sugerencias, "*");
+  }
+});
+
 
 start();
 });
