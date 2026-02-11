@@ -53,9 +53,9 @@
    <div class="controls">
   <input id="search" placeholder="Buscar..." oninput="filterProducts()" style="min-width:180px;max-width:360px">
   <button id="toggleFormBtn" onclick="toggleForm()">+ Agregar producto</button>
-  <button onclick="irTeleprompter()" style="background:#2d87d6">
-    📰 Admin Teleprompter
-  </button>
+ <button onclick="irTeleprompter()" style="background:#2d87d6">
+  📰 Admin Teleprompter
+</button>
   <button class="secondary" onclick="irWhatsApp()">📲 Ayuda por WhatsApp</button>
 </div>
 
@@ -499,7 +499,6 @@ function filterProducts(){
   function irTeleprompter(){
   window.open("teleprompter.html", "_blank");
 }
-
 function irWhatsApp(){
   const numero = "5491123140119"; // ← poné tu número real
   const mensaje = encodeURIComponent(
