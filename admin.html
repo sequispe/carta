@@ -50,12 +50,15 @@
       </div>
     </div>
 
-    <div class="controls">
-      <input id="search" placeholder="Buscar..." oninput="filterProducts()" style="min-width:180px;max-width:360px">
-      <button id="toggleFormBtn" onclick="toggleForm()">+ Agregar producto</button>
-      <button class="secondary" onclick="irWhatsApp()">📲 Ayuda por WhatsApp</button>
-    </div>
-  </div>
+   <div class="controls">
+  <input id="search" placeholder="Buscar..." oninput="filterProducts()" style="min-width:180px;max-width:360px">
+  <button id="toggleFormBtn" onclick="toggleForm()">+ Agregar producto</button>
+  <button onclick="irTeleprompter()" style="background:#2d87d6">
+    📰 Admin Teleprompter
+  </button>
+  <button class="secondary" onclick="irWhatsApp()">📲 Ayuda por WhatsApp</button>
+</div>
+
 
   <button id="guardarTodos" onclick="guardarTodosLosPrecios()">💾 Guardar TODOS los cambios</button>
 
@@ -493,6 +496,10 @@ function filterProducts(){
   );
   render(filtered);
 }
+  function irTeleprompter(){
+  window.open("teleprompter.html", "_blank");
+}
+
 function irWhatsApp(){
   const numero = "5491123140119"; // ← poné tu número real
   const mensaje = encodeURIComponent(
