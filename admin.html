@@ -33,10 +33,31 @@
     .toast.info { background: #3498db; }
     .toast.err { background: #e74c3c; }
     @media(max-width:720px){ .topRow{flex-direction:column;align-items:flex-start} table{font-size:13px} }
+  #guardarTodos, #btnMozo{
+  position:fixed;
+  top:18px;
+  z-index:1200;
+  padding:10px 14px;
+  border-radius:8px;
+  font-weight:600;
+}
+
+#guardarTodos{
+  right:18px;
+  background:#a07b68;
+  color:#fff;
+}
+
+#btnMozo{
+  right:220px; /* lo posiciona al lado */
+  background:#c0392b; /* rojo elegante */
+  color:#fff;
+}
+
   </style>
 </head>
 <body>
-  <h1>Admin Carta — Tilo Café Aguero</h1>
+  <h1>Admin Carta —sequispe / carta</h1>
   <div class="topRow">
     <div style="flex:1">
       <div style="margin-bottom:6px"><span class="small">Repositorio:</span> <b> sequispe / carta</b></div>
@@ -58,6 +79,7 @@
   </div>
 
   <button id="guardarTodos" onclick="guardarTodosLosPrecios()">💾 Guardar TODOS los cambios</button>
+   <button id="btnMozo" onclick="irTeleprompter()">🤖 Mozo Digital</button>
 
   <!-- Formulario simple -->
   <form id="form">
