@@ -11,29 +11,41 @@ fetch("../sugerencias.json", { cache: "no-store" })
     editor.value = data.es.join("\n");
   });
 
-/* ENVIAR PREVIEW EN VIVO */
+/* PREVIEW EN VIVO */
 editor.addEventListener("input", () => {
   clearTimeout(timeout);
+
   timeout = setTimeout(() => {
+
     const mensajes = editor.value
       .split("\n")
       .map(t => t.trim())
       .filter(Boolean);
 
     iframe.contentWindow.postMessage(mensajes, "*");
+
     estado.textContent = "👁 Preview en vivo";
+
   }, 300);
 });
 
-/* CUANDO LA CARTA AVISA QUE ESTÁ LISTA */
+/* CUANDO EL INDEX AVISA QUE ESTÁ LISTO */
 window.addEventListener("message", e => {
-  if (Array.isArray(e.data)) {
+
+  if (e.data === "ready") {
+
     iframe.contentWindow.postMessage(
       editor.value.split("\n").filter(Boolean),
       "*"
     );
+
   }
-  document.getElementById("guardar").onclick = () => {
+
+});
+
+/* BOTÓN GUARDAR */
+document.getElementById("guardar").onclick = () => {
+
   const data = {
     es: editor.value.split("\n").filter(Boolean)
   };
@@ -43,6 +55,5 @@ window.addEventListener("message", e => {
   navigator.clipboard.writeText(json);
 
   estado.textContent = "📋 JSON copiado · pegalo en sugerencias.json";
-};
 
-});
+};
