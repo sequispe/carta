@@ -3,7 +3,7 @@
     "id": "prod0001",
     "name": "Espresso Coffee",
     "description": "Small coffee",
-    "price": "3400",
+    "price": "",
     "image": "https://res.cloudinary.com/dfcj9eyyn/image/upload/v1765842339/cafe_wf70hy.jpg",
     "category": "Coffee Shop ☕️"
   },
