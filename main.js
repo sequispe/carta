@@ -97,17 +97,21 @@ function start(){
   loadSugerencias();
   loadProductos();
 }
-  /* ===== PREVIEW DESDE ADMIN ===== */
+ /* ===== PREVIEW DESDE ADMIN ===== */
 window.addEventListener("message", e => {
+
   if (Array.isArray(e.data)) {
+
     sugerencias = e.data;
     indice = 0;
+
+    clearInterval(intervalo);
+
     mostrar();
+
+    intervalo = setInterval(next, 15000);
   }
 
-  if (e.data === "ready") {
-    e.source.postMessage(sugerencias, "*");
-  }
 });
 
 
