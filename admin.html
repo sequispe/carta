@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Carta - quispe (Sincroniza precios ES/EN/PT)</title>
+  <title>Admin Carta - Tilo Café Aguero (Sincroniza precios ES/EN/PT)</title>
   <style>
     body{font-family:Arial,Helvetica,sans-serif;margin:18px;background:#f7f3f0;color:#333}
     h1{text-align:center;color:#806250;margin-bottom:10px}
@@ -36,10 +36,10 @@
   </style>
 </head>
 <body>
-  <h1>Admin Carta — quispe</h1>
+  <h1>Admin Carta — Tilo Café Aguero</h1>
   <div class="topRow">
     <div style="flex:1">
-      <div style="margin-bottom:6px"><span class="small">Repositorio:</span> <b> sequispe / carta</b></div>
+      <div style="margin-bottom:6px"><span class="small">Repositorio:</span> <b> tilo-restocafe / cartaaguero</b></div>
       <div style="display:flex;gap:8px;align-items:center">
         <label style="min-width:40px">Token:</label>
         <input type="password" id="token" placeholder="Pegar token de GitHub (repo contents)" style="max-width:340px">
@@ -50,14 +50,12 @@
       </div>
     </div>
 
-   <div class="controls">
-  <input id="search" placeholder="Buscar..." oninput="filterProducts()" style="min-width:180px;max-width:360px">
-  <button id="toggleFormBtn" onclick="toggleForm()">+ Agregar producto</button>
- <button onclick="irTeleprompter()" style="background:#2d87d6">
-  📰 Admin Teleprompter
-  <button class="secondary" onclick="irWhatsApp()">📲 Ayuda por WhatsApp</button>
-</div>
-
+    <div class="controls">
+      <input id="search" placeholder="Buscar..." oninput="filterProducts()" style="min-width:180px;max-width:360px">
+      <button id="toggleFormBtn" onclick="toggleForm()">+ Agregar producto</button>
+      <button class="secondary" onclick="irWhatsApp()">📲 Ayuda por WhatsApp</button>
+    </div>
+  </div>
 
   <button id="guardarTodos" onclick="guardarTodosLosPrecios()">💾 Guardar TODOS los cambios</button>
 
@@ -90,11 +88,13 @@
         <input id="categoria" type="text" placeholder="Ej: Cafetería">
       </div>
     </div>
+
     <div style="margin-top:10px;display:flex;gap:8px">
       <button type="button" onclick="guardarFormulario()">Guardar</button>
       <button type="button" onclick="cancelForm()" style="background:#999">Cancelar</button>
     </div>
   </form>
+
   <table aria-label="Productos">
     <thead>
       <tr><th style="width:80px">Imagen</th><th>Nombre</th><th>Descripción</th><th>Categoría</th><th style="width:100px">Precio (ES)</th><th style="width:180px">Acciones</th></tr>
