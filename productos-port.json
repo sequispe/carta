@@ -2,13 +2,13 @@
   {
     "nome": "Café expresso",
     "descricao": "Café pequeno",
-    "preco": "3400",
+    "preco": "",
     "imagem": "https://res.cloudinary.com/dfcj9eyyn/image/upload/v1765842339/cafe_wf70hy.jpg",
     "categoria": "Cafeteria☕️",
     "id": "prod0001"
   },
   {
-    "nome": "Café expresso jarrito",	
+    "nome": "Café expresso jarrito",
     "descricao": "Café americano",
     "preco": "3600",
     "imagem": "img/Americano.jpg",
