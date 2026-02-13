@@ -69,10 +69,16 @@ editor.addEventListener("input", () => {
 
   timeout = setTimeout(() => {
 
-    const mensajes = editor.value
-      .split("\n")
-      .map(t => t.trim())
-      .filter(Boolean);
+    const idioma = idiomaSelect.value;
+
+const mensajes = editor.value
+  .split("\n")
+  .map(t => t.trim())
+  .filter(Boolean);
+
+// SOLO ACTUALIZA EL IDIOMA ACTUAL
+contenidoActual[idioma] = mensajes;
+
 
     iframe.contentWindow.postMessage(mensajes, "*");
 
