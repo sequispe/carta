@@ -8,9 +8,11 @@ function getToken(){
 
 const editor = document.getElementById("editor");
 const estado = document.getElementById("estado");
+const idiomaSelect = document.getElementById("idiomaSelect");
 const iframe = document.getElementById("preview");
 
 let shaActual = null;
+let contenidoActual = {};
 let timeout = null;
 
 /* ============================= */
@@ -21,31 +23,41 @@ async function cargarArchivo(){
 
   const TOKEN = getToken();
   if(!TOKEN){
-    estado.textContent = "⚠️ Guardá el token primero en el admin principal";
+    estado.textContent = "⚠️ Guardá el token primero";
     return;
   }
 
   const res = await fetch(
     `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`,
     {
-      headers:{
-        Authorization:`token ${TOKEN}`
-      }
+      headers:{ Authorization:`token ${TOKEN}` }
     }
   );
 
   const data = await res.json();
 
   shaActual = data.sha;
+  contenidoActual = JSON.parse(atob(data.content));
 
-  const contenido = JSON.parse(atob(data.content));
+  cargarIdiomaEnEditor();
+}
 
-  editor.value = (contenido.es || [])
+cargarArchivo();
+
+/* ============================= */
+/* CARGAR IDIOMA EN EDITOR */
+/* ============================= */
+
+function cargarIdiomaEnEditor(){
+  const idioma = idiomaSelect.value;
+  const lista = contenidoActual[idioma] || [];
+
+  editor.value = lista
     .map(s => typeof s === "string" ? s : s.texto)
     .join("\n");
 }
 
-cargarArchivo();
+idiomaSelect.addEventListener("change", cargarIdiomaEnEditor);
 
 /* ============================= */
 /* PREVIEW EN VIVO */
@@ -71,30 +83,28 @@ editor.addEventListener("input", () => {
 });
 
 /* ============================= */
-/* GUARDAR EN GITHUB */
+/* GUARDAR */
 /* ============================= */
 
 document.getElementById("guardar").onclick = async () => {
 
   const TOKEN = getToken();
   if(!TOKEN){
-    estado.textContent = "⚠️ No hay token configurado";
+    estado.textContent = "⚠️ No hay token";
     return;
   }
+
+  const idioma = idiomaSelect.value;
 
   const mensajes = editor.value
     .split("\n")
     .map(t => t.trim())
     .filter(Boolean);
 
-  const nuevoJSON = {
-    es: mensajes,
-    en: mensajes,
-    pt: mensajes
-  };
+  contenidoActual[idioma] = mensajes;
 
   const contenidoCodificado = btoa(
-    unescape(encodeURIComponent(JSON.stringify(nuevoJSON, null, 2)))
+    unescape(encodeURIComponent(JSON.stringify(contenidoActual, null, 2)))
   );
 
   const res = await fetch(
@@ -106,7 +116,7 @@ document.getElementById("guardar").onclick = async () => {
         "Content-Type":"application/json"
       },
       body:JSON.stringify({
-        message:"Actualizar sugerencias desde Mozo Digital",
+        message:`Actualizar sugerencias (${idioma})`,
         content:contenidoCodificado,
         sha:shaActual
       })
@@ -114,7 +124,7 @@ document.getElementById("guardar").onclick = async () => {
   );
 
   if(res.ok){
-    estado.textContent = "✅ Guardado correctamente en GitHub";
+    estado.textContent = "✅ Guardado por idioma";
     cargarArchivo();
   }else{
     estado.textContent = "❌ Error al guardar";
