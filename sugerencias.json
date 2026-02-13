@@ -1,29 +1,14 @@
 {
-  "es":[
-    "☕ Probá nuestro café de especialidad",
-    "🥐 Croissants recién horneados",
-    "🍰 Tortas caseras todos los días"
-  ],
-  "en":[
-    "☕ Try our specialty coffee",
-    "🥐 Fresh baked croissants",
-    "🍰 Homemade cakes every day"
-  ],
-  "pt":[
-    "☕ Experimente nosso café especial",
-    "🥐 Croissants frescos",
-    "🍰 Bolos caseiros todos os dias"
-   ]  
- {
   "es": [
-    "Promo café con medialuna ☕",
-    { "texto": "Desayuno especial hasta las 12hs 🥐", "desde": 7, "hasta": 12 }
+    "hola soy tu mozo digital hoy",
+    "tenemos risotos de lomo"
   ],
   "en": [
-    "Coffee & croissant promo ☕"
+    "hola soy tu mozo digital hoy",
+    "tenemos risotos de lomo"
   ],
   "pt": [
-    "Promo café com medialuna ☕"
+    "hola soy tu mozo digital hoy",
+    "tenemos risotos de lomo"
   ]
 }
-
