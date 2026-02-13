@@ -1,11 +1,12 @@
 {
   "es": [
-    "hola soy el mozo"
+    "Promo café con medialuna ☕",
+    { "texto": "Desayuno especial hasta las 12hs 🥐", "desde": 7, "hasta": 12 }
   ],
   "en": [
-    "hola soy el mozo"
+    "Coffee & croissant promo ☕"
   ],
   "pt": [
-    "hola soy el mozo"
+    "Promo café com medialuna ☕"
   ]
 }
