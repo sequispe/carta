@@ -17,28 +17,48 @@ tele.onclick=()=>{
 };
 
 function loadSugerencias(){
+
   fetch("sugerencias.json",{cache:"no-store"})
   .then(r=>r.json())
   .then(d=>{
-    sugerencias=d[idiomaActual]||[];
-    indice=0;
+
+    const ahora = new Date().getHours();
+
+    // Soporta texto simple o texto con horario
+    sugerencias = (d[idiomaActual] || [])
+      .filter(s => {
+        if (typeof s === "string") return true;
+        if (!s.desde) return true;
+        return ahora >= s.desde && ahora < s.hasta;
+      })
+      .map(s => typeof s === "string" ? s : s.texto);
+
+    indice = 0;
+
     mostrar();
-    clearInterval(intervalo);
-    intervalo=setInterval(next,15000);
   });
+
 }
 
 function mostrar(){
-  const t=sugerencias[indice];
-  tele.style.opacity=0;
-  setTimeout(()=>{
-    tele.style.animation="none";
-    tele.offsetHeight;
-    tele.textContent=t;
-    const dist=tele.scrollWidth+window.innerWidth;
-    tele.style.animation=`scrollText ${dist/60}s linear infinite`;
-    tele.style.opacity=1;
-  },400);
+
+  const t = sugerencias[indice];
+
+  tele.style.animation = "none";
+  tele.offsetHeight;
+  tele.textContent = t;
+
+  const dist = tele.scrollWidth + window.innerWidth;
+  const duracion = dist / 80; // velocidad real
+
+  tele.style.animation = `scrollText ${duracion}s linear`;
+
+  clearTimeout(intervalo);
+
+  intervalo = setTimeout(()=>{
+    next();
+  }, duracion * 1000);
+
 }
 
 function next(){
