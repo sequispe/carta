@@ -3,6 +3,20 @@ const estado = document.getElementById("estado");
 const iframe = document.getElementById("preview");
 
 let timeout = null;
+let dataGlobal = {};
+let idiomaActual = "es";
+
+fetch("../sugerencias.json",{cache:"no-store"})
+.then(r=>r.json())
+.then(d=>{
+  dataGlobal = d;
+  editor.value = (d[idiomaActual]||[]).join("\n");
+});
+
+document.getElementById("idiomaSelect").addEventListener("change",(e)=>{
+  idiomaActual = e.target.value;
+  editor.value = (dataGlobal[idiomaActual]||[]).join("\n");
+});
 
 /* CARGAR SUGERENCIAS */
 fetch("../sugerencias.json", { cache: "no-store" })
@@ -46,14 +60,13 @@ window.addEventListener("message", e => {
 /* BOTÓN GUARDAR */
 document.getElementById("guardar").onclick = () => {
 
-  const data = {
-    es: editor.value.split("\n").filter(Boolean)
-  };
+  dataGlobal[idiomaActual] =
+    editor.value.split("\n").filter(Boolean);
 
-  const json = JSON.stringify(data, null, 2);
+  const json = JSON.stringify(dataGlobal,null,2);
 
   navigator.clipboard.writeText(json);
 
-  estado.textContent = "📋 JSON copiado · pegalo en sugerencias.json";
-
+  estado.textContent = "📋 JSON copiado";
 };
+
