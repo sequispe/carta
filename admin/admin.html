@@ -1,38 +1,111 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin · mozo digital</title>
-  <link rel="stylesheet" href="admin.css">
-</head>
+const USER = "sequispe";
+const REPO = "carta";
+const FILE_PATH = "sugerencias.json";
 
-<body>
+/* ⚠️ USÁ EL MISMO TOKEN QUE TU ADMIN PRINCIPAL */
+const TOKEN = "PEGÁ_ACÁ_TU_TOKEN";
 
-<div class="layout">
+const editor = document.getElementById("editor");
+const estado = document.getElementById("estado");
+const iframe = document.getElementById("preview");
 
-  <!-- PANEL IZQUIERDO -->
-  <aside class="panel">
-    <h2>📝 mozo digital</h2>
-<select id="idiomaSelect">
-  <option value="es">🇪🇸 Español</option>
-  <option value="en">🇬🇧 English</option>
-  <option value="pt">🇧🇷 Português</option>
-</select>
+let shaActual = null;
+let timeout = null;
 
-    <label>Sugerencias (una por línea)</label>
-    <textarea id="editor" placeholder="Ej: Promo café con medialuna"></textarea>
+/* ============================= */
+/* CARGAR ARCHIVO DESDE GITHUB */
+/* ============================= */
 
-    <button id="guardar">💾 Guardar cambios</button>
-    <small id="estado"></small>
-  </aside>
+async function cargarArchivo() {
 
-  <!-- PREVIEW -->
-  <main class="preview">
-    <iframe id="preview" src="../index.html"></iframe>
-  </main>
+  const res = await fetch(
+    `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`,
+    {
+      headers: {
+        Authorization: `token ${TOKEN}`
+      }
+    }
+  );
 
-</div>
+  const data = await res.json();
 
-<script src="admin.js"></script>
-</body>
-</html>
+  shaActual = data.sha;
+
+  const contenido = JSON.parse(atob(data.content));
+
+  editor.value = (contenido.es || []).map(s =>
+    typeof s === "string" ? s : s.texto
+  ).join("\n");
+
+}
+
+cargarArchivo();
+
+/* ============================= */
+/* PREVIEW EN VIVO */
+/* ============================= */
+
+editor.addEventListener("input", () => {
+
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+
+    const mensajes = editor.value
+      .split("\n")
+      .map(t => t.trim())
+      .filter(Boolean);
+
+    iframe.contentWindow.postMessage(mensajes, "*");
+
+    estado.textContent = "👁 Preview en vivo";
+
+  }, 300);
+
+});
+
+/* ============================= */
+/* GUARDAR EN GITHUB */
+/* ============================= */
+
+document.getElementById("guardar").onclick = async () => {
+
+  const mensajes = editor.value
+    .split("\n")
+    .map(t => t.trim())
+    .filter(Boolean);
+
+  const nuevoJSON = {
+    es: mensajes,
+    en: mensajes,
+    pt: mensajes
+  };
+
+  const contenidoCodificado = btoa(
+    unescape(encodeURIComponent(JSON.stringify(nuevoJSON, null, 2)))
+  );
+
+  const res = await fetch(
+    `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Actualizar sugerencias desde Admin Mozo Digital",
+        content: contenidoCodificado,
+        sha: shaActual
+      })
+    }
+  );
+
+  if (res.ok) {
+    estado.textContent = "✅ Guardado en GitHub correctamente";
+    cargarArchivo();
+  } else {
+    estado.textContent = "❌ Error al guardar";
+  }
+
+};
