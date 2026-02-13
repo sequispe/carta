@@ -3,7 +3,13 @@ const REPO = "carta";
 const FILE_PATH = "sugerencias.json";
 
 /* ⚠️ USÁ EL MISMO TOKEN QUE TU ADMIN PRINCIPAL */
-const TOKEN = "PEGÁ_ACÁ_TU_TOKEN";
+const TOKEN = localStorage.getItem("github_token");
+
+if (!TOKEN) {
+  alert("⚠️ No hay token configurado. Ingresalo primero.");
+  throw new Error("Token no encontrado");
+}
+
 
 const editor = document.getElementById("editor");
 const estado = document.getElementById("estado");
