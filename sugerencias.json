@@ -14,12 +14,16 @@
     "🥐 Croissants frescos",
     "🍰 Bolos caseiros todos os dias"
    ]  
-  {
+ {
   "es": [
-    { "texto": "Buen día ☀", "desde": 7, "hasta": 12 },
-    { "texto": "Promo merienda ☕", "desde": 16, "hasta": 19 },
-    { "texto": "Cena especial 🍷", "desde": 20, "hasta": 23 }
+    "Promo café con medialuna ☕",
+    { "texto": "Desayuno especial hasta las 12hs 🥐", "desde": 7, "hasta": 12 }
+  ],
+  "en": [
+    "Coffee & croissant promo ☕"
+  ],
+  "pt": [
+    "Promo café com medialuna ☕"
   ]
 }
 
-} 
