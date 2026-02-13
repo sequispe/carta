@@ -1,139 +1,200 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-const USER="sequispe";
-const REPO="carta";
+const USER = "sequispe";
+const REPO = "carta";
 
-let idiomaActual=localStorage.getItem("idioma")||"es";
-let productos=[],sugerencias=[],indice=0,intervalo=null;
-let pausado=false;
+let idiomaActual = localStorage.getItem("idioma") || "es";
 
-const tele=document.getElementById("teleprompter-text");
-const list=document.getElementById("product-list");
-const cats=document.getElementById("category-buttons");
+let productos = [];
+let sugerencias = [];
+let indice = 0;
+let pausado = false;
+let timeoutCambio = null;
 
-tele.onclick=()=>{
-  pausado=!pausado;
-  tele.style.animationPlayState=pausado?"paused":"running";
-};
+const tele = document.getElementById("teleprompter-text");
+const list = document.getElementById("product-list");
+const cats = document.getElementById("category-buttons");
 
-function loadSugerencias(){
+/* ============================= */
+/* PAUSAR AL TOCAR */
+/* ============================= */
 
-  fetch("sugerencias.json",{cache:"no-store"})
-  .then(r=>r.json())
-  .then(d=>{
+tele.addEventListener("click", () => {
+  pausado = !pausado;
+  tele.style.animationPlayState = pausado ? "paused" : "running";
+});
 
-    const ahora = new Date().getHours();
+/* ============================= */
+/* CARGAR SUGERENCIAS */
+/* ============================= */
 
-    // Soporta texto simple o texto con horario
-    sugerencias = (d[idiomaActual] || [])
-      .filter(s => {
-        if (typeof s === "string") return true;
-        if (!s.desde) return true;
-        return ahora >= s.desde && ahora < s.hasta;
-      })
-      .map(s => typeof s === "string" ? s : s.texto);
+function loadSugerencias() {
 
-    indice = 0;
+  fetch("sugerencias.json", { cache: "no-store" })
+    .then(r => r.json())
+    .then(data => {
 
-    mostrar();
-  });
+      const horaActual = new Date().getHours();
 
+      sugerencias = (data[idiomaActual] || [])
+        .filter(s => {
+          if (typeof s === "string") return true;
+          if (!s.desde) return true;
+          return horaActual >= s.desde && horaActual < s.hasta;
+        })
+        .map(s => typeof s === "string" ? s : s.texto);
+
+      if (sugerencias.length === 0) {
+        sugerencias = ["Bienvenidos ☕"];
+      }
+
+      indice = 0;
+      mostrar();
+    });
 }
 
-function mostrar(){
+/* ============================= */
+/* MOSTRAR TEXTO SIN PAUSAS */
+/* ============================= */
 
-  const t = sugerencias[indice];
+function mostrar() {
+
+  if (!sugerencias.length) return;
+
+  const texto = sugerencias[indice];
 
   tele.style.animation = "none";
-  tele.offsetHeight;
-  tele.textContent = t;
+  tele.offsetHeight; // forzar reflow
 
-  const dist = tele.scrollWidth + window.innerWidth;
-  const duracion = dist / 80; // velocidad real
+  tele.textContent = texto;
+
+  const distancia = tele.scrollWidth + window.innerWidth;
+
+  const velocidad = 90; // más alto = más rápido
+  const duracion = distancia / velocidad;
 
   tele.style.animation = `scrollText ${duracion}s linear`;
 
-  clearTimeout(intervalo);
+  clearTimeout(timeoutCambio);
 
-  intervalo = setTimeout(()=>{
-    next();
+  timeoutCambio = setTimeout(() => {
+    if (!pausado) siguiente();
   }, duracion * 1000);
-
 }
 
-function next(){
-  if(pausado) return;
-  indice=(indice+1)%sugerencias.length;
+/* ============================= */
+/* SIGUIENTE MENSAJE */
+/* ============================= */
+
+function siguiente() {
+  indice = (indice + 1) % sugerencias.length;
   mostrar();
 }
 
-async function loadProductos(){
-  let f="productos.json";
-  if(idiomaActual==="en")f="productos-en.json";
-  if(idiomaActual==="pt")f="productos-port.json";
-  const url=`https://raw.githubusercontent.com/${USER}/${REPO}/main/${f}`;
-  const res=await fetch(url,{cache:"no-store"});
-  productos=await res.json();
-  renderCats();
+/* ============================= */
+/* CARGAR PRODUCTOS */
+/* ============================= */
+
+async function loadProductos() {
+
+  let archivo = "productos.json";
+  if (idiomaActual === "en") archivo = "productos-en.json";
+  if (idiomaActual === "pt") archivo = "productos-port.json";
+
+  const url = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${archivo}`;
+
+  const res = await fetch(url, { cache: "no-store" });
+  productos = await res.json();
+
+  renderCategorias();
   render(productos);
 }
 
-function renderCats(){
-  const c=["Todos",...new Set(productos.map(p=>p.categoria))];
-  cats.innerHTML="";
-  c.forEach(x=>{
-    const b=document.createElement("button");
-    b.textContent=x;
-    b.onclick=()=>render(x==="Todos"?productos:productos.filter(p=>p.categoria===x));
-    cats.appendChild(b);
+/* ============================= */
+/* RENDER CATEGORÍAS */
+/* ============================= */
+
+function renderCategorias() {
+
+  const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
+
+  cats.innerHTML = "";
+
+  categorias.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+
+    btn.onclick = () => {
+      if (cat === "Todos") render(productos);
+      else render(productos.filter(p => p.categoria === cat));
+    };
+
+    cats.appendChild(btn);
   });
 }
 
-function render(arr){
-  list.innerHTML="";
-  arr.forEach(p=>{
-    list.innerHTML+=`
-    <div class="item">
-      <img src="${p.imagen}">
-      <h3>${p.nombre}</h3>
-      <p>${p.descripcion||""}</p>
-      <span class="price">$${p.precio}</span>
-    </div>`;
+/* ============================= */
+/* RENDER PRODUCTOS */
+/* ============================= */
+
+function render(arr) {
+
+  list.innerHTML = "";
+
+  arr.forEach(p => {
+    list.innerHTML += `
+      <div class="item">
+        <img src="${p.imagen}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>
+      </div>
+    `;
   });
 }
 
-document.getElementById("btn-es").onclick=()=>{idioma("es")};
-document.getElementById("btn-en").onclick=()=>{idioma("en")};
-document.getElementById("btn-pt").onclick=()=>{idioma("pt")};
+/* ============================= */
+/* CAMBIO DE IDIOMA */
+/* ============================= */
 
-function idioma(i){
-  idiomaActual=i;
-  localStorage.setItem("idioma",i);
-  start();
+document.getElementById("btn-es").onclick = () => cambiarIdioma("es");
+document.getElementById("btn-en").onclick = () => cambiarIdioma("en");
+document.getElementById("btn-pt").onclick = () => cambiarIdioma("pt");
+
+function cambiarIdioma(id) {
+  idiomaActual = id;
+  localStorage.setItem("idioma", id);
+  iniciar();
 }
+
+/* ============================= */
+/* PREVIEW DESDE ADMIN */
+/* ============================= */
+
 window.parent?.postMessage("ready", "*");
 
-function start(){
-  loadSugerencias();
-  loadProductos();
-}
- /* ===== PREVIEW DESDE ADMIN ===== */
 window.addEventListener("message", e => {
 
   if (Array.isArray(e.data)) {
-
     sugerencias = e.data;
     indice = 0;
-
-    clearInterval(intervalo);
-
     mostrar();
-
-    intervalo = setInterval(next, 15000);
   }
 
+  if (e.data === "ready") {
+    e.source.postMessage(sugerencias, "*");
+  }
 });
 
+/* ============================= */
+/* INICIAR */
+/* ============================= */
 
-start();
+function iniciar() {
+  loadSugerencias();
+  loadProductos();
+}
+
+iniciar();
+
 });
