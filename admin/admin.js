@@ -74,10 +74,21 @@ editor.addEventListener("input", () => {
 const mensajes = editor.value
   .split("\n")
   .map(t => t.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+  .map(linea => {
 
-// SOLO ACTUALIZA EL IDIOMA ACTUAL
+    if(linea.includes("|")){
+      const [texto, rango] = linea.split("|").map(x=>x.trim());
+      const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
+
+      return { texto, desde, hasta };
+    }
+
+    return linea;
+  });
+
 contenidoActual[idioma] = mensajes;
+
 
 
     iframe.contentWindow.postMessage(mensajes, "*");
