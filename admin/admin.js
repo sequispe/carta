@@ -49,13 +49,22 @@ cargarArchivo();
 /* ============================= */
 
 function cargarIdiomaEnEditor(){
+
   const idioma = idiomaSelect.value;
   const lista = contenidoActual[idioma] || [];
 
-  editor.value = lista
-    .map(s => typeof s === "string" ? s : s.texto)
-    .join("\n");
+  editor.value = lista.map(item => {
+
+    if(typeof item === "string"){
+      return item;
+    }
+
+    return `${item.texto} | ${item.desde}-${item.hasta}`;
+
+  }).join("\n");
+
 }
+
 
 idiomaSelect.addEventListener("change", cargarIdiomaEnEditor);
 
