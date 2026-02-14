@@ -36,8 +36,7 @@ function loadSugerencias() {
 
       const horaActual = new Date().getHours();
 
-      sugerencias = (data[idiomaActual] || [])
-        .filter(s => {
+     
           if (typeof s === "string") return true;
           if (!s.desde) return true;
           return horaActual >= s.desde && horaActual < s.hasta;
