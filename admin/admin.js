@@ -35,7 +35,12 @@ async function cargarArchivo(){
   const data = await res.json();
 
   shaActual = data.sha;
-  contenidoActual = JSON.parse(atob(data.content));
+  const decoded = decodeURIComponent(
+  escape(atob(data.content))
+);
+
+contenidoActual = JSON.parse(decoded);
+
 
   actualizarEstadosVisuales();
 }
