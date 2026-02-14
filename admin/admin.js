@@ -39,8 +39,10 @@ async function cargarArchivo(){
   shaActual = data.sha;
   contenidoActual = JSON.parse(atob(data.content));
 
-  cargarIdiomaEnEditor();
+function cargarIdiomaEnEditor(){
+  actualizarEstadosVisuales();
 }
+
 
 cargarArchivo();
 
@@ -48,22 +50,28 @@ cargarArchivo();
 /* CARGAR IDIOMA EN EDITOR */
 /* ============================= */
 
-function cargarIdiomaEnEditor(){
+function actualizarEstadosVisuales(){
 
   const idioma = idiomaSelect.value;
   const lista = contenidoActual[idioma] || [];
+  const horaActual = new Date().getHours();
 
   editor.value = lista.map(item => {
 
     if(typeof item === "string"){
-      return item;
+      return `⚪ ${item}`;
     }
 
-    return `${item.texto} | ${item.desde}-${item.hasta}`;
+    const activo = horaActual >= item.desde && horaActual < item.hasta;
+    const icono = activo ? "🟢" : "🔴";
+
+    return `${icono} ${item.texto} | ${item.desde}-${item.hasta}`;
 
   }).join("\n");
 
 }
+
+
 
 
 idiomaSelect.addEventListener("change", cargarIdiomaEnEditor);
@@ -86,15 +94,19 @@ const mensajes = editor.value
   .filter(Boolean)
   .map(linea => {
 
-    if(linea.includes("|")){
-      const [texto, rango] = linea.split("|").map(x=>x.trim());
-      const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
+  // Eliminar iconos visuales si existen
+  linea = linea.replace(/^🟢|^🔴|^⚪/, "").trim();
 
-      return { texto, desde, hasta };
-    }
+  if(linea.includes("|")){
+    const [texto, rango] = linea.split("|").map(x=>x.trim());
+    const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
 
-    return linea;
-  });
+    return { texto, desde, hasta };
+  }
+
+  return linea;
+});
+
 
 contenidoActual[idioma] = mensajes;
 
@@ -155,5 +167,8 @@ document.getElementById("guardar").onclick = async () => {
   }else{
     estado.textContent = "❌ Error al guardar";
   }
+setInterval(() => {
+  actualizarEstadosVisuales();
+}, 60000);
 
 };
