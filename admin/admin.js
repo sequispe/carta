@@ -54,14 +54,23 @@ function actualizarEstadosVisuales(){
 
   editor.value = lista.map(item => {
 
-    if(typeof item === "string"){
-      return `⚪ ${item}`;
-    }
+  // 🎄 FECHA
+if(item.fecha){
+  const [dia, mes] = item.fecha.split("-").map(n=>parseInt(n));
+  const hoy = new Date();
+  const activo = dia === hoy.getDate() && mes === (hoy.getMonth()+1);
 
-    const activo = horaActual >= item.desde && horaActual < item.hasta;
-    const icono = activo ? "🟢" : "🔴";
+  const icono = activo ? "🎄🟢" : "🎄🔴";
+  return `${icono} ${item.texto} | fecha:${item.fecha}`;
+}
 
-    return `${icono} ${item.texto} | ${item.desde}-${item.hasta}`;
+// ⏰ HORARIO
+if(item.desde !== undefined){
+  const horaActual = new Date().getHours();
+  const activo = horaActual >= item.desde && horaActual < item.hasta;
+  const icono = activo ? "🟢" : "🔴";
+  return `${icono} ${item.texto} | ${item.desde}-${item.hasta}`;
+}
 
   }).join("\n");
 }
@@ -100,7 +109,23 @@ editor.addEventListener("input", () => {
 
         linea = linea.replace(/^🟢|^🔴|^⚪/, "").trim();
 
-        if(linea.includes("|")){
+       if(linea.includes("|")){
+
+  const [texto, condicion] = linea.split("|").map(x=>x.trim());
+
+  // 🎄 FECHA
+  if(condicion.startsWith("fecha:")){
+    const fecha = condicion.replace("fecha:", "").trim();
+    return { texto, fecha };
+  }
+
+  // ⏰ HORARIO
+  if(condicion.includes("-")){
+    const [desde, hasta] = condicion.split("-").map(x=>parseInt(x.trim()));
+    return { texto, desde, hasta };
+  }
+}
+
           const [texto, rango] = linea.split("|").map(x=>x.trim());
           const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
           return { texto, desde, hasta };
