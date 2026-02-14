@@ -29,9 +29,7 @@ async function cargarArchivo(){
 
   const res = await fetch(
     `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`,
-    {
-      headers:{ Authorization:`token ${TOKEN}` }
-    }
+    { headers:{ Authorization:`token ${TOKEN}` } }
   );
 
   const data = await res.json();
@@ -39,15 +37,13 @@ async function cargarArchivo(){
   shaActual = data.sha;
   contenidoActual = JSON.parse(atob(data.content));
 
-function cargarIdiomaEnEditor(){
   actualizarEstadosVisuales();
 }
-
 
 cargarArchivo();
 
 /* ============================= */
-/* CARGAR IDIOMA EN EDITOR */
+/* ACTUALIZAR ESTADOS VISUALES */
 /* ============================= */
 
 function actualizarEstadosVisuales(){
@@ -68,13 +64,21 @@ function actualizarEstadosVisuales(){
     return `${icono} ${item.texto} | ${item.desde}-${item.hasta}`;
 
   }).join("\n");
-
 }
 
+/* ============================= */
+/* CAMBIO DE IDIOMA */
+/* ============================= */
 
+idiomaSelect.addEventListener("change", actualizarEstadosVisuales);
 
+/* ============================= */
+/* ACTUALIZACIÓN AUTOMÁTICA CADA MINUTO */
+/* ============================= */
 
-idiomaSelect.addEventListener("change", cargarIdiomaEnEditor);
+setInterval(() => {
+  actualizarEstadosVisuales();
+}, 60000);
 
 /* ============================= */
 /* PREVIEW EN VIVO */
@@ -88,31 +92,29 @@ editor.addEventListener("input", () => {
 
     const idioma = idiomaSelect.value;
 
-const mensajes = editor.value
-  .split("\n")
-  .map(t => t.trim())
-  .filter(Boolean)
-  .map(linea => {
+    const mensajes = editor.value
+      .split("\n")
+      .map(t => t.trim())
+      .filter(Boolean)
+      .map(linea => {
 
-  // Eliminar iconos visuales si existen
-  linea = linea.replace(/^🟢|^🔴|^⚪/, "").trim();
+        linea = linea.replace(/^🟢|^🔴|^⚪/, "").trim();
 
-  if(linea.includes("|")){
-    const [texto, rango] = linea.split("|").map(x=>x.trim());
-    const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
+        if(linea.includes("|")){
+          const [texto, rango] = linea.split("|").map(x=>x.trim());
+          const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
+          return { texto, desde, hasta };
+        }
 
-    return { texto, desde, hasta };
-  }
+        return linea;
+      });
 
-  return linea;
-});
+    contenidoActual[idioma] = mensajes;
 
-
-contenidoActual[idioma] = mensajes;
-
-
-
-    iframe.contentWindow.postMessage(mensajes, "*");
+    iframe.contentWindow.postMessage(
+      mensajes.map(m => typeof m === "string" ? m : m.texto),
+      "*"
+    );
 
     estado.textContent = "👁 Preview en vivo";
 
@@ -132,15 +134,6 @@ document.getElementById("guardar").onclick = async () => {
     return;
   }
 
-  const idioma = idiomaSelect.value;
-
-  const mensajes = editor.value
-    .split("\n")
-    .map(t => t.trim())
-    .filter(Boolean);
-
-  contenidoActual[idioma] = mensajes;
-
   const contenidoCodificado = btoa(
     unescape(encodeURIComponent(JSON.stringify(contenidoActual, null, 2)))
   );
@@ -154,7 +147,7 @@ document.getElementById("guardar").onclick = async () => {
         "Content-Type":"application/json"
       },
       body:JSON.stringify({
-        message:`Actualizar sugerencias (${idioma})`,
+        message:`Actualizar sugerencias (${idiomaSelect.value})`,
         content:contenidoCodificado,
         sha:shaActual
       })
@@ -167,8 +160,5 @@ document.getElementById("guardar").onclick = async () => {
   }else{
     estado.textContent = "❌ Error al guardar";
   }
-setInterval(() => {
-  actualizarEstadosVisuales();
-}, 60000);
 
 };
