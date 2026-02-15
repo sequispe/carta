@@ -46,7 +46,17 @@ function loadSugerencias() {
       if (sugerencias.length === 0) {
         sugerencias = ["Bienvenidos ☕"];
       }
+    function presentacionSegunEstilo(estilo){
 
+  const frases = {
+    calido: "Soy tu mozo digital 😊",
+    formal: "Soy su asistente digital.",
+    premium: "Será un placer acompañarlo hoy.",
+    casual: "Soy tu mozo digital 🔥"
+  };
+
+  return frases[estilo] || frases.calido;
+}
       indice = 0;
       mostrar();
     });
@@ -89,6 +99,7 @@ function siguiente() {
   indice = (indice + 1) % sugerencias.length;
   mostrar();
 }
+
 
 /* ============================= */
 /* CARGAR PRODUCTOS */
