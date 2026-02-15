@@ -130,6 +130,28 @@ editor.addEventListener("input", () => {
     return { texto, desde, hasta };
   }
 }
+        /* INSERTAR EMOJI EN POSICIÓN DEL CURSOR */
+
+document.querySelectorAll(".emoji-list button").forEach(btn => {
+  btn.addEventListener("click", () => {
+
+    const emoji = btn.textContent;
+
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+
+    editor.value =
+      editor.value.substring(0, start) +
+      emoji +
+      editor.value.substring(end);
+
+    editor.focus();
+    editor.selectionStart = editor.selectionEnd = start + emoji.length;
+
+    editor.dispatchEvent(new Event("input")); // actualiza preview
+  });
+});
+
 
           const [texto, rango] = linea.split("|").map(x=>x.trim());
           const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
