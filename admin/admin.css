@@ -63,3 +63,30 @@ body{
   border:none;
   background:#fff;
 }
+.emoji-panel{
+  margin-top:10px;
+  font-size:14px;
+}
+
+.emoji-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:6px;
+}
+
+.emoji-list button{
+  border:none;
+  background:#222;
+  color:#fff;
+  font-size:18px;
+  border-radius:6px;
+  padding:6px 8px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.emoji-list button:hover{
+  background:#00c896;
+}
+
