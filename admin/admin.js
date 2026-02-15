@@ -2,14 +2,23 @@ const USER = "sequispe";
 const REPO = "carta";
 const FILE_PATH = "sugerencias.json";
 
+/* ============================= */
+/* TOKEN */
+/* ============================= */
+
 function getToken(){
-  return localStorage.getItem('github_token');
+  return localStorage.getItem("github_token");
 }
+
+/* ============================= */
+/* ELEMENTOS */
+/* ============================= */
 
 const editor = document.getElementById("editor");
 const estado = document.getElementById("estado");
 const idiomaSelect = document.getElementById("idiomaSelect");
 const iframe = document.getElementById("preview");
+const nombreLocalInput = document.getElementById("nombreLocal");
 
 let shaActual = null;
 let contenidoActual = {};
@@ -22,6 +31,7 @@ let timeout = null;
 async function cargarArchivo(){
 
   const TOKEN = getToken();
+
   if(!TOKEN){
     estado.textContent = "⚠️ Guardá el token primero";
     return;
@@ -35,14 +45,21 @@ async function cargarArchivo(){
   const data = await res.json();
 
   shaActual = data.sha;
+
   const decoded = decodeURIComponent(
-  escape(atob(data.content))
-);
+    escape(atob(data.content))
+  );
 
-contenidoActual = JSON.parse(decoded);
-  document.getElementById("nombreLocal").value =
-  contenidoActual.config?.nombreLocal || "";
+  contenidoActual = JSON.parse(decoded);
 
+  // Asegurar estructura mínima
+  contenidoActual.config = contenidoActual.config || {};
+  contenidoActual.es = contenidoActual.es || [];
+  contenidoActual.en = contenidoActual.en || [];
+  contenidoActual.pt = contenidoActual.pt || [];
+
+  nombreLocalInput.value =
+    contenidoActual.config.nombreLocal || "";
 
   actualizarEstadosVisuales();
 }
@@ -57,37 +74,41 @@ function actualizarEstadosVisuales(){
 
   const idioma = idiomaSelect.value;
   const lista = contenidoActual[idioma] || [];
-  const horaActual = new Date().getHours();
+  const hoy = new Date();
+  const horaActual = hoy.getHours();
 
   editor.value = lista.map(item => {
 
-  // 🎄 FECHA
-if(item.fecha){
-  const [dia, mes] = item.fecha.split("-").map(n=>parseInt(n));
-  const hoy = new Date();
-  const activo = dia === hoy.getDate() && mes === (hoy.getMonth()+1);
+    // STRING SIMPLE
+    if(typeof item === "string"){
+      return `⚪ ${item}`;
+    }
 
-  const icono = activo ? "🎄🟢" : "🎄🔴";
-  return `${icono} ${item.texto} | fecha:${item.fecha}`;
-}
+    // 🎄 FECHA
+    if(item.fecha){
+      const [dia, mes] = item.fecha.split("-").map(n=>parseInt(n));
+      const activo =
+        dia === hoy.getDate() &&
+        mes === (hoy.getMonth()+1);
 
-// ⏰ HORARIO
-if(item.desde !== undefined){
-  const horaActual = new Date().getHours();
-  const activo = horaActual >= item.desde && horaActual < item.hasta;
-  const icono = activo ? "🟢" : "🔴";
-  return `${icono} ${item.texto} | ${item.desde}-${item.hasta}`;
-}
+      const icono = activo ? "🎄🟢" : "🎄🔴";
+      return `${icono} ${item.texto} | fecha:${item.fecha}`;
+    }
+
+    // ⏰ HORARIO
+    if(item.desde !== undefined){
+      const activo =
+        horaActual >= item.desde &&
+        horaActual < item.hasta;
+
+      const icono = activo ? "🟢" : "🔴";
+      return `${icono} ${item.texto} | ${item.desde}-${item.hasta}`;
+    }
+
+    return "";
 
   }).join("\n");
 }
-const emojisPorTipo = {
-  cafe: ["☕","🥐","🍰","🍪","🧁","🍵","🍫","🧋"],
-  fastfood: ["🍔","🍟","🌭","🍕","🥤","🧀","🔥","😋"],
-  resto: ["🍷","🍽","🥩","🐟","🥗","🧀","🍾","✨"],
-  bar: ["🍺","🍻","🥃","🍸","🎉","🎶","🔥","😎"],
-  hotel: ["🏨","🍽","☕","🥂","✨","🛎","🌅","🌙"]
-};
 
 /* ============================= */
 /* CAMBIO DE IDIOMA */
@@ -96,7 +117,7 @@ const emojisPorTipo = {
 idiomaSelect.addEventListener("change", actualizarEstadosVisuales);
 
 /* ============================= */
-/* ACTUALIZACIÓN AUTOMÁTICA CADA MINUTO */
+/* ACTUALIZACIÓN AUTOMÁTICA */
 /* ============================= */
 
 setInterval(() => {
@@ -121,31 +142,59 @@ editor.addEventListener("input", () => {
       .filter(Boolean)
       .map(linea => {
 
-        linea = linea.replace(/^🟢|^🔴|^⚪/, "").trim();
+        // Quitar iconos visuales
+        linea = linea.replace(/^🎄🟢|^🎄🔴|^🟢|^🔴|^⚪/, "").trim();
 
-       if(linea.includes("|")){
+        if(linea.includes("|")){
 
-  const [texto, condicion] = linea.split("|").map(x=>x.trim());
+          const [texto, condicion] =
+            linea.split("|").map(x=>x.trim());
 
-  // 🎄 FECHA
-  if(condicion.startsWith("fecha:")){
-    const fecha = condicion.replace("fecha:", "").trim();
-    return { texto, fecha };
-  }
+          // FECHA
+          if(condicion.startsWith("fecha:")){
+            const fecha =
+              condicion.replace("fecha:", "").trim();
+            return { texto, fecha };
+          }
 
-  // ⏰ HORARIO
-  if(condicion.includes("-")){
-    const [desde, hasta] = condicion.split("-").map(x=>parseInt(x.trim()));
-    return { texto, desde, hasta };
-  }
-}
-        /* INSERTAR EMOJI EN POSICIÓN DEL CURSOR */
+          // HORARIO
+          if(condicion.includes("-")){
+            const [desde, hasta] =
+              condicion.split("-")
+              .map(x=>parseInt(x.trim()));
+            return { texto, desde, hasta };
+          }
+        }
 
-document.querySelectorAll(".emoji-list button").forEach(btn => {
+        // TEXTO SIMPLE
+        return linea;
+      });
+
+    contenidoActual[idioma] = mensajes;
+
+    // Enviar solo texto plano al preview
+    iframe.contentWindow.postMessage(
+      mensajes.map(m =>
+        typeof m === "string" ? m : m.texto
+      ),
+      "*"
+    );
+
+    estado.textContent = "👁 Preview en vivo";
+
+  }, 300);
+});
+
+/* ============================= */
+/* EMOJIS CLICKEABLES */
+/* ============================= */
+
+document.querySelectorAll(".emoji-list button")
+.forEach(btn => {
+
   btn.addEventListener("click", () => {
 
     const emoji = btn.textContent;
-
     const start = editor.selectionStart;
     const end = editor.selectionEnd;
 
@@ -155,31 +204,12 @@ document.querySelectorAll(".emoji-list button").forEach(btn => {
       editor.value.substring(end);
 
     editor.focus();
-    editor.selectionStart = editor.selectionEnd = start + emoji.length;
+    editor.selectionStart =
+      editor.selectionEnd =
+      start + emoji.length;
 
-    editor.dispatchEvent(new Event("input")); // actualiza preview
+    editor.dispatchEvent(new Event("input"));
   });
-});
-
-
-          const [texto, rango] = linea.split("|").map(x=>x.trim());
-          const [desde, hasta] = rango.split("-").map(x=>parseInt(x.trim()));
-          return { texto, desde, hasta };
-        }
-
-        return linea;
-      });
-
-    contenidoActual[idioma] = mensajes;
-
-    iframe.contentWindow.postMessage(
-      mensajes.map(m => typeof m === "string" ? m : m.texto),
-      "*"
-    );
-
-    estado.textContent = "👁 Preview en vivo";
-
-  }, 300);
 
 });
 
@@ -190,13 +220,23 @@ document.querySelectorAll(".emoji-list button").forEach(btn => {
 document.getElementById("guardar").onclick = async () => {
 
   const TOKEN = getToken();
+
   if(!TOKEN){
     estado.textContent = "⚠️ No hay token";
     return;
   }
 
+  // Guardar nombre del local
+  contenidoActual.config = contenidoActual.config || {};
+  contenidoActual.config.nombreLocal =
+    nombreLocalInput.value.trim();
+
   const contenidoCodificado = btoa(
-    unescape(encodeURIComponent(JSON.stringify(contenidoActual, null, 2)))
+    unescape(
+      encodeURIComponent(
+        JSON.stringify(contenidoActual, null, 2)
+      )
+    )
   );
 
   const res = await fetch(
@@ -216,10 +256,9 @@ document.getElementById("guardar").onclick = async () => {
   );
 
   if(res.ok){
-    estado.textContent = "✅ Guardado por idioma";
+    estado.textContent = "✅ Guardado correctamente";
     cargarArchivo();
   }else{
     estado.textContent = "❌ Error al guardar";
   }
-
 };
