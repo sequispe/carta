@@ -10,6 +10,11 @@ let sugerencias = [];
 let indice = 0;
 let pausado = false;
 let timeoutCambio = null;
+let configGlobal = {};
+
+/* ============================= */
+/* ELEMENTOS */
+/* ============================= */
 
 const tele = document.getElementById("teleprompter-text");
 const list = document.getElementById("product-list");
@@ -25,6 +30,45 @@ tele.addEventListener("click", () => {
 });
 
 /* ============================= */
+/* SALUDO AUTOMÁTICO */
+/* ============================= */
+
+function obtenerSaludoAutomatico(){
+
+  const hora = new Date().getHours();
+
+  if(hora >= 5 && hora < 12) return "☀️ Buenos días";
+  if(hora >= 12 && hora < 20) return "🌤 Buenas tardes";
+  return "🌙 Buenas noches";
+}
+
+/* ============================= */
+/* MENSAJE BASE OBLIGATORIO */
+/* ============================= */
+
+function armarMensajeBase(config){
+
+  const saludo = obtenerSaludoAutomatico();
+  const nombre = config?.nombreLocal || "Nuestro local";
+
+  let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a ${nombre}.`;
+
+  if(config?.promo){
+    mensaje += ` ${config.promo}`;
+  }
+
+  if(config?.menu){
+    mensaje += ` Hoy el menú del día es ${config.menu}.`;
+  }
+
+  if(config?.extra){
+    mensaje += ` ${config.extra}`;
+  }
+
+  return mensaje;
+}
+
+/* ============================= */
 /* CARGAR SUGERENCIAS */
 /* ============================= */
 
@@ -34,46 +78,33 @@ function loadSugerencias() {
     .then(r => r.json())
     .then(data => {
 
+      configGlobal = data.config || {};
       const horaActual = new Date().getHours();
 
-     
+      sugerencias = (data[idiomaActual] || [])
+        .filter(s => {
           if (typeof s === "string") return true;
           if (!s.desde) return true;
           return horaActual >= s.desde && horaActual < s.hasta;
         })
         .map(s => typeof s === "string" ? s : s.texto);
 
+      // 🔥 Agregar mensaje obligatorio al inicio
+      const mensajeBase = armarMensajeBase(configGlobal);
+      sugerencias.unshift(mensajeBase);
+
       if (sugerencias.length === 0) {
         sugerencias = ["Bienvenidos ☕"];
       }
-    function presentacionSegunEstilo(estilo){
 
-  const frases = {
-    calido: "Soy tu mozo digital 😊",
-    formal: "Soy su asistente digital.",
-    premium: "Será un placer acompañarlo hoy.",
-    casual: "Soy tu mozo digital 🔥"
-  };
-
-  return frases[estilo] || frases.calido;
-}
       indice = 0;
       mostrar();
     });
 }
 
 /* ============================= */
-/* MOSTRAR TEXTO SIN PAUSAS */
+/* MOSTRAR TEXTO */
 /* ============================= */
-function armarMensajeBase(config){
-
-  const saludo = obtenerSaludoAutomatico();
-  const nombre = config?.nombreLocal || "Nuestro local";
-
-  let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a ${nombre}.`;
-
-  return mensaje;
-}
 
 function mostrar() {
 
@@ -87,8 +118,7 @@ function mostrar() {
   tele.textContent = texto;
 
   const distancia = tele.scrollWidth + window.innerWidth;
-
-  const velocidad = 90; // más alto = más rápido
+  const velocidad = 90;
   const duracion = distancia / velocidad;
 
   tele.style.animation = `scrollText ${duracion}s linear`;
@@ -109,6 +139,20 @@ function siguiente() {
   mostrar();
 }
 
+/* ============================= */
+/* ACTUALIZAR SALUDO SI CAMBIA LA HORA */
+/* ============================= */
+
+setInterval(() => {
+
+  if (!configGlobal) return;
+
+  const nuevoMensajeBase = armarMensajeBase(configGlobal);
+
+  // Reemplazar solo el primer mensaje
+  sugerencias[0] = nuevoMensajeBase;
+
+}, 60000); // cada minuto
 
 /* ============================= */
 /* CARGAR PRODUCTOS */
@@ -140,6 +184,7 @@ function renderCategorias() {
   cats.innerHTML = "";
 
   categorias.forEach(cat => {
+
     const btn = document.createElement("button");
     btn.textContent = cat;
 
@@ -161,6 +206,7 @@ function render(arr) {
   list.innerHTML = "";
 
   arr.forEach(p => {
+
     list.innerHTML += `
       <div class="item">
         <img src="${p.imagen}">
@@ -215,25 +261,5 @@ function iniciar() {
 }
 
 iniciar();
-function armarMensajeBase(configExtra){
-
-  const saludo = obtenerSaludoAutomatico();
-
-  let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a Tilo Café.`;
-
-  if(configExtra?.promo){
-    mensaje += ` ${configExtra.promo}`;
-  }
-
-  if(configExtra?.menu){
-    mensaje += ` Hoy el menú del día es ${configExtra.menu}.`;
-  }
-
-  if(configExtra?.extra){
-    mensaje += ` ${configExtra.extra}`;
-  }
-
-  return mensaje;
-}
 
 });
