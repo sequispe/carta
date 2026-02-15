@@ -195,5 +195,25 @@ function iniciar() {
 }
 
 iniciar();
+function armarMensajeBase(configExtra){
+
+  const saludo = obtenerSaludoAutomatico();
+
+  let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a Tilo Café.`;
+
+  if(configExtra?.promo){
+    mensaje += ` ${configExtra.promo}`;
+  }
+
+  if(configExtra?.menu){
+    mensaje += ` Hoy el menú del día es ${configExtra.menu}.`;
+  }
+
+  if(configExtra?.extra){
+    mensaje += ` ${configExtra.extra}`;
+  }
+
+  return mensaje;
+}
 
 });
