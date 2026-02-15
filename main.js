@@ -65,6 +65,15 @@ function loadSugerencias() {
 /* ============================= */
 /* MOSTRAR TEXTO SIN PAUSAS */
 /* ============================= */
+function armarMensajeBase(config){
+
+  const saludo = obtenerSaludoAutomatico();
+  const nombre = config?.nombreLocal || "Nuestro local";
+
+  let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a ${nombre}.`;
+
+  return mensaje;
+}
 
 function mostrar() {
 
