@@ -1,7 +1,13 @@
-"config": {
-  "estilo": "calido"
-}
 {
+  "config": {
+    "nombreLocal": "Tilo Café",
+    "estilo": "clasico"
+  },
+  "es": [],
+  "en": [],
+  "pt": []
+}
+
   "es": [
     "Promo cafÃÂ© con medialuna Ã¢ÂÂ",
     "Desayuno especial hasta las 12hs Ã°ÂÂ¥Â feliz dia de san valentin dinfruta de"
