@@ -40,6 +40,8 @@ async function cargarArchivo(){
 );
 
 contenidoActual = JSON.parse(decoded);
+  document.getElementById("nombreLocal").value =
+  contenidoActual.config?.nombreLocal || "";
 
 
   actualizarEstadosVisuales();
