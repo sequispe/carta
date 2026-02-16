@@ -123,12 +123,12 @@ function mostrar() {
 
   tele.style.animation = `scrollText ${duracion}s linear`;
 
-  clearTimeout(timeoutCambio);
-
-  timeoutCambio = setTimeout(() => {
-    if (!pausado) siguiente();
-  }, duracion * 1000);
 }
+clearTimeout(timeoutCambio);
+
+timeoutCambio = setTimeout(() => {
+  if (!pausado) siguiente();
+}, duracion * 1000);
 
 /* ============================= */
 /* SIGUIENTE MENSAJE */
