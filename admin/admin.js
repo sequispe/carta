@@ -132,7 +132,7 @@ editor.addEventListener("input", () => {
 
   clearTimeout(timeout);
 
-  timeout = setTimeout(() => {
+  timeout = animationend(() => {
 
     const idioma = idiomaSelect.value;
 
