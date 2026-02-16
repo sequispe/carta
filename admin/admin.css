@@ -1,92 +1,68 @@
-*{
-  box-sizing:border-box;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  overflow: hidden;
 }
 
-body{
-  margin:0;
-  font-family:system-ui, Arial;
-  background:#eee;
+.layout {
+  display: flex;
+  height: 100vh;
 }
 
-.layout{
-  display:grid;
-  grid-template-columns:360px 1fr;
-  height:100vh;
+.panel {
+  width: 420px;
+  padding: 20px;
+  background: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
 }
 
-/* PANEL */
-.panel{
-  background:#111;
-  color:#fff;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
+.panel input,
+.panel select,
+.panel textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
 }
 
-.panel h2{
-  margin-top:0;
+#editor {
+  height: 250px;
+  resize: vertical;
 }
 
-.panel label{
-  margin:10px 0 5px;
-  font-size:14px;
+.emoji-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
-.panel textarea{
-  flex:1;
-  resize:none;
-  padding:10px;
-  font-size:14px;
-  border-radius:6px;
-  border:none;
+.emoji-list button {
+  font-size: 18px;
+  cursor: pointer;
 }
 
-.panel button{
-  margin-top:12px;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  background:#00c896;
-  font-weight:bold;
-  cursor:pointer;
+.preview {
+  flex: 1;
+  background: #222;
 }
 
-.panel small{
-  margin-top:8px;
-  opacity:.7;
+.preview iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
-/* PREVIEW */
-.preview iframe{
-  width:100%;
-  height:100%;
-  border:none;
-  background:#fff;
+#guardar {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #00b894;
+  color: white;
+  font-weight: bold;
 }
-.emoji-panel{
-  margin-top:10px;
-  font-size:14px;
-}
-
-.emoji-list{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin-top:6px;
-}
-
-.emoji-list button{
-  border:none;
-  background:#222;
-  color:#fff;
-  font-size:18px;
-  border-radius:6px;
-  padding:6px 8px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.emoji-list button:hover{
-  background:#00c896;
-}
-
