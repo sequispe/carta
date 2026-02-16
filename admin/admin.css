@@ -11,10 +11,10 @@ body {
 }
 
 .panel {
-  width: 420px;
-  padding: 20px;
+  width: 400px;
   background: #111;
-  color: #fff;
+  color: white;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -31,38 +31,27 @@ body {
 }
 
 #editor {
-  height: 250px;
+  height: 220px;
   resize: vertical;
 }
 
 .emoji-list {
   display: flex;
+  gap: 6px;
   flex-wrap: wrap;
-  gap: 5px;
 }
 
 .emoji-list button {
-  font-size: 18px;
   cursor: pointer;
+  font-size: 18px;
 }
 
 .preview {
   flex: 1;
-  background: #222;
 }
 
 .preview iframe {
   width: 100%;
   height: 100%;
   border: none;
-}
-
-#guardar {
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #00b894;
-  color: white;
-  font-weight: bold;
 }
