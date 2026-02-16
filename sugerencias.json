@@ -5,12 +5,10 @@
     "menu": "Filete a la romana con papas rústicas",
     "extra": "Gracias por elegirnos 😊"
   },
-
   "es": [
     "Promo café con medialuna ☕",
-
     {
-      "texto": "Desayunos especiales hasta las 12hs 🥐",
+      "texto": "Desayunos especiales hasta las 12hs 🥐los desayunos incluyen☕",
       "desde": 6,
       "hasta": 12
     },
@@ -19,7 +17,6 @@
       "desde": 18,
       "hasta": 22
     },
-
     {
       "texto": "Feliz Día de la Mujer 🌷",
       "fecha": "8-3"
@@ -53,16 +50,13 @@
       "fecha": "1-1"
     }
   ],
-
   "en": [
     "Coffee and croissant promo ☕",
-
     {
       "texto": "Breakfast until 12pm 🥐",
       "desde": 6,
       "hasta": 12
     },
-
     {
       "texto": "Happy Women's Day 🌷",
       "fecha": "8-3"
@@ -96,16 +90,13 @@
       "fecha": "1-1"
     }
   ],
-
   "pt": [
     "Promo café com medialuna ☕",
-
     {
       "texto": "Café da manhã até 12h 🥐",
       "desde": 6,
       "hasta": 12
     },
-
     {
       "texto": "Feliz Dia da Mulher 🌷",
       "fecha": "8-3"
