@@ -1,133 +1,29 @@
 {
   "config": {
-    "nombreLocal": "Tilo Café",
-    "promo": "Hoy el desayuno premium incluye ☕ y jugo de 🍊.",
-    "menu": "Filete a la romana con papas rústicas",
-    "extra": "Gracias por elegirnos 😊"
+    "nombreLocal": "Tilo Café"
   },
+
   "es": [
-    "Promo café con medialuna ☕",
-    {
-      "texto": "Desayunos especiales hasta las 12hs 🥐los desayunos incluyen☕",
-      "desde": 6,
-      "hasta": 12
-    },
-    {
-      "texto": "After office desde las 18hs 🍻",
-      "desde": 18,
-      "hasta": 22
-    },
-    {
-      "texto": "Feliz Día de la Mujer 🌷",
-      "fecha": "8-3"
-    },
-    {
-      "texto": "Feliz Día del Trabajador 👷‍♂️",
-      "fecha": "1-5"
-    },
-    {
-      "texto": "Feliz Día del Padre 👔",
-      "fecha": "15-6"
-    },
-    {
-      "texto": "Feliz Día del Niño 👶",
-      "fecha": "17-8"
-    },
-    {
-      "texto": "Feliz Día de la Madre 💐",
-      "fecha": "19-10"
-    },
-    {
-      "texto": "Feliz San Valentín ❤️",
-      "fecha": "14-2"
-    },
-    {
-      "texto": "Feliz Navidad 🎄",
-      "fecha": "25-12"
-    },
-    {
-      "texto": "Feliz Año Nuevo 🎆",
-      "fecha": "1-1"
-    }
+    "🙋‍♂️ Hola, soy tu mozo digital bien benidos a tilo de aguero 2298.",
+    "🥐 El desayuno de preomo incluye café ☕tradicionales y jugo de naranja 🍊.",
+    "🍽 El menú del día es filete a la romana con papas rústicas o .",
+    "🍻 Hoy tenemos happy hour de 18 a 20hs.",
+    "😊 ¡Te esperamos en Tilo Café!"
   ],
+
   "en": [
-    "Coffee and croissant promo ☕",
-    {
-      "texto": "Breakfast until 12pm 🥐",
-      "desde": 6,
-      "hasta": 12
-    },
-    {
-      "texto": "Happy Women's Day 🌷",
-      "fecha": "8-3"
-    },
-    {
-      "texto": "Happy Workers' Day 👷",
-      "fecha": "1-5"
-    },
-    {
-      "texto": "Happy Father's Day 👔",
-      "fecha": "15-6"
-    },
-    {
-      "texto": "Happy Children's Day 👶",
-      "fecha": "17-8"
-    },
-    {
-      "texto": "Happy Mother's Day 💐",
-      "fecha": "19-10"
-    },
-    {
-      "texto": "Happy Valentine's Day ❤️",
-      "fecha": "14-2"
-    },
-    {
-      "texto": "Merry Christmas 🎄",
-      "fecha": "25-12"
-    },
-    {
-      "texto": "Happy New Year 🎆",
-      "fecha": "1-1"
-    }
+    "🙋‍♂️ Hi, I'm your digital waiter.",
+    "🥐 Our premium breakfast includes coffee ☕ and orange juice 🍊.",
+    "🍽 Today's special is breaded steak with rustic potatoes.",
+    "🍻 Happy hour from 6pm to 8pm.",
+    "😊 We’re waiting for you at Tilo Café!"
   ],
+
   "pt": [
-    "Promo café com medialuna ☕",
-    {
-      "texto": "Café da manhã até 12h 🥐",
-      "desde": 6,
-      "hasta": 12
-    },
-    {
-      "texto": "Feliz Dia da Mulher 🌷",
-      "fecha": "8-3"
-    },
-    {
-      "texto": "Feliz Dia do Trabalhador 👷",
-      "fecha": "1-5"
-    },
-    {
-      "texto": "Feliz Dia dos Pais 👔",
-      "fecha": "15-6"
-    },
-    {
-      "texto": "Feliz Dia das Crianças 👶",
-      "fecha": "17-8"
-    },
-    {
-      "texto": "Feliz Dia das Mães 💐",
-      "fecha": "19-10"
-    },
-    {
-      "texto": "Feliz Dia dos Namorados ❤️",
-      "fecha": "14-2"
-    },
-    {
-      "texto": "Feliz Natal 🎄",
-      "fecha": "25-12"
-    },
-    {
-      "texto": "Feliz Ano Novo 🎆",
-      "fecha": "1-1"
-    }
+    "🙋‍♂️ Olá, sou seu garçom digital.",
+    "🥐 Nosso café da manhã premium inclui café ☕ e suco de laranja 🍊.",
+    "🍽 O prato do dia é filé à milanesa com batatas rústicas.",
+    "🍻 Happy hour das 18h às 20h.",
+    "😊 Esperamos você no Tilo Café!"
   ]
 }
