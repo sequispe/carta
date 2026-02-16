@@ -1,59 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin · mozo digital</title>
-  <link rel="stylesheet" href="admin.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Mozo Digital</title>
+<link rel="stylesheet" href="admin.css">
 </head>
-
 <body>
-<label>Nombre del local</label>
-<input type="text" id="nombreLocal" placeholder="Ej: Tilo Café">
 
 <div class="layout">
 
-  <!-- PANEL IZQUIERDO -->
-<aside class="panel">
-  <h2>📝 Mozo Digital</h2>
+  <div class="panel">
 
-  <label>Idioma:</label>
-  <select id="idiomaSelect">
-    <option value="es">🇪🇸 Español</option>
-    <option value="en">🇬🇧 English</option>
-    <option value="pt">🇧🇷 Português</option>
-  </select>
+    <h2>📝 Mozo Digital</h2>
 
-  <label>Sugerencias (una por línea)</label>
-  <texta<div class="emoji-panel">
-  <span>Emojis rápidos:</span>
-  <div class="emoji-list">
-    <button type="button">☕</button>
-    <button type="button">🍰</button>
-    <button type="button">🥐</button>
-    <button type="button">🍔</button>
-    <button type="button">🍕</button>
-    <button type="button">🍹</button>
-    <button type="button">🍺</button>
-    <button type="button">🍷</button>
-    <button type="button">🔥</button>
-    <button type="button">❄️</button>
-    <button type="button">🌧</button>
-    <button type="button">🎉</button>
+    <label>Nombre del local</label>
+    <input type="text" id="nombreLocal" placeholder="Ej: Tilo Café">
+
+    <label>Idioma</label>
+    <select id="idiomaSelect">
+      <option value="es">Español</option>
+      <option value="en">English</option>
+      <option value="pt">Português</option>
+    </select>
+
+    <label>Sugerencias (una por línea)</label>
+    <textarea id="editor"></textarea>
+
+    <div class="emoji-list">
+      <button>☕</button>
+      <button>🥐</button>
+      <button>🍰</button>
+      <button>🍔</button>
+      <button>🍺</button>
+      <button>🎉</button>
+      <button>🔥</button>
+      <button>❤️</button>
+    </div>
+
+    <button id="guardar">Guardar cambios</button>
+
+    <small id="estado"></small>
+
   </div>
-</div>
- id="editor"></textarea>
 
-  <button id="guardar">💾 Guardar cambios</button>
-  <small id="estado"></small>
-</aside>
-
-  <!-- PREVIEW -->
-  <main class="preview">
+  <div class="preview">
     <iframe id="preview" src="../index.html"></iframe>
-  </main>
+  </div>
 
 </div>
 
 <script src="admin.js"></script>
+
 </body>
 </html>
