@@ -132,7 +132,10 @@ editor.addEventListener("input", () => {
 
   clearTimeout(timeout);
 
-  timeout = setTimeout(() => {
+  setTimeout(() => {
+  siguienteMensaje();
+}, 3000);
+
 
     const idioma = idiomaSelect.value;
 
@@ -182,7 +185,7 @@ editor.addEventListener("input", () => {
 
     estado.textContent = "👁 Preview en vivo";
 
-  }, 300);
+  }, 500);
 });
 
 /* ============================= */
