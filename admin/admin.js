@@ -132,10 +132,21 @@ editor.addEventListener("input", () => {
 
   clearTimeout(timeout);
 
-  setTimeout(() => {
-  siguienteMensaje();
-}, 3000);
+ setTimeout(() => {
+  tele.style.opacity = "0";
 
+  setTimeout(() => {
+    tele.innerHTML = "";
+    tele.style.opacity = "1";
+
+    indexLetra = 0;
+    indexMensaje++;
+    if (indexMensaje >= mensajes.length) indexMensaje = 0;
+
+    escribirMensaje();
+  }, 400);
+
+}, pausaEntreMensajes);
 
     const idioma = idiomaSelect.value;
 
