@@ -1,278 +1,259 @@
+
 const USER = "sequispe";
 const REPO = "carta";
-const FILE_PATH = "sugerencias.json";
 
-/* ============================= */
-/* TOKEN */
-/* ============================= */
+let idiomaActual = localStorage.getItem("idioma") || "es";
 
-function getToken(){
-  return localStorage.getItem("github_token");
-}
+let productos = [];
+let sugerencias = [];
+let indice = 0;
+let pausado = false;
+let timeoutCambio = null;
+let configGlobal = {};
 
 /* ============================= */
 /* ELEMENTOS */
 /* ============================= */
 
-const editor = document.getElementById("editor");
-const estado = document.getElementById("estado");
-const idiomaSelect = document.getElementById("idiomaSelect");
-const iframe = document.getElementById("preview");
-const nombreLocalInput = document.getElementById("nombreLocal");
-
-let shaActual = null;
-let contenidoActual = {};
-let timeout = null;
+const tele = document.getElementById("teleprompter-text");
+const list = document.getElementById("product-list");
+const cats = document.getElementById("category-buttons");
 
 /* ============================= */
-/* CARGAR DESDE GITHUB */
+/* PAUSAR AL TOCAR */
 /* ============================= */
 
-async function cargarArchivo(){
+tele.addEventListener("click", () => {
+  pausado = !pausado;
+  tele.style.animationPlayState = pausado ? "paused" : "running";
+});
 
-  const TOKEN = getToken();
+/* ============================= */
+/* SALUDO AUTOMÁTICO */
+/* ============================= */
 
-  if(!TOKEN){
-    estado.textContent = "⚠️ Guardá el token primero";
-    return;
-  }
+function obtenerSaludoAutomatico(){
 
-  const res = await fetch(
-    `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`,
-    { headers:{ Authorization:`token ${TOKEN}` } }
-  );
+  const hora = new Date().getHours();
 
-  const data = await res.json();
-
-  shaActual = data.sha;
-
-  const decoded = decodeURIComponent(
-    escape(atob(data.content))
-  );
-
-  contenidoActual = JSON.parse(decoded);
-
-  // Asegurar estructura mínima
-  contenidoActual.config = contenidoActual.config || {};
-  contenidoActual.es = contenidoActual.es || [];
-  contenidoActual.en = contenidoActual.en || [];
-  contenidoActual.pt = contenidoActual.pt || [];
-
-  nombreLocalInput.value =
-    contenidoActual.config.nombreLocal || "";
-
-  actualizarEstadosVisuales();
+  if(hora >= 5 && hora < 12) return "☀️ Buenos días";
+  if(hora >= 12 && hora < 20) return "🌤 Buenas tardes";
+  return "🌙 Buenas noches";
 }
 
-cargarArchivo();
-
 /* ============================= */
-/* ACTUALIZAR ESTADOS VISUALES */
+/* MENSAJE BASE OBLIGATORIO */
 /* ============================= */
 
-function actualizarEstadosVisuales(){
+function armarMensajeBase(config){
 
-  const idioma = idiomaSelect.value;
-  const lista = contenidoActual[idioma] || [];
-  const hoy = new Date();
-  const horaActual = hoy.getHours();
+  const saludo = obtenerSaludoAutomatico();
+  const nombre = config?.nombreLocal || "Nuestro local";
 
-  editor.value = lista.map(item => {
+  let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a ${nombre}.`;
 
-    // STRING SIMPLE
-    if(typeof item === "string"){
-      return `⚪ ${item}`;
-    }
+  if(config?.promo){
+    mensaje += ` ${config.promo}`;
+  }
 
-    // 🎄 FECHA
-    if(item.fecha){
-      const [dia, mes] = item.fecha.split("-").map(n=>parseInt(n));
-      const activo =
-        dia === hoy.getDate() &&
-        mes === (hoy.getMonth()+1);
+  if(config?.menu){
+    mensaje += ` Hoy el menú del día es ${config.menu}.`;
+  }
 
-      const icono = activo ? "🎄🟢" : "🎄🔴";
-      return `${icono} ${item.texto} | fecha:${item.fecha}`;
-    }
+  if(config?.extra){
+    mensaje += ` ${config.extra}`;
+  }
 
-    // ⏰ HORARIO
-    if(item.desde !== undefined){
-      const activo =
-        horaActual >= item.desde &&
-        horaActual < item.hasta;
+  return mensaje;
+}
 
-      const icono = activo ? "🟢" : "🔴";
-      return `${icono} ${item.texto} | ${item.desde}-${item.hasta}`;
-    }
+/* ============================= */
+/* CARGAR SUGERENCIAS */
+/* ============================= */
 
-    return "";
+function loadSugerencias() {
 
-  }).join("\n");
+  fetch("sugerencias.json", { cache: "no-store" })
+    .then(r => r.json())
+    .then(data => {
+
+      configGlobal = data.config || {};
+      const horaActual = new Date().getHours();
+
+      sugerencias = (data[idiomaActual] || [])
+        .filter(s => {
+          if (typeof s === "string") return true;
+          if (!s.desde) return true;
+          return horaActual >= s.desde && horaActual < s.hasta;
+        })
+        .map(s => typeof s === "string" ? s : s.texto);
+
+      // 🔥 Agregar mensaje obligatorio al inicio
+      const mensajeBase = armarMensajeBase(configGlobal);
+      sugerencias.unshift(mensajeBase);
+
+      if (sugerencias.length === 0) {
+        sugerencias = ["Bienvenidos ☕"];
+      }
+
+      indice = 0;
+      mostrar();
+    });
+}
+
+/* ============================= */
+/* MOSTRAR TEXTO */
+/* ============================= */
+
+function mostrar() {
+
+  if (!sugerencias.length) return;
+
+  const texto = sugerencias[indice];
+
+  tele.style.animation = "none";
+  tele.offsetHeight; // forzar reflow
+
+  tele.textContent = texto;
+
+  const distancia = tele.scrollWidth + window.innerWidth;
+  const velocidad = 90;
+  const duracion = distancia / velocidad;
+
+  tele.style.animation = `scrollText ${duracion}s linear`;
+
+}
+
+/* ============================= */
+/* SIGUIENTE MENSAJE */
+/* ============================= */
+
+function siguiente() {
+  indice = (indice + 1) % sugerencias.length;
+  mostrar();
+}
+
+/* ============================= */
+/* ACTUALIZAR SALUDO SI CAMBIA LA HORA */
+/* ============================= */
+
+setInterval(() => {
+
+  if (!configGlobal) return;
+
+  const nuevoMensajeBase = armarMensajeBase(configGlobal);
+
+  // Reemplazar solo el primer mensaje
+  sugerencias[0] = nuevoMensajeBase;
+
+}, 60000); // cada minuto
+
+/* ============================= */
+/* CARGAR PRODUCTOS */
+/* ============================= */
+
+async function loadProductos() {
+
+  let archivo = "productos.json";
+  if (idiomaActual === "en") archivo = "productos-en.json";
+  if (idiomaActual === "pt") archivo = "productos-port.json";
+
+  const url = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${archivo}`;
+
+  const res = await fetch(url, { cache: "no-store" });
+  productos = await res.json();
+
+  renderCategorias();
+  render(productos);
+}
+
+/* ============================= */
+/* RENDER CATEGORÍAS */
+/* ============================= */
+
+function renderCategorias() {
+
+  const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
+
+  cats.innerHTML = "";
+
+  categorias.forEach(cat => {
+
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+
+    btn.onclick = () => {
+      if (cat === "Todos") render(productos);
+      else render(productos.filter(p => p.categoria === cat));
+    };
+
+    cats.appendChild(btn);
+  });
+}
+
+/* ============================= */
+/* RENDER PRODUCTOS */
+/* ============================= */
+
+function render(arr) {
+
+  list.innerHTML = "";
+
+  arr.forEach(p => {
+
+    list.innerHTML += `
+      <div class="item">
+        <img src="${p.imagen}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion || ""}</p>
+        <span class="price">$${p.precio}</span>
+      </div>
+    `;
+  });
 }
 
 /* ============================= */
 /* CAMBIO DE IDIOMA */
 /* ============================= */
 
-idiomaSelect.addEventListener("change", actualizarEstadosVisuales);
+document.getElementById("btn-es").onclick = () => cambiarIdioma("es");
+document.getElementById("btn-en").onclick = () => cambiarIdioma("en");
+document.getElementById("btn-pt").onclick = () => cambiarIdioma("pt");
+
+function cambiarIdioma(id) {
+  idiomaActual = id;
+  localStorage.setItem("idioma", id);
+  iniciar();
+}
 
 /* ============================= */
-/* ACTUALIZACIÓN AUTOMÁTICA */
+/* PREVIEW DESDE ADMIN */
 /* ============================= */
 
-setInterval(() => {
-  actualizarEstadosVisuales();
-}, 3000);
+window.parent?.postMessage("ready", "*");
 
-/* ============================= */
-/* PREVIEW EN VIVO */
-/* ============================= */
+window.addEventListener("message", e => {
 
-editor.addEventListener("input", () => {
+  if (Array.isArray(e.data)) {
+    sugerencias = e.data;
+    indice = 0;
+    mostrar();
+  }
 
-  clearTimeout(timeout);
-
- setTimeout(() => {
-  tele.style.opacity = "0";
-
-  setTimeout(() => {
-    tele.innerHTML = "";
-    tele.style.opacity = "1";
-
-    indexLetra = 0;
-    indexMensaje++;
-    if (indexMensaje >= mensajes.length) indexMensaje = 0;
-
-    escribirMensaje();
-  }, 400);
-
-}, pausaEntreMensajes);
-
-    const idioma = idiomaSelect.value;
-
-    const mensajes = editor.value
-      .split("\n")
-      .map(t => t.trim())
-      .filter(Boolean)
-      .map(linea => {
-
-        // Quitar iconos visuales
-        linea = linea.replace(/^🎄🟢|^🎄🔴|^🟢|^🔴|^⚪/, "").trim();
-
-        if(linea.includes("|")){
-
-          const [texto, condicion] =
-            linea.split("|").map(x=>x.trim());
-
-          // FECHA
-          if(condicion.startsWith("fecha:")){
-            const fecha =
-              condicion.replace("fecha:", "").trim();
-            return { texto, fecha };
-          }
-
-          // HORARIO
-          if(condicion.includes("-")){
-            const [desde, hasta] =
-              condicion.split("-")
-              .map(x=>parseInt(x.trim()));
-            return { texto, desde, hasta };
-          }
-        }
-
-        // TEXTO SIMPLE
-        return linea;
-      });
-
-    contenidoActual[idioma] = mensajes;
-
-    // Enviar solo texto plano al preview
-    iframe.contentWindow.postMessage(
-      mensajes.map(m =>
-        typeof m === "string" ? m : m.texto
-      ),
-      "*"
-    );
-
-    estado.textContent = "👁 Preview en vivo";
-
-  }, 500);
+  if (e.data === "ready") {
+    e.source.postMessage(sugerencias, "*");
+  }
 });
 
 /* ============================= */
-/* EMOJIS CLICKEABLES */
+/* INICIAR */
 /* ============================= */
 
-document.querySelectorAll(".emoji-list button")
-.forEach(btn => {
+function iniciar() {
+  loadSugerencias();
+  loadProductos();
+}
 
-  btn.addEventListener("click", () => {
-
-    const emoji = btn.textContent;
-    const start = editor.selectionStart;
-    const end = editor.selectionEnd;
-
-    editor.value =
-      editor.value.substring(0, start) +
-      emoji +
-      editor.value.substring(end);
-
-    editor.focus();
-    editor.selectionStart =
-      editor.selectionEnd =
-      start + emoji.length;
-
-    editor.dispatchEvent(new Event("input"));
-  });
+iniciar();
 
 });
-
-/* ============================= */
-/* GUARDAR */
-/* ============================= */
-
-document.getElementById("guardar").onclick = async () => {
-
-  const TOKEN = getToken();
-
-  if(!TOKEN){
-    estado.textContent = "⚠️ No hay token";
-    return;
-  }
-
-  // Guardar nombre del local
-  contenidoActual.config = contenidoActual.config || {};
-  contenidoActual.config.nombreLocal =
-    nombreLocalInput.value.trim();
-
-  const contenidoCodificado = btoa(
-    unescape(
-      encodeURIComponent(
-        JSON.stringify(contenidoActual, null, 2)
-      )
-    )
-  );
-
-  const res = await fetch(
-    `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`,
-    {
-      method:"PUT",
-      headers:{
-        Authorization:`token ${TOKEN}`,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        message:`Actualizar sugerencias (${idiomaSelect.value})`,
-        content:contenidoCodificado,
-        sha:shaActual
-      })
-    }
-  );
-
-  if(res.ok){
-    estado.textContent = "✅ Guardado correctamente";
-    cargarArchivo();
-  }else{
-    estado.textContent = "❌ Error al guardar";
-  }
-};
