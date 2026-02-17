@@ -65,6 +65,11 @@ async function guardarJSON() {
 
   const contenidoNuevo = textarea.value;
 
+  const contenidoBase64 = btoa(
+    new TextEncoder().encode(contenidoNuevo)
+      .reduce((data, byte) => data + String.fromCharCode(byte), '')
+  );
+
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
   const res = await fetch(url, {
@@ -75,7 +80,7 @@ async function guardarJSON() {
     },
     body: JSON.stringify({
       message: "Actualización desde admin",
-      content: btoa(unescape(encodeURIComponent(contenidoNuevo))),
+      content: contenidoBase64,
       sha: shaActual,
       branch: BRANCH
     })
@@ -88,24 +93,3 @@ async function guardarJSON() {
     alert("Error al guardar ❌");
   }
 }
-
-/* ============================= */
-/* CAMBIAR TOKEN */
-/* ============================= */
-
-function cambiarToken() {
-  localStorage.removeItem("github_token");
-  TOKEN = null;
-  pedirToken();
-  cargarJSON();
-}
-
-/* ============================= */
-
-btnGuardar.addEventListener("click", guardarJSON);
-
-if (btnCambiarToken) {
-  btnCambiarToken.addEventListener("click", cambiarToken);
-}
-
-cargarJSON();
