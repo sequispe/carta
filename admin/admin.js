@@ -122,7 +122,7 @@ idiomaSelect.addEventListener("change", actualizarEstadosVisuales);
 
 setInterval(() => {
   actualizarEstadosVisuales();
-}, 60000);
+}, 3000);
 
 /* ============================= */
 /* PREVIEW EN VIVO */
