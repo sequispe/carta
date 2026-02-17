@@ -112,7 +112,7 @@ function mostrar() {
   const texto = sugerencias[indice];
 
   tele.style.animation = "none";
-  tele.offsetHeight; // forzar reflow
+  tele.offsetHeight;
 
   tele.textContent = texto;
 
@@ -121,8 +121,14 @@ function mostrar() {
   const duracion = distancia / velocidad;
 
   tele.style.animation = `scrollText ${duracion}s linear`;
-
 }
+
+// 👇 AGREGAR ESTO
+tele.addEventListener("animationend", () => {
+  if (!pausado) {
+    siguiente();
+  }
+});
 
 /* ============================= */
 /* SIGUIENTE MENSAJE */
