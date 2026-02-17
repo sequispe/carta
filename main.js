@@ -124,6 +124,30 @@ function mostrar() {
   tele.style.animation = `scrollText ${duracion}s linear`;
 
 }
+function mostrar() {
+
+  if (!sugerencias.length) return;
+
+  const texto = sugerencias[indice];
+
+  tele.style.animation = "none";
+  tele.offsetHeight;
+
+  tele.textContent = texto;
+
+  const distancia = tele.scrollWidth + window.innerWidth;
+  const velocidad = 90;
+  const duracion = distancia / velocidad;
+
+  tele.style.animation = `scrollText ${duracion}s linear`;
+}
+
+// 👇 AGREGAR ESTO
+tele.addEventListener("animationend", () => {
+  if (!pausado) {
+    siguiente();
+  }
+});
 
 /* ============================= */
 /* SIGUIENTE MENSAJE */
