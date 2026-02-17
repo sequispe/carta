@@ -3,19 +3,38 @@ const REPO = "carta";
 const FILE_PATH = "sugerencias.json";
 const BRANCH = "main";
 
-// ⚠️ PEGÁ TU TOKEN ACA
-const TOKEN = "PEGAR_TU_TOKEN_AQUI";
+let TOKEN = localStorage.getItem("github_token");
 
 const textarea = document.getElementById("json-editor");
 const btnGuardar = document.getElementById("guardar");
+const btnCambiarToken = document.getElementById("cambiar-token");
 
 let shaActual = null;
 
 /* ============================= */
-/* CARGAR JSON DESDE GITHUB */
+/* PEDIR TOKEN SI NO EXISTE */
+/* ============================= */
+
+function pedirToken() {
+  if (!TOKEN) {
+    TOKEN = prompt("Pegá tu token de GitHub:");
+    if (TOKEN) {
+      localStorage.setItem("github_token", TOKEN);
+    } else {
+      alert("Necesitás el token para usar el admin");
+    }
+  }
+}
+
+/* ============================= */
+/* CARGAR JSON */
 /* ============================= */
 
 async function cargarJSON() {
+
+  pedirToken();
+  if (!TOKEN) return;
+
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
   const res = await fetch(url, {
@@ -25,7 +44,7 @@ async function cargarJSON() {
   });
 
   if (!res.ok) {
-    alert("Error cargando JSON");
+    alert("Error cargando JSON ❌");
     return;
   }
 
@@ -41,6 +60,8 @@ async function cargarJSON() {
 /* ============================= */
 
 async function guardarJSON() {
+
+  if (!TOKEN) return;
 
   const contenidoNuevo = textarea.value;
 
@@ -69,82 +90,22 @@ async function guardarJSON() {
 }
 
 /* ============================= */
-
-btnGuardar.addEventListener("click", guardarJSON);
-
-cargarJSON();
-const USER = "sequispe";
-const REPO = "carta";
-const FILE_PATH = "sugerencias.json";
-const BRANCH = "main";
-
-// ⚠️ PEGÁ TU TOKEN ACA
-const TOKEN = "PEGAR_TU_TOKEN_AQUI";
-
-const textarea = document.getElementById("json-editor");
-const btnGuardar = document.getElementById("guardar");
-
-let shaActual = null;
-
-/* ============================= */
-/* CARGAR JSON DESDE GITHUB */
+/* CAMBIAR TOKEN */
 /* ============================= */
 
-async function cargarJSON() {
-  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
-
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `token ${TOKEN}`
-    }
-  });
-
-  if (!res.ok) {
-    alert("Error cargando JSON");
-    return;
-  }
-
-  const data = await res.json();
-  shaActual = data.sha;
-
-  const contenido = atob(data.content);
-  textarea.value = contenido;
-}
-
-/* ============================= */
-/* GUARDAR JSON */
-/* ============================= */
-
-async function guardarJSON() {
-
-  const contenidoNuevo = textarea.value;
-
-  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
-
-  const res = await fetch(url, {
-    method: "PUT",
-    headers: {
-      Authorization: `token ${TOKEN}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      message: "Actualización desde admin",
-      content: btoa(unescape(encodeURIComponent(contenidoNuevo))),
-      sha: shaActual,
-      branch: BRANCH
-    })
-  });
-
-  if (res.ok) {
-    alert("Guardado correctamente ✅");
-    cargarJSON();
-  } else {
-    alert("Error al guardar ❌");
-  }
+function cambiarToken() {
+  localStorage.removeItem("github_token");
+  TOKEN = null;
+  pedirToken();
+  cargarJSON();
 }
 
 /* ============================= */
 
 btnGuardar.addEventListener("click", guardarJSON);
+
+if (btnCambiarToken) {
+  btnCambiarToken.addEventListener("click", cambiarToken);
+}
 
 cargarJSON();
