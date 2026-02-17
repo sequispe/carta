@@ -1,265 +1,150 @@
-
 const USER = "sequispe";
 const REPO = "carta";
+const FILE_PATH = "sugerencias.json";
+const BRANCH = "main";
 
-let idiomaActual = localStorage.getItem("idioma") || "es";
+// ⚠️ PEGÁ TU TOKEN ACA
+const TOKEN = "PEGAR_TU_TOKEN_AQUI";
 
-let productos = [];
-let sugerencias = [];
-let indice = 0;
-let pausado = false;
-let timeoutCambio = null;
-let configGlobal = {};
+const textarea = document.getElementById("json-editor");
+const btnGuardar = document.getElementById("guardar");
 
-/* ============================= */
-/* ELEMENTOS */
-/* ============================= */
-
-const tele = document.getElementById("teleprompter-text");
-const list = document.getElementById("product-list");
-const cats = document.getElementById("category-buttons");
+let shaActual = null;
 
 /* ============================= */
-/* PAUSAR AL TOCAR */
+/* CARGAR JSON DESDE GITHUB */
 /* ============================= */
 
-tele.addEventListener("click", () => {
-  pausado = !pausado;
-  tele.style.animationPlayState = pausado ? "paused" : "running";
-});
+async function cargarJSON() {
+  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
-/* ============================= */
-/* SALUDO AUTOMÁTICO */
-/* ============================= */
-
-function obtenerSaludoAutomatico(){
-
-  const hora = new Date().getHours();
-
-  if(hora >= 5 && hora < 12) return "☀️ Buenos días";
-  if(hora >= 12 && hora < 20) return "🌤 Buenas tardes";
-  return "🌙 Buenas noches";
-}
-
-/* ============================= */
-/* MENSAJE BASE OBLIGATORIO */
-/* ============================= */
-
-function armarMensajeBase(config){
-
-  const saludo = obtenerSaludoAutomatico();
-  const nombre = config?.nombreLocal || "Nuestro local";
-
-  let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a ${nombre}.`;
-
-  if(config?.promo){
-    mensaje += ` ${config.promo}`;
-  }
-
-  if(config?.menu){
-    mensaje += ` Hoy el menú del día es ${config.menu}.`;
-  }
-
-  if(config?.extra){
-    mensaje += ` ${config.extra}`;
-  }
-
-  return mensaje;
-}
-
-/* ============================= */
-/* CARGAR SUGERENCIAS */
-/* ============================= */
-
-function loadSugerencias() {
-
-  fetch("sugerencias.json", { cache: "no-store" })
-    .then(r => r.json())
-    .then(data => {
-
-      configGlobal = data.config || {};
-      const horaActual = new Date().getHours();
-
-      sugerencias = (data[idiomaActual] || [])
-        .filter(s => {
-          if (typeof s === "string") return true;
-          if (!s.desde) return true;
-          return horaActual >= s.desde && horaActual < s.hasta;
-        })
-        .map(s => typeof s === "string" ? s : s.texto);
-
-      // 🔥 Agregar mensaje obligatorio al inicio
-      const mensajeBase = armarMensajeBase(configGlobal);
-      sugerencias.unshift(mensajeBase);
-
-      if (sugerencias.length === 0) {
-        sugerencias = ["Bienvenidos ☕"];
-      }
-
-      indice = 0;
-      mostrar();
-    });
-}
-
-/* ============================= */
-/* MOSTRAR TEXTO */
-/* ============================= */
-
-function mostrar() {
-
-  if (!sugerencias.length) return;
-
-  const texto = sugerencias[indice];
-
-  tele.style.animation = "none";
-  tele.offsetHeight;
-
-  tele.textContent = texto;
-
-  const distancia = tele.scrollWidth + window.innerWidth;
-  const velocidad = 90;
-  const duracion = distancia / velocidad;
-
-  tele.style.animation = `scrollText ${duracion}s linear`;
-}
-
-// 👇 AGREGAR ESTO
-tele.addEventListener("animationend", () => {
-  if (!pausado) {
-    siguiente();
-  }
-});
-
-/* ============================= */
-/* SIGUIENTE MENSAJE */
-/* ============================= */
-
-function siguiente() {
-  indice = (indice + 1) % sugerencias.length;
-  mostrar();
-}
-
-/* ============================= */
-/* ACTUALIZAR SALUDO SI CAMBIA LA HORA */
-/* ============================= */
-
-setInterval(() => {
-
-  if (!configGlobal) return;
-
-  const nuevoMensajeBase = armarMensajeBase(configGlobal);
-
-  // Reemplazar solo el primer mensaje
-  sugerencias[0] = nuevoMensajeBase;
-
-}, 60000); // cada minuto
-
-/* ============================= */
-/* CARGAR PRODUCTOS */
-/* ============================= */
-
-async function loadProductos() {
-
-  let archivo = "productos.json";
-  if (idiomaActual === "en") archivo = "productos-en.json";
-  if (idiomaActual === "pt") archivo = "productos-port.json";
-
-  const url = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${archivo}`;
-
-  const res = await fetch(url, { cache: "no-store" });
-  productos = await res.json();
-
-  renderCategorias();
-  render(productos);
-}
-
-/* ============================= */
-/* RENDER CATEGORÍAS */
-/* ============================= */
-
-function renderCategorias() {
-
-  const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
-
-  cats.innerHTML = "";
-
-  categorias.forEach(cat => {
-
-    const btn = document.createElement("button");
-    btn.textContent = cat;
-
-    btn.onclick = () => {
-      if (cat === "Todos") render(productos);
-      else render(productos.filter(p => p.categoria === cat));
-    };
-
-    cats.appendChild(btn);
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `token ${TOKEN}`
+    }
   });
+
+  if (!res.ok) {
+    alert("Error cargando JSON");
+    return;
+  }
+
+  const data = await res.json();
+  shaActual = data.sha;
+
+  const contenido = atob(data.content);
+  textarea.value = contenido;
 }
 
 /* ============================= */
-/* RENDER PRODUCTOS */
+/* GUARDAR JSON */
 /* ============================= */
 
-function render(arr) {
+async function guardarJSON() {
 
-  list.innerHTML = "";
+  const contenidoNuevo = textarea.value;
 
-  arr.forEach(p => {
+  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
-    list.innerHTML += `
-      <div class="item">
-        <img src="${p.imagen}">
-        <h3>${p.nombre}</h3>
-        <p>${p.descripcion || ""}</p>
-        <span class="price">$${p.precio}</span>
-      </div>
-    `;
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Actualización desde admin",
+      content: btoa(unescape(encodeURIComponent(contenidoNuevo))),
+      sha: shaActual,
+      branch: BRANCH
+    })
   });
+
+  if (res.ok) {
+    alert("Guardado correctamente ✅");
+    cargarJSON();
+  } else {
+    alert("Error al guardar ❌");
+  }
 }
 
 /* ============================= */
-/* CAMBIO DE IDIOMA */
+
+btnGuardar.addEventListener("click", guardarJSON);
+
+cargarJSON();
+const USER = "sequispe";
+const REPO = "carta";
+const FILE_PATH = "sugerencias.json";
+const BRANCH = "main";
+
+// ⚠️ PEGÁ TU TOKEN ACA
+const TOKEN = "PEGAR_TU_TOKEN_AQUI";
+
+const textarea = document.getElementById("json-editor");
+const btnGuardar = document.getElementById("guardar");
+
+let shaActual = null;
+
+/* ============================= */
+/* CARGAR JSON DESDE GITHUB */
 /* ============================= */
 
-document.getElementById("btn-es").onclick = () => cambiarIdioma("es");
-document.getElementById("btn-en").onclick = () => cambiarIdioma("en");
-document.getElementById("btn-pt").onclick = () => cambiarIdioma("pt");
+async function cargarJSON() {
+  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
-function cambiarIdioma(id) {
-  idiomaActual = id;
-  localStorage.setItem("idioma", id);
-  iniciar();
-}
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `token ${TOKEN}`
+    }
+  });
 
-/* ============================= */
-/* PREVIEW DESDE ADMIN */
-/* ============================= */
-
-window.parent?.postMessage("ready", "*");
-
-window.addEventListener("message", e => {
-
-  if (Array.isArray(e.data)) {
-    sugerencias = e.data;
-    indice = 0;
-    mostrar();
+  if (!res.ok) {
+    alert("Error cargando JSON");
+    return;
   }
 
-  if (e.data === "ready") {
-    e.source.postMessage(sugerencias, "*");
-  }
-});
+  const data = await res.json();
+  shaActual = data.sha;
 
-/* ============================= */
-/* INICIAR */
-/* ============================= */
-
-function iniciar() {
-  loadSugerencias();
-  loadProductos();
+  const contenido = atob(data.content);
+  textarea.value = contenido;
 }
 
-iniciar();
+/* ============================= */
+/* GUARDAR JSON */
+/* ============================= */
 
-});
+async function guardarJSON() {
+
+  const contenidoNuevo = textarea.value;
+
+  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Actualización desde admin",
+      content: btoa(unescape(encodeURIComponent(contenidoNuevo))),
+      sha: shaActual,
+      branch: BRANCH
+    })
+  });
+
+  if (res.ok) {
+    alert("Guardado correctamente ✅");
+    cargarJSON();
+  } else {
+    alert("Error al guardar ❌");
+  }
+}
+
+/* ============================= */
+
+btnGuardar.addEventListener("click", guardarJSON);
+
+cargarJSON();
