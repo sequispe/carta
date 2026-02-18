@@ -1,26 +1,29 @@
 {
   "config": {
-    "nombreLocal": "Tilo CafÃÂÃÂÃÂÃÂ©"
+    "nombreLocal": "Tilo Café"
   },
+
   "es": [
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ Hola, soy tu mozo digital bien benidos a tilo de aguero 2298.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¥ÃÂÃÂ El desayuno y meriendas de promocion incluye cafÃÂÃÂÃÂÃÂ© ÃÂÃÂ¢ÃÂÃÂÃÂÃÂtradicionales y jugo de naranja ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ½ El menÃÂÃÂÃÂÃÂº del dÃÂÃÂÃÂÃÂ­a es filete a la romana con papas rÃÂÃÂÃÂÃÂºsticas o .",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ» Hoy tenemos happy hour de 18 a 20hsÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂº",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂ¡Te esperamos en Tilo CafÃÂÃÂÃÂÃÂ© para la cena te puedo recomendar los risotoÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¥!"
+    "🙋‍♂️ Hola, soy tu mozo digital.",
+    "🥐 El desayuno premium incluye café ☕ y jugo de naranja 🍊.",
+    "🍽 El menú del día es filete a la romana con papas rústicas.",
+    "🍻 Hoy tenemos happy hour de 18 a 20hs.",
+    "😊 ¡Te esperamos en {{local}}!"
   ],
+
   "en": [
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ Hi, I'm your digital waiter.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¥ÃÂÃÂ Our premium breakfast includes coffee ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ and orange juice ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ½ Today's special is breaded steak with rustic potatoes.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ» Happy hour from 6pm to 8pm.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ WeÃÂÃÂ¢ÃÂÃÂÃÂÃÂre waiting for you at Tilo CafÃÂÃÂÃÂÃÂ©!"
+    "🙋‍♂️ Hi, I'm your digital waiter.",
+    "🥐 Our premium breakfast includes coffee ☕ and orange juice 🍊.",
+    "🍽 Today's special is breaded steak with rustic potatoes.",
+    "🍻 Happy hour from 6pm to 8pm.",
+    "😊 We’re waiting for you at {{local}}!"
   ],
+
   "pt": [
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ OlÃÂÃÂÃÂÃÂ¡, sou seu garÃÂÃÂÃÂÃÂ§om digital.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¥ÃÂÃÂ Nosso cafÃÂÃÂÃÂÃÂ© da manhÃÂÃÂÃÂÃÂ£ premium inclui cafÃÂÃÂÃÂÃÂ© ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ e suco de laranja ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ½ O prato do dia ÃÂÃÂÃÂÃÂ© filÃÂÃÂÃÂÃÂ© ÃÂÃÂÃÂÃÂ  milanesa com batatas rÃÂÃÂÃÂÃÂºsticas.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ» Happy hour das 18h ÃÂÃÂÃÂÃÂ s 20h.",
-    "ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ Esperamos vocÃÂÃÂÃÂÃÂª no Tilo CafÃÂÃÂÃÂÃÂ©!"
+    "🙋‍♂️ Olá, sou seu garçom digital.",
+    "🥐 Nosso café da manhã premium inclui café ☕ e suco de laranja 🍊.",
+    "🍽 O prato do dia é filé à milanesa com batatas rústicas.",
+    "🍻 Happy hour das 18h às 20h.",
+    "😊 Esperamos você no {{local}}!"
   ]
 }
