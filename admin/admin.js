@@ -86,10 +86,7 @@ async function guardarJSON() {
     })
   });
 
-  if (res.ok) {
-    alert("Guardado correctamente ✅");
-    cargarJSON();
-  } else {
-    alert("Error al guardar ❌");
-  }
+if (res.ok) {
+  alert("Guardado correctamente ✅");
+}
 }
