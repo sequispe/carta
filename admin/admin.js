@@ -5,16 +5,15 @@ const BRANCH = "main";
 
 let TOKEN = localStorage.getItem("github_token");
 
-const textarea = document.getElementById("json-editor");
+const textarea = document.getElementById("editor");
 const btnGuardar = document.getElementById("guardar");
-const btnCambiarToken = document.getElementById("cambiar-token");
+const estado = document.getElementById("estado");
 
 let shaActual = null;
 
 /* ============================= */
 /* PEDIR TOKEN SI NO EXISTE */
 /* ============================= */
-
 function pedirToken() {
   if (!TOKEN) {
     TOKEN = prompt("Pegá tu token de GitHub:");
@@ -29,11 +28,11 @@ function pedirToken() {
 /* ============================= */
 /* CARGAR JSON */
 /* ============================= */
-
 async function cargarJSON() {
-
   pedirToken();
   if (!TOKEN) return;
+
+  estado.textContent = "Cargando sugerencias...";
 
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
@@ -44,6 +43,7 @@ async function cargarJSON() {
   });
 
   if (!res.ok) {
+    estado.textContent = "Error cargando ❌";
     alert("Error cargando JSON ❌");
     return;
   }
@@ -53,21 +53,24 @@ async function cargarJSON() {
 
   const contenido = atob(data.content);
   textarea.value = contenido;
+
+  estado.textContent = "Cargado ✅";
 }
 
 /* ============================= */
 /* GUARDAR JSON */
 /* ============================= */
-
 async function guardarJSON() {
-
   if (!TOKEN) return;
+
+  estado.textContent = "Guardando...";
 
   const contenidoNuevo = textarea.value;
 
   const contenidoBase64 = btoa(
-    new TextEncoder().encode(contenidoNuevo)
-      .reduce((data, byte) => data + String.fromCharCode(byte), '')
+    new TextEncoder()
+      .encode(contenidoNuevo)
+      .reduce((data, byte) => data + String.fromCharCode(byte), "")
   );
 
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
@@ -86,7 +89,32 @@ async function guardarJSON() {
     })
   });
 
-if (res.ok) {
-  alert("Guardado correctamente ✅");
+  if (res.ok) {
+    estado.textContent = "Guardado correctamente ✅";
+    alert("Guardado correctamente ✅");
+    cargarJSON(); // recargar para actualizar SHA
+  } else {
+    estado.textContent = "Error al guardar ❌";
+    alert("Error al guardar ❌");
+  }
 }
-}
+
+/* ============================= */
+/* EVENTO BOTÓN GUARDAR */
+/* ============================= */
+btnGuardar.addEventListener("click", guardarJSON);
+
+/* ============================= */
+/* EMOJIS */
+/* ============================= */
+document.querySelectorAll(".emoji-list button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    textarea.value += btn.textContent;
+    textarea.focus();
+  });
+});
+
+/* ============================= */
+/* INICIAR */
+/* ============================= */
+cargarJSON();
