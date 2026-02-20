@@ -1,29 +1,30 @@
 {
   "config": {
-    "nombreLocal": "Tilo Café"
+    "nombreLocal": "Tilo CafÃ©"
   },
 
   "es": [
-    "🙋‍♂️ Hola, soy tu mozo digital.",
-    "🥐 El desayuno premium incluye café ☕ y jugo de naranja 🍊.",
-    "🍽 El menú del día es filete a la romana con papas rústicas.",
-    "🍻 Hoy tenemos happy hour de 18 a 20hs.",
-    "😊 ¡Te esperamos en {{local}}!"
+    "ðââï¸ Hola, soy tu mozo digital.",
+    "ð¥ El desayuno premium incluye cafÃ© â y jugo de naranja ð.",
+    "ð½ El menÃº del dÃ­a es filete a la romana con papas rÃºsticas.",
+    "ð» Hoy tenemos happy hour de 18 a 20hs.",
+    "ð Â¡Te esperamos en {{local}}!"
   ],
 
   "en": [
-    "🙋‍♂️ Hi, I'm your digital waiter.",
-    "🥐 Our premium breakfast includes coffee ☕ and orange juice 🍊.",
-    "🍽 Today's special is breaded steak with rustic potatoes.",
-    "🍻 Happy hour from 6pm to 8pm.",
-    "😊 We’re waiting for you at {{local}}!"
+    "ðââï¸ Hi, I'm your digital waiter.",
+    "ð¥ Our premium breakfast includes coffee â and orange juice ð.",
+    "ð½ Today's special is breaded steak with rustic potatoes.",
+    "ð» Happy hour from 6pm to 8pm.",
+    "ð Weâre waiting for you at {{local}}!"
   ],
 
   "pt": [
-    "🙋‍♂️ Olá, sou seu garçom digital.",
-    "🥐 Nosso café da manhã premium inclui café ☕ e suco de laranja 🍊.",
-    "🍽 O prato do dia é filé à milanesa com batatas rústicas.",
-    "🍻 Happy hour das 18h às 20h.",
-    "😊 Esperamos você no {{local}}!"
+    "ðââï¸ OlÃ¡, sou seu garÃ§om digital.",
+    "ð¥ Nosso cafÃ© da manhÃ£ premium inclui cafÃ© â e suco de laranja ð.",
+    "ð½ O prato do dia Ã© filÃ© Ã  milanesa com batatas rÃºsticas.",
+    "ð» Happy hour das 18h Ã s 20h.",
+    "ð Esperamos vocÃª no {{local}}!"
   ]
 }
+🍰🍺🎉❤️
