@@ -16,7 +16,7 @@ let configGlobal = {};
 /* ELEMENTOS */
 /* ============================= */
 
-const tele = document.getElementById("teleprompter-text");
+const tele = document.getElementById("tele-track");
 const list = document.getElementById("product-list");
 const cats = document.getElementById("category-buttons");
 
@@ -97,11 +97,27 @@ function loadSugerencias() {
         sugerencias = ["Bienvenidos ☕"];
       }
 
-      indice = 0;
-      mostrar();
+      iniciarTeleprompter();
     });
 }
+function iniciarTeleprompter() {
 
+  if (!sugerencias.length) return;
+
+  const separador = "     ✦     ";
+
+  const textoCompleto =
+    sugerencias.join(separador) + separador;
+
+  // duplicamos para loop infinito perfecto
+  tele.textContent = textoCompleto + textoCompleto;
+
+  const ancho = tele.scrollWidth / 2;
+  const velocidad = 80; // menor = más rápido
+  const duracion = ancho / velocidad;
+
+  tele.style.animationDuration = `${duracion}s`;
+}
 /* ============================= */
 /* MOSTRAR TEXTO */
 /* ============================= */
