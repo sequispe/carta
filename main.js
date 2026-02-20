@@ -33,14 +33,13 @@ tele.addEventListener("click", () => {
 
 function obtenerSaludoAutomatico(){
   const hora = new Date().getHours();
-
   if(hora >= 5 && hora < 12) return "☀️ Buenos días";
   if(hora >= 12 && hora < 20) return "🌤 Buenas tardes";
   return "🌙 Buenas noches";
 }
 
 /* ============================= */
-/* MENSAJE BASE OBLIGATORIO */
+/* MENSAJE BASE */
 /* ============================= */
 
 function armarMensajeBase(config){
@@ -50,17 +49,9 @@ function armarMensajeBase(config){
 
   let mensaje = `${saludo}, soy tu mozo digital. Bienvenidos a ${nombre}.`;
 
-  if(config?.promo){
-    mensaje += ` ${config.promo}`;
-  }
-
-  if(config?.menu){
-    mensaje += ` Hoy el menú del día es ${config.menu}.`;
-  }
-
-  if(config?.extra){
-    mensaje += ` ${config.extra}`;
-  }
+  if(config?.promo) mensaje += ` ${config.promo}`;
+  if(config?.menu) mensaje += ` Hoy el menú del día es ${config.menu}.`;
+  if(config?.extra) mensaje += ` ${config.extra}`;
 
   return mensaje;
 }
@@ -74,14 +65,12 @@ function iniciarTeleprompter() {
   if (!sugerencias.length) return;
 
   const separador = "     ✦     ";
-
   const textoCompleto = sugerencias.join(separador) + separador;
 
-  // Duplicamos para loop infinito perfecto
   tele.textContent = textoCompleto + textoCompleto;
 
   const ancho = tele.scrollWidth / 2;
-  const velocidad = 75; // menor = más rápido (70 más rápido, 90 más lento)
+  const velocidad = 75;
   const duracion = ancho / velocidad;
 
   tele.style.animation = "scrollText linear infinite";
@@ -90,17 +79,13 @@ function iniciarTeleprompter() {
 }
 
 /* ============================= */
-/* ACTUALIZAR SALUDO SI CAMBIA LA HORA */
+/* ACTUALIZAR SALUDO */
 /* ============================= */
 
 setInterval(() => {
   if (!configGlobal) return;
-
-  const nuevoMensajeBase = armarMensajeBase(configGlobal);
-  sugerencias[0] = nuevoMensajeBase;
-
-  iniciarTeleprompter(); // reinicia suavemente con nuevo saludo
-
+  sugerencias[0] = armarMensajeBase(configGlobal);
+  iniciarTeleprompter();
 }, 60000);
 
 /* ============================= */
@@ -109,6 +94,16 @@ setInterval(() => {
 
 function loadSugerencias() {
 
+  // 🔥 1️⃣ Ver si hay guardadas
+  const guardadas = localStorage.getItem("sugerenciasGuardadas");
+
+  if (guardadas) {
+    sugerencias = JSON.parse(guardadas);
+    iniciarTeleprompter();
+    return;
+  }
+
+  // 🔥 2️⃣ Si no hay, cargar JSON
   fetch("sugerencias.json", { cache: "no-store" })
     .then(r => r.json())
     .then(data => {
@@ -161,7 +156,6 @@ async function loadProductos() {
 function renderCategorias() {
 
   const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
-
   cats.innerHTML = "";
 
   categorias.forEach(cat => {
@@ -214,7 +208,7 @@ function cambiarIdioma(id) {
 }
 
 /* ============================= */
-/* PREVIEW DESDE ADMIN */
+/* ADMIN PREVIEW */
 /* ============================= */
 
 window.parent?.postMessage("ready", "*");
@@ -222,7 +216,12 @@ window.parent?.postMessage("ready", "*");
 window.addEventListener("message", e => {
 
   if (Array.isArray(e.data)) {
+
     sugerencias = e.data;
+
+    // 🔥 Guardar automáticamente
+    localStorage.setItem("sugerenciasGuardadas", JSON.stringify(sugerencias));
+
     iniciarTeleprompter();
   }
 
