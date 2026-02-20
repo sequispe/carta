@@ -7,9 +7,7 @@ let idiomaActual = localStorage.getItem("idioma") || "es";
 
 let productos = [];
 let sugerencias = [];
-let indice = 0;
 let pausado = false;
-let timeoutCambio = null;
 let configGlobal = {};
 
 /* ============================= */
@@ -34,7 +32,6 @@ tele.addEventListener("click", () => {
 /* ============================= */
 
 function obtenerSaludoAutomatico(){
-
   const hora = new Date().getHours();
 
   if(hora >= 5 && hora < 12) return "☀️ Buenos días";
@@ -69,6 +66,44 @@ function armarMensajeBase(config){
 }
 
 /* ============================= */
+/* TELEPROMPTER LOOP INFINITO */
+/* ============================= */
+
+function iniciarTeleprompter() {
+
+  if (!sugerencias.length) return;
+
+  const separador = "     ✦     ";
+
+  const textoCompleto = sugerencias.join(separador) + separador;
+
+  // Duplicamos para loop infinito perfecto
+  tele.textContent = textoCompleto + textoCompleto;
+
+  const ancho = tele.scrollWidth / 2;
+  const velocidad = 75; // menor = más rápido (70 más rápido, 90 más lento)
+  const duracion = ancho / velocidad;
+
+  tele.style.animation = "scrollText linear infinite";
+  tele.style.animationDuration = `${duracion}s`;
+  tele.style.animationDelay = "0s";
+}
+
+/* ============================= */
+/* ACTUALIZAR SALUDO SI CAMBIA LA HORA */
+/* ============================= */
+
+setInterval(() => {
+  if (!configGlobal) return;
+
+  const nuevoMensajeBase = armarMensajeBase(configGlobal);
+  sugerencias[0] = nuevoMensajeBase;
+
+  iniciarTeleprompter(); // reinicia suavemente con nuevo saludo
+
+}, 60000);
+
+/* ============================= */
 /* CARGAR SUGERENCIAS */
 /* ============================= */
 
@@ -89,7 +124,6 @@ function loadSugerencias() {
         })
         .map(s => typeof s === "string" ? s : s.texto);
 
-      // 🔥 Agregar mensaje obligatorio al inicio
       const mensajeBase = armarMensajeBase(configGlobal);
       sugerencias.unshift(mensajeBase);
 
@@ -100,94 +134,6 @@ function loadSugerencias() {
       iniciarTeleprompter();
     });
 }
-function iniciarTeleprompter() {
-
-  if (!sugerencias.length) return;
-
-  const separador = "     ✦     ";
-
-  const textoCompleto =
-    sugerencias.join(separador) + separador;
-
-  // duplicamos para loop infinito perfecto
-  tele.textContent = textoCompleto + textoCompleto;
-
-  const ancho = tele.scrollWidth / 2;
-  const velocidad = 80; // menor = más rápido
-  const duracion = ancho / velocidad;
-
-  tele.style.animationDuration = `${duracion}s`;
-}
-/* ============================= */
-/* MOSTRAR TEXTO */
-/* ============================= */
-
-function mostrar() {
-
-  if (!sugerencias.length) return;
-
-  const texto = sugerencias[indice];
-
-  tele.style.animation = "none";
-  tele.offsetHeight; // forzar reflow
-
-  tele.textContent = texto;
-
-  const distancia = tele.scrollWidth + window.innerWidth;
-  const velocidad = 90;
-  const duracion = distancia / velocidad;
-
-  tele.style.animation = `scrollText ${duracion}s linear`;
-
-}
-function mostrar() {
-
-  if (!sugerencias.length) return;
-
-  const texto = sugerencias[indice];
-
-  tele.style.animation = "none";
-  tele.offsetHeight;
-
-  tele.textContent = texto;
-
-  const distancia = tele.scrollWidth + window.innerWidth;
-  const velocidad = 90;
-  const duracion = distancia / velocidad;
-
-  tele.style.animation = `scrollText ${duracion}s linear`;
-}
-
-// 👇 AGREGAR ESTO
-tele.addEventListener("animationend", () => {
-  if (!pausado) {
-    siguiente();
-  }
-});
-
-/* ============================= */
-/* SIGUIENTE MENSAJE */
-/* ============================= */
-
-function siguiente() {
-  indice = (indice + 1) % sugerencias.length;
-  mostrar();
-}
-
-/* ============================= */
-/* ACTUALIZAR SALUDO SI CAMBIA LA HORA */
-/* ============================= */
-
-setInterval(() => {
-
-  if (!configGlobal) return;
-
-  const nuevoMensajeBase = armarMensajeBase(configGlobal);
-
-  // Reemplazar solo el primer mensaje
-  sugerencias[0] = nuevoMensajeBase;
-
-}, 60000); // cada minuto
 
 /* ============================= */
 /* CARGAR PRODUCTOS */
@@ -277,8 +223,7 @@ window.addEventListener("message", e => {
 
   if (Array.isArray(e.data)) {
     sugerencias = e.data;
-    indice = 0;
-    mostrar();
+    iniciarTeleprompter();
   }
 
   if (e.data === "ready") {
