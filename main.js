@@ -79,14 +79,20 @@ function iniciarTeleprompter() {
 }
 
 /* ============================= */
-/* ACTUALIZAR SALUDO */
+/* ACTUALIZAR SALUDO CADA MINUTO */
 /* ============================= */
 
 setInterval(() => {
   if (!configGlobal) return;
   sugerencias[0] = armarMensajeBase(configGlobal);
-  iniciarTeleprompter();
+  reiniciarTele();
 }, 60000);
+
+function reiniciarTele(){
+  tele.style.animation = "none";
+  tele.offsetHeight;
+  iniciarTeleprompter();
+}
 
 /* ============================= */
 /* CARGAR SUGERENCIAS */
@@ -94,7 +100,6 @@ setInterval(() => {
 
 function loadSugerencias() {
 
-  // 🔥 1️⃣ Ver si hay guardadas
   const guardadas = localStorage.getItem("sugerenciasGuardadas");
 
   if (guardadas) {
@@ -103,7 +108,6 @@ function loadSugerencias() {
     return;
   }
 
-  // 🔥 2️⃣ Si no hay, cargar JSON
   fetch("sugerencias.json", { cache: "no-store" })
     .then(r => r.json())
     .then(data => {
@@ -208,7 +212,7 @@ function cambiarIdioma(id) {
 }
 
 /* ============================= */
-/* ADMIN PREVIEW */
+/* ADMIN PREVIEW EN VIVO */
 /* ============================= */
 
 window.parent?.postMessage("ready", "*");
@@ -219,10 +223,10 @@ window.addEventListener("message", e => {
 
     sugerencias = e.data;
 
-    // 🔥 Guardar automáticamente
     localStorage.setItem("sugerenciasGuardadas", JSON.stringify(sugerencias));
 
-    iniciarTeleprompter();
+    // 🔥 Reinicio inmediato para que aparezca al instante
+    reiniciarTele();
   }
 
   if (e.data === "ready") {
