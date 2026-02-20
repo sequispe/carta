@@ -12,7 +12,7 @@ const estado = document.getElementById("estado");
 let shaActual = null;
 
 /* ============================= */
-/* PEDIR TOKEN SI NO EXISTE */
+/* PEDIR TOKEN */
 /* ============================= */
 function pedirToken() {
   if (!TOKEN) {
@@ -26,13 +26,32 @@ function pedirToken() {
 }
 
 /* ============================= */
+/* DECODIFICAR UTF-8 CORRECTO */
+/* ============================= */
+function decodeUTF8(base64) {
+  return new TextDecoder("utf-8").decode(
+    Uint8Array.from(atob(base64), c => c.charCodeAt(0))
+  );
+}
+
+/* ============================= */
+/* ENCODIFICAR UTF-8 CORRECTO */
+/* ============================= */
+function encodeUTF8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = "";
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+
+/* ============================= */
 /* CARGAR JSON */
 /* ============================= */
 async function cargarJSON() {
   pedirToken();
   if (!TOKEN) return;
 
-  estado.textContent = "Cargando sugerencias...";
+  estado.textContent = "Cargando...";
 
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
@@ -43,15 +62,15 @@ async function cargarJSON() {
   });
 
   if (!res.ok) {
-    estado.textContent = "Error cargando ❌";
-    alert("Error cargando JSON ❌");
+    estado.textContent = "Error ❌";
+    alert("Error cargando JSON");
     return;
   }
 
   const data = await res.json();
   shaActual = data.sha;
 
-  const contenido = atob(data.content);
+  const contenido = decodeUTF8(data.content);
   textarea.value = contenido;
 
   estado.textContent = "Cargado ✅";
@@ -67,11 +86,7 @@ async function guardarJSON() {
 
   const contenidoNuevo = textarea.value;
 
-  const contenidoBase64 = btoa(
-    new TextEncoder()
-      .encode(contenidoNuevo)
-      .reduce((data, byte) => data + String.fromCharCode(byte), "")
-  );
+  const contenidoBase64 = encodeUTF8(contenidoNuevo);
 
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
@@ -92,15 +107,15 @@ async function guardarJSON() {
   if (res.ok) {
     estado.textContent = "Guardado correctamente ✅";
     alert("Guardado correctamente ✅");
-    cargarJSON(); // recargar para actualizar SHA
+    cargarJSON(); // refresca SHA
   } else {
     estado.textContent = "Error al guardar ❌";
-    alert("Error al guardar ❌");
+    alert("Error al guardar");
   }
 }
 
 /* ============================= */
-/* EVENTO BOTÓN GUARDAR */
+/* BOTÓN GUARDAR */
 /* ============================= */
 btnGuardar.addEventListener("click", guardarJSON);
 
@@ -109,8 +124,17 @@ btnGuardar.addEventListener("click", guardarJSON);
 /* ============================= */
 document.querySelectorAll(".emoji-list button").forEach(btn => {
   btn.addEventListener("click", () => {
-    textarea.value += btn.textContent;
+    const emoji = btn.textContent;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    textarea.value =
+      textarea.value.substring(0, start) +
+      emoji +
+      textarea.value.substring(end);
+
     textarea.focus();
+    textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
   });
 });
 
