@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-const USER = "sequispe";
-const REPO = "carta";
-
 let idiomaActual = localStorage.getItem("idioma") || "es";
 
 let productos = [];
@@ -59,6 +56,7 @@ function armarMensajeBase(config){
 /* ============================= */
 /* TELEPROMPTER LOOP INFINITO */
 /* ============================= */
+
 function iniciarTeleprompter() {
 
   if (!sugerencias.length) return;
@@ -68,12 +66,10 @@ function iniciarTeleprompter() {
 
   tele.textContent = textoCompleto + textoCompleto;
 
-  // 🔥 Esperar un frame para asegurar render
   requestAnimationFrame(() => {
 
     const ancho = tele.scrollWidth / 2;
-
-    if (ancho === 0) return; // evita bug si aún no cargó
+    if (ancho === 0) return;
 
     const velocidad = 75;
     const duracion = ancho / velocidad;
@@ -101,7 +97,6 @@ setInterval(() => {
 
 function loadSugerencias() {
 
-  // 🔥 1️⃣ Ver si hay guardadas
   const guardadas = localStorage.getItem("sugerenciasGuardadas");
 
   if (guardadas) {
@@ -110,9 +105,11 @@ function loadSugerencias() {
     return;
   }
 
-  // 🔥 2️⃣ Si no hay, cargar JSON
-  fetch("sugerencias.json", { cache: "no-store" })
-    .then(r => r.json())
+  fetch("./sugerencias.json", { cache: "no-store" })
+    .then(r => {
+      if(!r.ok) throw new Error("No se pudo cargar sugerencias.json");
+      return r.json();
+    })
     .then(data => {
 
       configGlobal = data.config || {};
@@ -134,6 +131,9 @@ function loadSugerencias() {
       }
 
       iniciarTeleprompter();
+    })
+    .catch(err => {
+      console.error("Error cargando sugerencias:", err);
     });
 }
 
@@ -147,13 +147,19 @@ async function loadProductos() {
   if (idiomaActual === "en") archivo = "productos-en.json";
   if (idiomaActual === "pt") archivo = "productos-port.json";
 
-  const url = `https://raw.githubusercontent.com/${USER}/${REPO}/main/${archivo}`;
+  try {
 
-  const res = await fetch(url, { cache: "no-store" });
-  productos = await res.json();
+    const res = await fetch(`./${archivo}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("No se pudo cargar " + archivo);
 
-  renderCategorias();
-  render(productos);
+    productos = await res.json();
+
+    renderCategorias();
+    render(productos);
+
+  } catch (err) {
+    console.error("Error cargando productos:", err);
+  }
 }
 
 /* ============================= */
@@ -225,10 +231,7 @@ window.addEventListener("message", e => {
   if (Array.isArray(e.data)) {
 
     sugerencias = e.data;
-
-    // 🔥 Guardar automáticamente
     localStorage.setItem("sugerenciasGuardadas", JSON.stringify(sugerencias));
-
     iniciarTeleprompter();
   }
 
