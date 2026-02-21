@@ -59,7 +59,6 @@ function armarMensajeBase(config){
 /* ============================= */
 /* TELEPROMPTER LOOP INFINITO */
 /* ============================= */
-
 function iniciarTeleprompter() {
 
   if (!sugerencias.length) return;
@@ -69,13 +68,21 @@ function iniciarTeleprompter() {
 
   tele.textContent = textoCompleto + textoCompleto;
 
-  const ancho = tele.scrollWidth / 2;
-  const velocidad = 75;
-  const duracion = ancho / velocidad;
+  // 🔥 Esperar un frame para asegurar render
+  requestAnimationFrame(() => {
 
-  tele.style.animation = "scrollText linear infinite";
-  tele.style.animationDuration = `${duracion}s`;
-  tele.style.animationDelay = "0s";
+    const ancho = tele.scrollWidth / 2;
+
+    if (ancho === 0) return; // evita bug si aún no cargó
+
+    const velocidad = 75;
+    const duracion = ancho / velocidad;
+
+    tele.style.animation = "scrollText linear infinite";
+    tele.style.animationDuration = `${duracion}s`;
+    tele.style.animationDelay = "0s";
+
+  });
 }
 
 /* ============================= */
