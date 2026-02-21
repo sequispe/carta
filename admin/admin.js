@@ -16,6 +16,7 @@ const nombreLocalInput = document.getElementById("nombreLocal");
 /* ============================= */
 /* TOKEN */
 /* ============================= */
+
 function pedirToken() {
   if (!TOKEN) {
     TOKEN = prompt("Pegá tu token de GitHub:");
@@ -26,6 +27,7 @@ function pedirToken() {
 /* ============================= */
 /* UTF8 */
 /* ============================= */
+
 function decodeUTF8(base64) {
   return new TextDecoder("utf-8").decode(
     Uint8Array.from(atob(base64), c => c.charCodeAt(0))
@@ -42,99 +44,124 @@ function encodeUTF8(str) {
 /* ============================= */
 /* CARGAR */
 /* ============================= */
+
 async function cargarJSON() {
 
-  pedirToken();
-  if (!TOKEN) return;
+  try {
 
-  estado.textContent = "Cargando...";
+    pedirToken();
+    if (!TOKEN) return;
 
-  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
+    estado.textContent = "Cargando...";
 
-  const res = await fetch(url, {
-    headers: { Authorization: `token ${TOKEN}` }
-  });
+    const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
-  const data = await res.json();
-  shaActual = data.sha;
+    const res = await fetch(url, {
+      headers: { Authorization: `token ${TOKEN}` }
+    });
 
-  jsonCompleto = JSON.parse(decodeUTF8(data.content));
+    if (!res.ok) throw new Error("No se pudo cargar el archivo");
 
-  nombreLocalInput.value = jsonCompleto.config?.nombreLocal || "";
+    const data = await res.json();
 
-  mostrarIdioma();
+    shaActual = data.sha;
+    jsonCompleto = JSON.parse(decodeUTF8(data.content));
 
-  estado.textContent = "Cargado ✅";
+    nombreLocalInput.value = jsonCompleto.config?.nombreLocal || "";
+
+    mostrarIdioma();
+
+    estado.textContent = "Cargado ✅";
+
+  } catch (err) {
+    estado.textContent = "Error cargando ❌";
+    console.error(err);
+  }
 }
 
 /* ============================= */
 /* MOSTRAR SOLO IDIOMA */
 /* ============================= */
-function mostrarIdioma() {
 
+function mostrarIdioma() {
   const idioma = idiomaSelect.value;
   const lista = jsonCompleto[idioma] || [];
-
   textarea.value = lista.join("\n");
 }
 
 /* ============================= */
 /* GUARDAR */
 /* ============================= */
+
 async function guardarJSON() {
 
-  const idioma = idiomaSelect.value;
+  try {
 
-  const lineas = textarea.value
-    .split("\n")
-    .map(l => l.trim())
-    .filter(l => l.length > 0);
+    const idioma = idiomaSelect.value;
 
-  jsonCompleto[idioma] = lineas;
+    const lineas = textarea.value
+      .split("\n")
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
 
-  jsonCompleto.config = {
-    ...jsonCompleto.config,
-    nombreLocal: nombreLocalInput.value
-  };
+    jsonCompleto[idioma] = lineas;
 
-  estado.textContent = "Guardando...";
+    jsonCompleto.config = {
+      ...jsonCompleto.config,
+      nombreLocal: nombreLocalInput.value
+    };
 
-  const contenidoBase64 = encodeUTF8(
-    JSON.stringify(jsonCompleto, null, 2)
-  );
+    estado.textContent = "Guardando...";
 
-  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
+    const contenidoBase64 = encodeUTF8(
+      JSON.stringify(jsonCompleto, null, 2)
+    );
 
-  const res = await fetch(url, {
-    method: "PUT",
-    headers: {
-      Authorization: `token ${TOKEN}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      message: `Actualización ${idioma}`,
-      content: contenidoBase64,
-      sha: shaActual,
-      branch: BRANCH
-    })
-  });
+    const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
-  if (res.ok) {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: `Actualización ${idioma}`,
+        content: contenidoBase64,
+        sha: shaActual,
+        branch: BRANCH
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Error desconocido");
+    }
+
     estado.textContent = "Guardado ✅";
-    cargarJSON();
-  } else {
+
+    // 🔥 Volver a cargar para actualizar SHA
+    await cargarJSON();
+
+  } catch (err) {
+
     estado.textContent = "Error ❌";
+    console.error("Error guardando:", err);
+
   }
 }
 
 /* ============================= */
 /* EVENTOS */
 /* ============================= */
+
 btnGuardar.addEventListener("click", guardarJSON);
 idiomaSelect.addEventListener("change", mostrarIdioma);
 
 document.querySelectorAll(".emoji-list button").forEach(btn => {
   btn.addEventListener("click", () => {
+
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const emoji = btn.textContent;
@@ -152,4 +179,5 @@ document.querySelectorAll(".emoji-list button").forEach(btn => {
 /* ============================= */
 /* INICIAR */
 /* ============================= */
+
 cargarJSON();
