@@ -4,29 +4,27 @@ const FILE_PATH = "sugerencias.json";
 const BRANCH = "main";
 
 let TOKEN = localStorage.getItem("github_token");
+let shaActual = null;
+let jsonCompleto = {};
 
 const textarea = document.getElementById("editor");
 const btnGuardar = document.getElementById("guardar");
 const estado = document.getElementById("estado");
-
-let shaActual = null;
+const idiomaSelect = document.getElementById("idiomaSelect");
+const nombreLocalInput = document.getElementById("nombreLocal");
 
 /* ============================= */
-/* PEDIR TOKEN */
+/* TOKEN */
 /* ============================= */
 function pedirToken() {
   if (!TOKEN) {
     TOKEN = prompt("Pegá tu token de GitHub:");
-    if (TOKEN) {
-      localStorage.setItem("github_token", TOKEN);
-    } else {
-      alert("Necesitás el token para usar el admin");
-    }
+    if (TOKEN) localStorage.setItem("github_token", TOKEN);
   }
 }
 
 /* ============================= */
-/* DECODIFICAR UTF-8 CORRECTO */
+/* UTF8 */
 /* ============================= */
 function decodeUTF8(base64) {
   return new TextDecoder("utf-8").decode(
@@ -34,9 +32,6 @@ function decodeUTF8(base64) {
   );
 }
 
-/* ============================= */
-/* ENCODIFICAR UTF-8 CORRECTO */
-/* ============================= */
 function encodeUTF8(str) {
   const bytes = new TextEncoder().encode(str);
   let binary = "";
@@ -45,9 +40,10 @@ function encodeUTF8(str) {
 }
 
 /* ============================= */
-/* CARGAR JSON */
+/* CARGAR */
 /* ============================= */
 async function cargarJSON() {
+
   pedirToken();
   if (!TOKEN) return;
 
@@ -56,37 +52,56 @@ async function cargarJSON() {
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
   const res = await fetch(url, {
-    headers: {
-      Authorization: `token ${TOKEN}`
-    }
+    headers: { Authorization: `token ${TOKEN}` }
   });
-
-  if (!res.ok) {
-    estado.textContent = "Error ❌";
-    alert("Error cargando JSON");
-    return;
-  }
 
   const data = await res.json();
   shaActual = data.sha;
 
-  const contenido = decodeUTF8(data.content);
-  textarea.value = contenido;
+  jsonCompleto = JSON.parse(decodeUTF8(data.content));
+
+  nombreLocalInput.value = jsonCompleto.config?.nombreLocal || "";
+
+  mostrarIdioma();
 
   estado.textContent = "Cargado ✅";
 }
 
 /* ============================= */
-/* GUARDAR JSON */
+/* MOSTRAR SOLO IDIOMA */
+/* ============================= */
+function mostrarIdioma() {
+
+  const idioma = idiomaSelect.value;
+  const lista = jsonCompleto[idioma] || [];
+
+  textarea.value = lista.join("\n");
+}
+
+/* ============================= */
+/* GUARDAR */
 /* ============================= */
 async function guardarJSON() {
-  if (!TOKEN) return;
+
+  const idioma = idiomaSelect.value;
+
+  const lineas = textarea.value
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l.length > 0);
+
+  jsonCompleto[idioma] = lineas;
+
+  jsonCompleto.config = {
+    ...jsonCompleto.config,
+    nombreLocal: nombreLocalInput.value
+  };
 
   estado.textContent = "Guardando...";
 
-  const contenidoNuevo = textarea.value;
-
-  const contenidoBase64 = encodeUTF8(contenidoNuevo);
+  const contenidoBase64 = encodeUTF8(
+    JSON.stringify(jsonCompleto, null, 2)
+  );
 
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FILE_PATH}`;
 
@@ -97,7 +112,7 @@ async function guardarJSON() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      message: "Actualización desde admin",
+      message: `Actualización ${idioma}`,
       content: contenidoBase64,
       sha: shaActual,
       branch: BRANCH
@@ -105,28 +120,24 @@ async function guardarJSON() {
   });
 
   if (res.ok) {
-    estado.textContent = "Guardado correctamente ✅";
-    alert("Guardado correctamente ✅");
-    cargarJSON(); // refresca SHA
+    estado.textContent = "Guardado ✅";
+    cargarJSON();
   } else {
-    estado.textContent = "Error al guardar ❌";
-    alert("Error al guardar");
+    estado.textContent = "Error ❌";
   }
 }
 
 /* ============================= */
-/* BOTÓN GUARDAR */
+/* EVENTOS */
 /* ============================= */
 btnGuardar.addEventListener("click", guardarJSON);
+idiomaSelect.addEventListener("change", mostrarIdioma);
 
-/* ============================= */
-/* EMOJIS */
-/* ============================= */
 document.querySelectorAll(".emoji-list button").forEach(btn => {
   btn.addEventListener("click", () => {
-    const emoji = btn.textContent;
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
+    const emoji = btn.textContent;
 
     textarea.value =
       textarea.value.substring(0, start) +
