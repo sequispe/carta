@@ -47,9 +47,11 @@ async function cargarJSON() {
   const data = await res.json();
   shaActual = data.sha;
 
-  const contenido = atob(data.content);
-  textarea.value = contenido;
-}
+const contenido = new TextDecoder("utf-8").decode(
+  Uint8Array.from(atob(data.content), c => c.charCodeAt(0))
+);
+
+textarea.value = contenido;
 
 /* ============================= */
 /* GUARDAR JSON */
