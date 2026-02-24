@@ -1,1 +1,10 @@
-ðºðºðºðºðºðºðºðºðº
+{
+  "config": { "nombreLocal": "Tilo Café" },
+  "es": [
+    "🙋‍♂️ Hola, soy tu mozo digital.",
+    "🥐 El desayuno premium incluye café ☕ y jugo de naranja 🍊.",
+    "🍽 El menú del día es filete a la romana con papas rústicas.",
+    "🍻 Hoy tenemos happy hour de 18 a 20hs.",
+    "😊 ¡Te esperamos en {{local}}!"
+  ]
+}
