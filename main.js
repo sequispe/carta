@@ -82,16 +82,6 @@ function iniciarTeleprompter() {
 }
 
 /* ============================= */
-/* ACTUALIZAR SALUDO */
-/* ============================= */
-
-setInterval(() => {
-  if (!configGlobal) return;
-  sugerencias[0] = armarMensajeBase(configGlobal);
-  iniciarTeleprompter();
-}, 60000);
-
-/* ============================= */
 /* CARGAR SUGERENCIAS */
 /* ============================= */
 
