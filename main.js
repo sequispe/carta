@@ -89,11 +89,15 @@ function loadSugerencias() {
 
   const guardadas = localStorage.getItem("sugerenciasGuardadas");
 
-  if (guardadas) {
+if (guardadas) {
+  try {
     sugerencias = JSON.parse(guardadas);
-    iniciarTeleprompter();
-    return;
-  }
+    if (sugerencias.length) {
+      iniciarTeleprompter();
+      return;
+    }
+  } catch(e) {}
+}
 
   fetch("./sugerencias.json", { cache: "no-store" })
     .then(r => {
@@ -122,10 +126,14 @@ function loadSugerencias() {
 
       iniciarTeleprompter();
     })
-    .catch(err => {
-      console.error("Error cargando sugerencias:", err);
-    });
-}
+  .catch(err => {
+  console.error("Error cargando sugerencias:", err);
+  sugerencias = ["Bienvenidos ☕"];
+  iniciarTeleprompter();
+});
+
+
+  
 
 /* ============================= */
 /* CARGAR PRODUCTOS */
