@@ -74,9 +74,11 @@ function iniciarTeleprompter() {
     const velocidad = 75;
     const duracion = ancho / velocidad;
 
+    tele.style.animation = "none";
+    void tele.offsetWidth;
+
     tele.style.animation = "scrollText linear infinite";
     tele.style.animationDuration = `${duracion}s`;
-    tele.style.animationDelay = "0s";
 
   });
 }
@@ -89,15 +91,15 @@ function loadSugerencias() {
 
   const guardadas = localStorage.getItem("sugerenciasGuardadas");
 
-if (guardadas) {
-  try {
-    sugerencias = JSON.parse(guardadas);
-    if (sugerencias.length) {
-      iniciarTeleprompter();
-      return;
-    }
-  } catch(e) {}
-}
+  if (guardadas) {
+    try {
+      sugerencias = JSON.parse(guardadas);
+      if (sugerencias.length) {
+        iniciarTeleprompter();
+        return;
+      }
+    } catch(e) {}
+  }
 
   fetch("./sugerencias.json", { cache: "no-store" })
     .then(r => {
@@ -120,20 +122,18 @@ if (guardadas) {
       const mensajeBase = armarMensajeBase(configGlobal);
       sugerencias.unshift(mensajeBase);
 
-      if (sugerencias.length === 0) {
+      if (!sugerencias.length) {
         sugerencias = ["Bienvenidos ☕"];
       }
 
       iniciarTeleprompter();
     })
-  .catch(err => {
-  console.error("Error cargando sugerencias:", err);
-  sugerencias = ["Bienvenidos ☕"];
-  iniciarTeleprompter();
-});
-
-
-  
+    .catch(err => {
+      console.error("Error cargando sugerencias:", err);
+      sugerencias = ["Bienvenidos ☕"];
+      iniciarTeleprompter();
+    });
+}
 
 /* ============================= */
 /* CARGAR PRODUCTOS */
@@ -227,7 +227,6 @@ window.parent?.postMessage("ready", "*");
 window.addEventListener("message", e => {
 
   if (Array.isArray(e.data)) {
-
     sugerencias = e.data;
     localStorage.setItem("sugerenciasGuardadas", JSON.stringify(sugerencias));
     iniciarTeleprompter();
