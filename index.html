@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>sequispe</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tilo Café French</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-
 <style>
 
 body{
@@ -215,16 +214,17 @@ header img{
 </head>
 
 <body>
-
+<!-- TELEPROMPTER -->
 <div id="teleprompter">
   <div id="tele-wrapper">
     <div id="tele-track">Cargando sugerencias...</div>
   </div>
 </div>
-
 <header>
-  <img src="img/fondo8.png" alt="Tilo Café">
+  <img src="img/french99.jpg" alt="Tilo Café">
 </header>
+
+<div class="banner" id="banner-text">¡Bienvenidos a Tilo Café French!</div>
 
 <div id="languageSwitcher">
   <button id="btn-es" class="lang-btn">🇪🇸 Español</button>
@@ -233,16 +233,256 @@ header img{
 </div>
 
 <div class="search-box">
-  <input id="search" placeholder="Buscar...">
+  <input id="search" type="text" placeholder="Buscar por nombre, descripción o categoría...">
   <button id="btnSearch">Buscar</button>
+  <button id="btnVoice">🎤</button>
 </div>
 
 <div id="category-buttons"></div>
 <div id="product-list"></div>
-
 <button id="btnUp">⬆️</button>
 
-<script src="main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+const USER = 'tilo-restocafe';
+const REPO = 'cartaaguero';
+let idiomaActual = localStorage.getItem('idioma') || 'es';
+
+const btnEs = document.getElementById('btn-es');
+const btnEn = document.getElementById('btn-en');
+const btnPt = document.getElementById('btn-pt');
+const banner = document.getElementById('banner-text');
+const categoryContainer = document.getElementById('category-buttons');
+const productList = document.getElementById('product-list');
+const searchInput = document.getElementById('search');
+const btnSearch = document.getElementById('btnSearch');
+const btnVoice = document.getElementById('btnVoice');  
+const btnUp = document.getElementById('btnUp');
+const teleTrack = document.getElementById("tele-track");
+
+let productos = [];
+
+/* ================= TELEPROMPTER ================= */
+
+function saludoSegunHora(){
+  const hora = new Date().getHours();
+
+  if(idiomaActual==="es"){
+    if(hora<12) return "☀️ Buenos días";
+    if(hora<19) return "🌤️ Buenas tardes";
+    return "🌙 Buenas noches";
+  }
+  if(idiomaActual==="en"){
+    if(hora<12) return "☀️ Good morning";
+    if(hora<19) return "🌤️ Good afternoon";
+    return "🌙 Good evening";
+  }
+  if(idiomaActual==="pt"){
+    if(hora<12) return "☀️ Bom dia";
+    if(hora<19) return "🌤️ Boa tarde";
+    return "🌙 Boa noite";
+  }
+}
+
+async function cargarTeleprompter(){
+  try{
+    const res = await fetch(`https://raw.githubusercontent.com/${USER}/${REPO}/main/sugerencias.json`,{cache:"no-store"});
+    const data = await res.json();
+    const sugerencias = data[idiomaActual] || [];
+
+    const textoFinal = saludoSegunHora()+" — "+sugerencias.join("   ✦   ");
+
+    teleTrack.innerHTML = textoFinal + "   ✦   " + textoFinal;
+
+    iniciarScroll();
+
+  }catch{
+    teleTrack.textContent="Bienvenidos a Tilo Café ☕";
+  }
+}
+
+function iniciarScroll(){
+  const velocidad = 60;
+  const ancho = teleTrack.offsetWidth / 2;
+  const duracion = ancho / velocidad;
+
+  teleTrack.style.animation = "none";
+
+  setTimeout(()=>{
+    teleTrack.style.animation = `scrollTele ${duracion}s linear infinite`;
+  },50);
+}
+
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes scrollTele{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}`;
+document.head.appendChild(style);
+
+/* ================= FUNCIONES ORIGINALES ================= */
+
+function scrollToProducts(){
+  const yOffset = -20;
+  const y = productList.getBoundingClientRect().top + window.pageYOffset + yOffset;
+  window.scrollTo({ top:y, behavior:"smooth" });
+}
+
+function limpiarTexto(texto){
+  return texto.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
+}
+
+/* CARGAR PRODUCTOS */
+async function load(){
+
+  actualizarBotones();
+
+  let archivo="productos.json";
+  if(idiomaActual==="en") archivo="productos-en.json";
+  if(idiomaActual==="pt") archivo="productos-port.json";
+
+  const URL=`https://raw.githubusercontent.com/${USER}/${REPO}/main/${archivo}`;
+
+  try{
+    const res=await fetch(URL,{cache:"no-store"});
+    const data=await res.json();
+
+    productos=data.map(p=>({
+      nombre:p.nombre||p.name||p.nome,
+      descripcion:p.descripcion||p.description||p.descricao,
+      precio:p.precio||p.price||p.preco,
+      imagen:p.imagen||p.image||p.imagem,
+      categoria:p.categoria||p.category
+    }));
+
+    renderCategorias();
+    render(productos);
+    cargarTeleprompter();   // 👈 ACÁ ESTABA LO QUE FALTABA
+
+  }catch{
+    productList.innerHTML=`<div class="msg">⚠️ No se pudieron cargar los productos.</div>`;
+  }
+}
+
+/* RENDER */
+function render(arr){
+  productList.innerHTML="";
+  if(arr.length===0){
+    productList.innerHTML=`<div class="msg">🔍 No se encontraron resultados.</div>`;
+    return;
+  }
+  arr.forEach(p=>{
+    productList.innerHTML+=`
+      <div class="item">
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion||""}</p>
+        <span class="price">$${p.precio}</span>
+      </div>`;
+  });
+}
+
+function renderCategorias(){
+  const categorias=["Todos",...new Set(productos.map(p=>p.categoria).filter(Boolean))];
+  categoryContainer.innerHTML="";
+  categorias.forEach(cat=>{
+    const btn=document.createElement("button");
+    btn.textContent=cat;
+    btn.onclick=()=>{
+      if(cat==="Todos") render(productos);
+      else render(productos.filter(p=>p.categoria===cat));
+      scrollToProducts();
+    };
+    categoryContainer.appendChild(btn);
+  });
+}
+
+/* BUSCADOR */
+function filtrar(){
+  const texto=limpiarTexto(searchInput.value);
+  return productos.filter(p=>{
+    return limpiarTexto(p.nombre||"").includes(texto) ||
+           limpiarTexto(p.descripcion||"").includes(texto) ||
+           limpiarTexto(p.categoria||"").includes(texto);
+  });
+}
+
+searchInput.addEventListener("input",()=>render(filtrar()));
+btnSearch.addEventListener("click",()=>{ render(filtrar()); scrollToProducts(); });
+searchInput.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    render(filtrar());
+    scrollToProducts();
+  }
+});
+/* ================= BUSQUEDA POR VOZ ================= */
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+
+  const recognition = new SpeechRecognition();
+  function idiomaVoz(){
+  if(idiomaActual==="es") return "es-AR";// español argentina
+  if(idiomaActual==="en") return "en-US";
+  if(idiomaActual==="pt") return "pt-BR";
+}
+recognition.lang = idiomaVoz();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  btnVoice.addEventListener("click", () => {
+    recognition.start();
+    btnVoice.textContent = "🎙️";
+  });
+
+  recognition.addEventListener("result", (event) => {
+    const textoVoz = event.results[0][0].transcript;
+    
+    searchInput.value = textoVoz;
+    render(filtrar());
+    scrollToProducts();
+
+    btnVoice.textContent = "🎤";
+  });
+
+  recognition.addEventListener("end", () => {
+    btnVoice.textContent = "🎤";
+  });
+
+} else {
+  btnVoice.style.display = "none";
+}  
+
+/* IDIOMA */
+function actualizarBotones(){
+  btnEs.classList.toggle("active",idiomaActual==="es");
+  btnEn.classList.toggle("active",idiomaActual==="en");
+  btnPt.classList.toggle("active",idiomaActual==="pt");
+
+  if(idiomaActual==="es") banner.textContent="¡Bienvenidos a Tilo Café French!";
+  if(idiomaActual==="en") banner.textContent="Welcome to Tilo Café French!";
+  if(idiomaActual==="pt") banner.textContent="Bem-vindo ao Tilo Café French!";
+}
+
+btnEs.onclick=()=>{idiomaActual="es";localStorage.setItem("idioma","es");load();};
+btnEn.onclick=()=>{idiomaActual="en";localStorage.setItem("idioma","en");load();};
+btnPt.onclick=()=>{idiomaActual="pt";localStorage.setItem("idioma","pt");load();};
+
+/* BOTÓN SUBIR */
+window.addEventListener("scroll",()=>{
+  btnUp.style.display=window.scrollY>300?"block":"none";
+});
+btnUp.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+
+load();
+
+});
+</script>
 
 </body>
 </html>
