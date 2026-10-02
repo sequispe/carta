@@ -1,11 +1,11 @@
 [
   {
     "id": "prod0001",
-    "name": "Espresso Coffee",
-    "description": "Small coffee",
+    "name": "Espresso",
+    "description": "☕ Welcome to Tilo Café — Agüero 2298🥐 Freshly Baked All Day Crescent Free 📶 Wi-Fi for our customers,🕘 Open every day from 8am to 8pm💳 We accept debit, credit and QR",
     "price": "",
-    "image": "https://res.cloudinary.com/dfcj9eyyn/image/upload/v1765842339/cafe_wf70hy.jpg",
-    "category": "Coffee Shop ☕️"
+    "image": "img/1790902712938_cafe_jpg.jpg",
+    "category": "Cafeteria☕️"
   },
   {
     "id": "prod0002",
@@ -1430,5 +1430,21 @@
     "price": "9200",
     "image": "img/torgrende.jpg",
     "category": "📋DAILY MENU/SPECIALS & NEWS"
+  },
+  {
+    "id": "prod0180",
+    "name": "Ensalada CAESAR con Atun",
+    "description": "Mix de verdes, croutons, atun rebozados, parmesano y aderezo Caesar",
+    "price": "20000",
+    "image": "img/Nueva.jpg",
+    "category": "🍽️Comidas"
+  },
+  {
+    "id": "prod0181",
+    "name": "ROGEL",
+    "description": "Nueva torta Rogel",
+    "price": "9200",
+    "image": "img/Rojel.jpg",
+    "category": "📋MENU del DIA/SUGERENCIAS Y NOVEDADES"
   }
 ]
