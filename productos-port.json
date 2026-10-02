@@ -1,10 +1,10 @@
 [
   {
     "nome": "Café expresso",
-    "descricao": "Café pequeno",
+    "descricao": "☕ Bem-vindo ao Tilo Café — Agüero 2298🥐 Freshly Baked All Day Crescent 📶 Wi-Fi gratuito para nossos clientes,🕘 Aberto todos os dias das 8h às 20h💳 Aceitamos débito, crédito e QR",
     "preco": "",
-    "imagem": "https://res.cloudinary.com/dfcj9eyyn/image/upload/v1765842339/cafe_wf70hy.jpg",
-    "categoria": "Cafeteria☕️",
+    "imagem": "img/1790902712938_cafe_jpg.jpg",
+    "categoria": "Refeitório☕️",
     "id": "prod0001"
   },
   {
@@ -1430,5 +1430,21 @@
     "imagem": "img/torgrende.jpg",
     "categoria": "📋Menu do dia/Sugestões e novidades",
     "id": "prod0179"
+  },
+  {
+    "nome": "Ensalada CAESAR con Atun",
+    "descricao": "Mix de verdes, croutons, atun rebozados, parmesano y aderezo Caesar",
+    "preco": "20000",
+    "imagem": "img/Nueva.jpg",
+    "categoria": "🍽️Comidas",
+    "id": "prod0180"
+  },
+  {
+    "nome": "ROGEL",
+    "descricao": "Nueva torta Rogel",
+    "preco": "9200",
+    "imagem": "img/Rojel.jpg",
+    "categoria": "📋MENU del DIA/SUGERENCIAS Y NOVEDADES",
+    "id": "prod0181"
   }
 ]
