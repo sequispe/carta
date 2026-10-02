@@ -1269,8 +1269,8 @@
             const host = window.location.hostname;
             const pathParts = window.location.pathname.split("/");
 
-            let USER = 'tilo-restocafe'; // Fallback por defecto
-            let REPO = 'cartaaguero';     // Fallback por defecto
+            let USER = 'sequispe'; // Fallback por defecto
+            let REPO = 'carta';     // Fallback por defecto
 
             if (host.includes(".github.io")) {
                 USER = host.split(".")[0];
@@ -1795,7 +1795,7 @@
                         localStorage.setItem('idioma', idiomaActual);
                         actualizarBotonesIdioma();
                     }
-                    const localName = e.data.config?.nombreLocal || NOMBRE_LOCAL || "Tilo Café";
+                    const localName = e.data.config?.nombreLocal || NOMBRE_LOCAL || "munuclick";
                     document.title = localName;
                     bannerText.textContent = getWelcomeText(localName, idiomaActual);
 
