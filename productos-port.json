@@ -8,11 +8,11 @@
     "id": "prod0001"
   },
   {
-    "nome": "Café expresso jarrito",
+    "nome": "Caneca de café expresso",
     "descricao": "Café americano",
     "preco": "3600",
-    "imagem": "img/comids/Blu.jpg",
-    "categoria": "Cafeteria☕️",
+    "imagem": "img/1791295595059_americano_jpg.jpg",
+    "categoria": "Refeitório☕️",
     "id": "prod0002"
   },
   {
