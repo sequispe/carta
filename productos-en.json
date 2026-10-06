@@ -9,11 +9,11 @@
   },
   {
     "id": "prod0002",
-    "name": "Espresso Coffee (jarrito)",
-    "description": "Americano coffee",
+    "name": "Espresso coffee mug",
+    "description": "Long black coffee",
     "price": "3600",
-    "image": "img/comids/Blu.jpg",
-    "category": "Coffee Shop ☕️"
+    "image": "img/1791295595059_americano_jpg.jpg",
+    "category": "Cafeteria☕️"
   },
   {
     "id": "prod0003",
